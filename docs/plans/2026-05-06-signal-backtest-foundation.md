@@ -22,7 +22,7 @@
 Create `006_benchmark_daily_prices.sql` with:
 
 - `benchmark_daily_prices`
-- unique `(symbol, date)`
+- unique `(ticker, date)`
 - non-null OHLCV + `adj_close`
 
 Create `007_signal_and_backtest_tables.sql` with:
@@ -69,7 +69,7 @@ Cover:
 
 - building multi-row upsert SQL for `benchmark_daily_prices`
 - stable parameter ordering
-- conflict target `(symbol, date)`
+- conflict target `(ticker, date)`
 - updating `open/high/low/close/adj_close/volume/source/updated_at`
 
 Run:

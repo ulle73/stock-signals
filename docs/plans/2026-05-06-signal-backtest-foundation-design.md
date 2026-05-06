@@ -73,7 +73,7 @@ Purpose: store a tradable daily `SPY` series separate from stock constituents.
 
 Columns:
 
-- `symbol`
+- `ticker`
 - `date`
 - `open`
 - `high`
@@ -87,7 +87,7 @@ Columns:
 
 Key:
 
-- unique `(symbol, date)`
+- unique `(ticker, date)`
 
 Notes:
 
@@ -177,9 +177,12 @@ Columns:
 - `signal_data_end_date`
 - `benchmark_symbol`
 - `execution_model`
+- `out_of_market_mode`
 - `transaction_cost_bps`
 - `universe_mode`
 - `point_in_time_supported`
+- `rule_source`
+- `params_json`
 - `notes`
 - `cagr`
 - `max_drawdown`
