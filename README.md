@@ -87,6 +87,7 @@ Det skapar:
 - `stock_daily_indicators`
 - `market_series_daily`
 - `market_breadth_daily`
+- `market_signal_daily`
 - `data_fetch_runs`
 
 ### 4. Testa fetch med få tickers
@@ -136,6 +137,7 @@ npm run dev
 npm run db:migrate
 npm run fetch:daily
 npm run calculate:daily
+npm run calculate:signals
 npm run validate:indicator -- AAPL
 ```
 
@@ -172,6 +174,24 @@ Samma körning bygger också dagliga breadth-rader i `market_breadth_daily`:
 - `new_highs_52w`
 - `new_lows_52w`
 - `is_valid_signal_date`
+
+`npm run calculate:signals` bygger sedan en rad per marknadsdag i `market_signal_daily` med bland annat:
+
+- `spx_close`
+- `spx_3d_change`
+- `spx_14d_change`
+- `pct_above_50`
+- `pct_above_50_3d_change`
+- `pct_above_50_14d_change`
+- `pct_above_200`
+- `pct_above_200_14d_change`
+- `ad_line`
+- `ad_line_14d_change`
+- `new_highs`
+- `new_lows`
+- `vix`
+- `divergence_status`
+- `short_divergence_status`
 
 Prisbasen är konsekvent:
 
