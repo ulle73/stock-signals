@@ -88,6 +88,10 @@ Det skapar:
 - `market_series_daily`
 - `market_breadth_daily`
 - `market_signal_daily`
+- `strategy_definitions`
+- `backtest_runs`
+- `strategy_positions_daily`
+- `strategy_equity_daily`
 - `data_fetch_runs`
 
 ### 4. Testa fetch med få tickers
@@ -138,6 +142,8 @@ npm run db:migrate
 npm run fetch:daily
 npm run calculate:daily
 npm run calculate:signals
+npm run seed:strategies
+npm run backtest:daily
 npm run validate:indicator -- AAPL
 ```
 
@@ -192,6 +198,19 @@ Samma körning bygger också dagliga breadth-rader i `market_breadth_daily`:
 - `vix`
 - `divergence_status`
 - `short_divergence_status`
+
+`npm run seed:strategies` upsertar sedan de första strategidefinitionerna:
+
+- `buy_and_hold_spy`
+- `bearish_divergence_cash_v1`
+- `bullish_divergence_context_v1`
+- `pct_above_50_threshold_v1`
+
+`npm run backtest:daily` kör dessa strategier mot `SPY` och fyller:
+
+- `backtest_runs`
+- `strategy_positions_daily`
+- `strategy_equity_daily`
 
 Prisbasen är konsekvent:
 
@@ -259,7 +278,10 @@ Workflowen kör:
 
 - manuellt via `workflow_dispatch`
 - automatiskt vardagar `07:23 UTC`
-- därefter även `npm run calculate:daily`
+- därefter `npm run calculate:daily`
+- därefter `npm run calculate:signals`
+- därefter `npm run seed:strategies`
+- därefter `npm run backtest:daily`
 
 Schemat ligger medvetet inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
 
