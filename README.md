@@ -69,6 +69,8 @@ Fyll i:
 DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require"
 ```
 
+`npm run db:migrate` och `npm run fetch:daily` laddar nu samma `.env*`-filer som Next.js gör, så `.env.local` fungerar även för scriptkörningar.
+
 ### 3. Kör migration
 
 ```bash
@@ -102,6 +104,23 @@ npm run fetch:daily
 
 Full fetch hämtar cirka 400 daily candles för alla aktiva S&P 500-komponenter.
 
+Om du vill göra en större engångs-backfill kan du tillfälligt sätta `YAHOO_DAILY_RANGE`.
+Exempel: cirka 1.5 år extra historik ovanpå nuvarande nivå:
+
+```powershell
+$env:NODE_ENV="production"
+$env:YAHOO_DAILY_RANGE="800d"
+npm run fetch:daily
+```
+
+Det kräver ingen rensning av databasen. Scriptet upsertar befintliga datum och lägger till äldre datum som saknas.
+
+Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
+
+- nya tickers får normal backfill
+- befintliga tickers hämtas från senaste lagrade datum med en liten overlap-buffert
+- FRED-serier upsertas också inkrementellt med liten overlap
+
 ---
 
 ## Scripts
@@ -111,6 +130,34 @@ npm run dev
 npm run db:migrate
 npm run fetch:daily
 ```
+
+---
+
+## Live-setup
+
+Projektet använder en enda Neon-databas, direkt mot `main`, för allt:
+
+- lokal utveckling
+- `npm run db:migrate`
+- `npm run fetch:daily`
+- live-miljön
+
+Det är kortaste vägen till live, men betyder också att alla schemaändringar och datakörningar träffar produktionsdatabasen direkt.
+
+## Daglig körning
+
+Repo:t innehåller en GitHub Actions-workflow i [`.github/workflows/fetch-daily.yml`](./.github/workflows/fetch-daily.yml).
+
+För att den ska fungera behöver du lägga in repository secret:
+
+- `DATABASE_URL` = din Neon connection string
+
+Workflowen kör:
+
+- manuellt via `workflow_dispatch`
+- automatiskt vardagar `07:23 UTC`
+
+Schemat ligger medvetet inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
 
 ---
 

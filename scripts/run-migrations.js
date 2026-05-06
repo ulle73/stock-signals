@@ -2,10 +2,13 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { closePool, query } from '../lib/db.js';
+import { ensureEnvLoaded } from '../lib/env.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const migrationsDir = path.join(__dirname, '..', 'db', 'migrations');
+
+ensureEnvLoaded();
 
 async function run() {
   const files = (await fs.readdir(migrationsDir))
