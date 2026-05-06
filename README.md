@@ -47,7 +47,15 @@ Inget av detta ska byggas ännu:
 
 ---
 
-## Miljövariabler
+## Setup
+
+### 1. Installera dependencies
+
+```bash
+npm install
+```
+
+### 2. Skapa env-fil
 
 Kopiera `.env.example` till `.env.local`:
 
@@ -61,17 +69,61 @@ Fyll i:
 DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require"
 ```
 
+### 3. Kör migration
+
+```bash
+npm run db:migrate
+```
+
+Det skapar:
+
+- `sp500_constituents`
+- `stock_daily_prices`
+- `market_series_daily`
+- `data_fetch_runs`
+
+### 4. Testa fetch med få tickers
+
+```bash
+FETCH_TICKER_LIMIT=10 npm run fetch:daily
+```
+
+På Windows PowerShell:
+
+```powershell
+$env:FETCH_TICKER_LIMIT="10"; npm run fetch:daily
+```
+
+### 5. Kör full fetch
+
+```bash
+npm run fetch:daily
+```
+
+Full fetch hämtar cirka 400 daily candles för alla aktiva S&P 500-komponenter.
+
 ---
 
-## Förväntade scripts
-
-När implementationen är klar bör dessa scripts finnas:
+## Scripts
 
 ```bash
 npm run dev
 npm run db:migrate
 npm run fetch:daily
 ```
+
+---
+
+## Vad `fetch:daily` gör
+
+1. Hämtar S&P 500-komponenter från Wikipedia.
+2. Normaliserar Yahoo-tickers, t.ex. `BRK.B -> BRK-B`.
+3. Upsertar komponenter till `sp500_constituents`.
+4. Hämtar 400 dagar daily candles från Yahoo för varje aktiv ticker.
+5. Upsertar candles till `stock_daily_prices`.
+6. Hämtar `SP500`, `VIXCLS` och `BAMLH0A0HYM2` från FRED.
+7. Upsertar FRED-data till `market_series_daily`.
+8. Loggar körningen i `data_fetch_runs`.
 
 ---
 
@@ -84,4 +136,18 @@ Efter `npm run fetch:daily` ska databasen innehålla:
 - SP500/VIX/HY spread i `market_series_daily`,
 - körlogg i `data_fetch_runs`.
 
-Scriptet ska vara idempotent: att köra det flera gånger ska inte skapa dubbletter.
+Scriptet är byggt för att vara idempotent: att köra det flera gånger ska inte skapa dubbletter.
+
+---
+
+## Nästa fas senare
+
+När datahämtningen är verifierad kan nästa fas lägga till:
+
+- MA20/50/200,
+- breadth summaries,
+- advancers/decliners,
+- new highs/lows,
+- Market Regime Score,
+- dashboard,
+- intraday pulse och alerts.
