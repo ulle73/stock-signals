@@ -12,12 +12,16 @@ test('buildBacktestRunArtifacts simulates buy-and-hold and signal-driven long/ca
     {
       date: '2026-01-02',
       pct_above_50: 55,
+      market_regime_score: 4,
+      signal: 'risk_on',
       divergence_status: 'none',
       short_divergence_status: 'none',
     },
     {
       date: '2026-01-03',
       pct_above_50: 45,
+      market_regime_score: -3.5,
+      signal: 'risk_off',
       divergence_status: 'bearish_warning',
       short_divergence_status: 'short_negative',
     },
@@ -61,4 +65,21 @@ test('buildBacktestRunArtifacts simulates buy-and-hold and signal-driven long/ca
   assert.equal(breadthThreshold.positions[2].trade_action, 'exit');
   assert.equal(breadthThreshold.summary.turnover, 2);
   assert.equal(breadthThreshold.summary.time_in_market_pct, 66.666667);
+
+  const marketRegime = buildBacktestRunArtifacts({
+    strategy: {
+      code: 'market_regime_signal_v1',
+      benchmark_symbol: 'SPY',
+      transaction_cost_bps: 5,
+      rule_source: 'market_regime_signal',
+      params_json: { initial_state: 'cash' },
+    },
+    benchmarkBars,
+    signalRows,
+  });
+
+  assert.equal(marketRegime.positions[0].trade_action, 'stay_out');
+  assert.equal(marketRegime.positions[1].trade_action, 'enter');
+  assert.equal(marketRegime.positions[2].trade_action, 'exit');
+  assert.match(marketRegime.positions[2].reason_code, /signal:risk_off/);
 });

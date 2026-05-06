@@ -84,4 +84,6 @@ test('buildMarketSignalRowsFromSources aligns breadth and market series, skips i
   assert.equal(latest.ad_line_14d_change, -8);
   assert.equal(latest.divergence_status, 'bearish_warning_strong');
   assert.equal(latest.short_divergence_status, 'short_negative');
+  assert.equal(latest.market_regime_score, -3.5);
+  assert.equal(latest.signal, 'risk_off');
 });

@@ -45,12 +45,47 @@ function formatStatus(value) {
   return value.replaceAll('_', ' ');
 }
 
+function formatPercent(value, digits = 2) {
+  if (value === null || value === undefined) {
+    return 'No data';
+  }
+
+  return `${formatNumber(value, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })}%`;
+}
+
 function statusTone(status) {
   return status === 'success'
     ? 'var(--accent)'
     : status === 'partial_success'
       ? '#8b5e00'
       : 'var(--danger)';
+}
+
+function signalTone(signal) {
+  if (signal === 'risk_on') {
+    return 'var(--accent)';
+  }
+
+  if (signal === 'risk_off') {
+    return 'var(--danger)';
+  }
+
+  return '#8b5e00';
+}
+
+function renderBacktestRow(row) {
+  return (
+    <tr key={row.code}>
+      <td>{row.name}</td>
+      <td>{formatPercent(row.cagr)}</td>
+      <td>{formatPercent(row.max_drawdown)}</td>
+      <td>{formatPercent(row.time_in_market_pct)}</td>
+      <td>{formatTimestamp(row.finished_at)}</td>
+    </tr>
+  );
 }
 
 function renderPriceRow(row) {
@@ -78,6 +113,8 @@ export default async function Home({ searchParams }) {
   const tickerStats = snapshot.tickerSnapshot.stats;
   const latestRun = snapshot.latestRun;
   const coverage = snapshot.coverage;
+  const latestSignal = snapshot.latestSignal;
+  const backtests = snapshot.backtests;
 
   return (
     <main className="page-shell">
@@ -153,6 +190,74 @@ export default async function Home({ searchParams }) {
         </article>
       </section>
 
+      <section className="dashboard-grid">
+        <article className="card">
+          <p className="section-kicker">Market signal</p>
+          <div className="metric-grid">
+            <div className="metric-tile">
+              <span>Signal date</span>
+              <strong>{formatDate(latestSignal?.date)}</strong>
+            </div>
+            <div className="metric-tile">
+              <span>Regime signal</span>
+              <strong style={{ color: signalTone(latestSignal?.signal) }}>
+                {formatStatus(latestSignal?.signal)}
+              </strong>
+            </div>
+            <div className="metric-tile">
+              <span>Regime score</span>
+              <strong>{formatNumber(latestSignal?.market_regime_score, { maximumFractionDigits: 1 })}</strong>
+            </div>
+            <div className="metric-tile">
+              <span>Divergence</span>
+              <strong>{formatStatus(latestSignal?.divergence_status)}</strong>
+            </div>
+            <div className="metric-tile">
+              <span>Short divergence</span>
+              <strong>{formatStatus(latestSignal?.short_divergence_status)}</strong>
+            </div>
+            <div className="metric-tile">
+              <span>SPX 14d</span>
+              <strong>{formatPercent(latestSignal?.spx_14d_change)}</strong>
+            </div>
+            <div className="metric-tile">
+              <span>% above SMA50</span>
+              <strong>{formatPercent(latestSignal?.pct_above_50)}</strong>
+            </div>
+            <div className="metric-tile">
+              <span>% above SMA200</span>
+              <strong>{formatPercent(latestSignal?.pct_above_200)}</strong>
+            </div>
+          </div>
+        </article>
+
+        <article className="card">
+          <p className="section-kicker">Backtests</p>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th>CAGR</th>
+                  <th>Max DD</th>
+                  <th>Time in market</th>
+                  <th>Finished</th>
+                </tr>
+              </thead>
+              <tbody>
+                {backtests.length
+                  ? backtests.map(renderBacktestRow)
+                  : (
+                    <tr>
+                      <td colSpan="5">No backtest runs available yet.</td>
+                    </tr>
+                  )}
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
       <section className="detail-grid">
         <article className="card">
           <div className="ticker-header">
@@ -223,18 +328,17 @@ export default async function Home({ searchParams }) {
         </article>
 
         <article className="card roadmap-card">
-          <p className="section-kicker">Alert path</p>
-          <h2>Indicators first, rules second, Telegram last.</h2>
+          <p className="section-kicker">Regime model</p>
+          <h2>One saved score, one saved signal, reusable everywhere.</h2>
           <ol className="path-list">
-            <li>Define the indicator formulas and warmup rules.</li>
-            <li>Persist daily indicator values in dedicated tables.</li>
-            <li>Store threshold rules per indicator, direction, and channel.</li>
-            <li>Dispatch matching rule hits to one or more Telegram channels.</li>
+            <li>`market_regime_score` combines breadth, trend, highs/lows, VIX, and divergence.</li>
+            <li>`signal` maps that score to `risk_on`, `warning`, or `risk_off`.</li>
+            <li>Backtests and future Telegram rules should read the saved signal, not recalculate it ad hoc.</li>
+            <li>Threshold rules can later sit on top of the same stored rows.</li>
           </ol>
           <p className="footnote">
-            Thresholds and alert logic should not be hardcoded into the fetch job.
-            They should sit on top of saved indicator values so rules can change
-            without rebuilding the raw data layer.
+            The current version treats only `risk_on` as invested in the combined regime strategy.
+            `warning` and `risk_off` both stay in cash until the next session opens.
           </p>
         </article>
       </section>

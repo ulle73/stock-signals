@@ -22,6 +22,22 @@ const STRATEGY_DEFINITIONS = [
     is_active: true,
   },
   {
+    code: 'market_regime_signal_v1',
+    name: 'Market Regime Signal V1',
+    description: 'Hold SPY only while the combined market regime signal is risk_on.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 5,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'market_regime_signal',
+    params_json: {
+      initial_state: 'cash',
+    },
+    is_active: true,
+  },
+  {
     code: 'bearish_divergence_cash_v1',
     name: 'Bearish Divergence Cash V1',
     description: 'Go to cash when the long divergence status turns bearish.',
