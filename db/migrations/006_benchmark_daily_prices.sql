@@ -1,5 +1,5 @@
 create table if not exists benchmark_daily_prices (
-  symbol text not null,
+  ticker text not null,
   date date not null,
   open numeric not null,
   high numeric not null,
@@ -10,11 +10,8 @@ create table if not exists benchmark_daily_prices (
   source text not null default 'yahoo',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  unique (symbol, date)
+  unique (ticker, date)
 );
 
 create index if not exists idx_benchmark_daily_prices_date
   on benchmark_daily_prices (date desc);
-
-create index if not exists idx_benchmark_daily_prices_symbol_date
-  on benchmark_daily_prices (symbol, date desc);
