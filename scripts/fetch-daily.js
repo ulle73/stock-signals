@@ -13,7 +13,7 @@ import { fetchYahooDailyCandles } from '../lib/sources/yahoo.js';
 import { upsertConstituents, getActiveConstituents } from '../lib/repositories/constituents.js';
 import { getLatestPriceDatesByTicker, upsertStockDailyPrices } from '../lib/repositories/prices.js';
 import { getLatestMarketSeriesDates, upsertMarketSeries } from '../lib/repositories/market-series.js';
-import { finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
+import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
 
 const FRED_SERIES = ['SP500', 'VIXCLS', 'BAMLH0A0HYM2'];
 const DEFAULT_CONCURRENCY = 5;
@@ -111,6 +111,9 @@ async function fetchFredData(latestMarketSeriesDates) {
 }
 
 async function run() {
+  await failRunningFetchRuns('fetch_daily', 'fetch:daily interrupted before completion', {
+    recoveredBy: 'fetch_daily',
+  });
   const fetchRunId = await startFetchRun('fetch_daily');
   fetchRunGuard.setRunId(fetchRunId);
 

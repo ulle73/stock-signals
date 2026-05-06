@@ -2,12 +2,13 @@
 
 Ett framtida marknadsbreddsbaserat signalsystem för S&P 500.
 
-Första versionen fokuserar endast på datahämtning och lagring:
+Första versionen fokuserar på datahämtning, lagring och en liten läsyta ovanpå datan:
 
 - hämta S&P 500-komponenter,
 - hämta daily candles från Yahoo Finance,
 - hämta SP500/VIX/HY spread från FRED,
 - spara allt i Neon Postgres,
+- visa datans status i appen,
 - skapa en stabil grund för senare indikatorer och signaler.
 
 Läs först:
@@ -38,12 +39,13 @@ Fas 1 ska endast bygga data foundation.
 
 Inget av detta ska byggas ännu:
 
-- dashboard,
 - trading-signaler,
 - Market Regime Score,
 - intraday polling,
 - alerts,
 - AI-analys.
+
+En minimal read-only dashboard finns nu för att verifiera att live-datan faktiskt läses från databasen. Det är fortfarande inte en indikator- eller alertsprodukt.
 
 ---
 
@@ -81,7 +83,9 @@ Det skapar:
 
 - `sp500_constituents`
 - `stock_daily_prices`
+- `stock_daily_indicators`
 - `market_series_daily`
+- `market_breadth_daily`
 - `data_fetch_runs`
 
 ### 4. Testa fetch med få tickers
@@ -129,7 +133,84 @@ Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
 npm run dev
 npm run db:migrate
 npm run fetch:daily
+npm run calculate:daily
+npm run validate:indicator -- AAPL
 ```
+
+`npm run dev` öppnar nu en server-renderad startsida som visar:
+
+- senaste fetch-status,
+- datatäckning för aktier,
+- senaste SP500/VIX/HY spread,
+- senaste prisrader för vald ticker.
+
+`npm run calculate:daily` beräknar nu:
+
+- `SMA5`
+- `SMA10`
+- `SMA20`
+- `SMA50`
+- `SMA200`
+- `daily_return_pct`
+- `avg_volume20`
+- `relative_volume20`
+- `pct_from_52w_high`
+- `pct_from_52w_low`
+
+per ticker och datum i `stock_daily_indicators`.
+
+Samma körning bygger också dagliga breadth-rader i `market_breadth_daily`:
+
+- `pct_above_sma20`
+- `pct_above_sma50`
+- `pct_above_sma200`
+- `advancers`
+- `decliners`
+- `unchanged`
+- `new_highs_52w`
+- `new_lows_52w`
+- `is_valid_signal_date`
+
+Prisbasen är konsekvent:
+
+```text
+indicator_price = adj_close ?? close
+```
+
+Warmup-regler:
+
+- `sma5 = null` tills 5 fulla handelsdagar finns
+- `sma10 = null` tills 10 fulla handelsdagar finns
+- `sma20 = null` tills 20 fulla handelsdagar finns
+- `sma50 = null` tills 50 fulla handelsdagar finns
+- `sma200 = null` tills 200 fulla handelsdagar finns
+- `avg_volume20 = null` tills 20 fulla volymrader finns
+- `pct_from_52w_high/low = null` tills 252 fulla handelsdagar finns
+
+Definitioner:
+
+```text
+indicator_price    = adj_close ?? close
+daily_return_pct   = ((today / yesterday) - 1) * 100
+avg_volume20       = 20-dagars snittvolym, inklusive aktuell dag
+relative_volume20  = volume / avg_volume20
+pct_from_52w_high  = ((today / rolling_252d_high) - 1) * 100
+pct_from_52w_low   = ((today / rolling_252d_low) - 1) * 100
+```
+
+För att verifiera en specifik rad mot råpriserna:
+
+```bash
+npm run validate:indicator -- AAPL
+npm run validate:indicator -- AAPL 2026-05-06
+```
+
+Scriptet skriver ut:
+
+- sparad indikatorrad,
+- omräknad indikatorrad från råpriser,
+- om de matchar exakt,
+- vilka datumfönster som användes för `sma20/50/200`.
 
 ---
 
@@ -156,6 +237,7 @@ Workflowen kör:
 
 - manuellt via `workflow_dispatch`
 - automatiskt vardagar `07:23 UTC`
+- därefter även `npm run calculate:daily`
 
 Schemat ligger medvetet inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
 
@@ -180,7 +262,9 @@ Efter `npm run fetch:daily` ska databasen innehålla:
 
 - aktiva S&P 500-komponenter i `sp500_constituents`,
 - daily candles i `stock_daily_prices`,
+- dagliga indikatorvärden i `stock_daily_indicators`,
 - SP500/VIX/HY spread i `market_series_daily`,
+- dagliga breadth-sammanställningar i `market_breadth_daily`,
 - körlogg i `data_fetch_runs`.
 
 Scriptet är byggt för att vara idempotent: att köra det flera gånger ska inte skapa dubbletter.
@@ -191,7 +275,6 @@ Scriptet är byggt för att vara idempotent: att köra det flera gånger ska int
 
 När datahämtningen är verifierad kan nästa fas lägga till:
 
-- MA20/50/200,
 - breadth summaries,
 - advancers/decliners,
 - new highs/lows,

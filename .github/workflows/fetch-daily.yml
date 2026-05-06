@@ -34,3 +34,6 @@ jobs:
 
       - name: Fetch daily market data
         run: npm run fetch:daily
+
+      - name: Calculate daily indicators
+        run: npm run calculate:daily
