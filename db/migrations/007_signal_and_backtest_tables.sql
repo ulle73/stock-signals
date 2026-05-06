@@ -21,9 +21,6 @@ create table if not exists market_signal_daily (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists idx_market_signal_daily_date
-  on market_signal_daily (date desc);
-
 create table if not exists strategy_definitions (
   id bigserial primary key,
   code text not null unique,
