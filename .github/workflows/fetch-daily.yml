@@ -37,3 +37,12 @@ jobs:
 
       - name: Calculate daily indicators
         run: npm run calculate:daily
+
+      - name: Calculate market signals
+        run: npm run calculate:signals
+
+      - name: Seed strategy definitions
+        run: npm run seed:strategies
+
+      - name: Run daily backtests
+        run: npm run backtest:daily

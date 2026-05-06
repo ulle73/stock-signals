@@ -82,10 +82,16 @@ npm run db:migrate
 Det skapar:
 
 - `sp500_constituents`
+- `benchmark_daily_prices`
 - `stock_daily_prices`
 - `stock_daily_indicators`
 - `market_series_daily`
 - `market_breadth_daily`
+- `market_signal_daily`
+- `strategy_definitions`
+- `backtest_runs`
+- `strategy_positions_daily`
+- `strategy_equity_daily`
 - `data_fetch_runs`
 
 ### 4. Testa fetch med få tickers
@@ -123,6 +129,7 @@ Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
 
 - nya tickers får normal backfill
 - befintliga tickers hämtas från senaste lagrade datum med en liten overlap-buffert
+- `SPY` hämtas också inkrementellt till `benchmark_daily_prices`
 - FRED-serier upsertas också inkrementellt med liten overlap
 
 ---
@@ -134,6 +141,9 @@ npm run dev
 npm run db:migrate
 npm run fetch:daily
 npm run calculate:daily
+npm run calculate:signals
+npm run seed:strategies
+npm run backtest:daily
 npm run validate:indicator -- AAPL
 ```
 
@@ -170,6 +180,37 @@ Samma körning bygger också dagliga breadth-rader i `market_breadth_daily`:
 - `new_highs_52w`
 - `new_lows_52w`
 - `is_valid_signal_date`
+
+`npm run calculate:signals` bygger sedan en rad per marknadsdag i `market_signal_daily` med bland annat:
+
+- `spx_close`
+- `spx_3d_change`
+- `spx_14d_change`
+- `pct_above_50`
+- `pct_above_50_3d_change`
+- `pct_above_50_14d_change`
+- `pct_above_200`
+- `pct_above_200_14d_change`
+- `ad_line`
+- `ad_line_14d_change`
+- `new_highs`
+- `new_lows`
+- `vix`
+- `divergence_status`
+- `short_divergence_status`
+
+`npm run seed:strategies` upsertar sedan de första strategidefinitionerna:
+
+- `buy_and_hold_spy`
+- `bearish_divergence_cash_v1`
+- `bullish_divergence_context_v1`
+- `pct_above_50_threshold_v1`
+
+`npm run backtest:daily` kör dessa strategier mot `SPY` och fyller:
+
+- `backtest_runs`
+- `strategy_positions_daily`
+- `strategy_equity_daily`
 
 Prisbasen är konsekvent:
 
@@ -237,7 +278,10 @@ Workflowen kör:
 
 - manuellt via `workflow_dispatch`
 - automatiskt vardagar `07:23 UTC`
-- därefter även `npm run calculate:daily`
+- därefter `npm run calculate:daily`
+- därefter `npm run calculate:signals`
+- därefter `npm run seed:strategies`
+- därefter `npm run backtest:daily`
 
 Schemat ligger medvetet inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
 
@@ -250,9 +294,10 @@ Schemat ligger medvetet inte på exakt hel timme, eftersom GitHubs schemalagda w
 3. Upsertar komponenter till `sp500_constituents`.
 4. Hämtar 400 dagar daily candles från Yahoo för varje aktiv ticker.
 5. Upsertar candles till `stock_daily_prices`.
-6. Hämtar `SP500`, `VIXCLS` och `BAMLH0A0HYM2` från FRED.
-7. Upsertar FRED-data till `market_series_daily`.
-8. Loggar körningen i `data_fetch_runs`.
+6. Hämtar daily OHLCV för `SPY` från Yahoo och upsertar till `benchmark_daily_prices`.
+7. Hämtar `SP500`, `VIXCLS` och `BAMLH0A0HYM2` från FRED.
+8. Upsertar FRED-data till `market_series_daily`.
+9. Loggar körningen i `data_fetch_runs`, inklusive benchmark-resultatet i `metadata.benchmark`.
 
 ---
 

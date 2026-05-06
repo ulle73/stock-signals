@@ -15,3 +15,10 @@ test('buildYahooChartUrl uses period bounds for incremental fetches', () => {
     'https://query1.finance.yahoo.com/v8/finance/chart/BRK.B?period1=100&period2=200&interval=1d'
   );
 });
+
+test('buildYahooChartUrl uses the same daily interval for benchmark tickers', () => {
+  assert.equal(
+    buildYahooChartUrl('SPY', { range: '1mo' }),
+    'https://query1.finance.yahoo.com/v8/finance/chart/SPY?range=1mo&interval=1d'
+  );
+});
