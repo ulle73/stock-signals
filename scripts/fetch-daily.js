@@ -10,12 +10,15 @@ import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
 import { fetchFredSeries } from '../lib/sources/fred.js';
 import { fetchSp500Constituents } from '../lib/sources/wikipedia.js';
 import { fetchYahooDailyCandles } from '../lib/sources/yahoo.js';
+import { getLatestBenchmarkDates, upsertBenchmarkDailyPrices } from '../lib/repositories/benchmark-prices.js';
 import { upsertConstituents, getActiveConstituents } from '../lib/repositories/constituents.js';
 import { getLatestPriceDatesByTicker, upsertStockDailyPrices } from '../lib/repositories/prices.js';
 import { getLatestMarketSeriesDates, upsertMarketSeries } from '../lib/repositories/market-series.js';
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
+import { buildFetchRunCompletionDetails, fetchBenchmarkData } from '../lib/utils/fetch-benchmark.js';
 
 const FRED_SERIES = ['SP500', 'VIXCLS', 'BAMLH0A0HYM2'];
+const BENCHMARK_TICKERS = ['SPY'];
 const DEFAULT_CONCURRENCY = 5;
 const fetchRunGuard = createFetchRunGuard({
   finishRun: finishFetchRun,
@@ -123,6 +126,7 @@ async function run() {
     await upsertConstituents(constituents);
     const yahooDailyRange = getYahooDailyRange();
     const latestPriceDatesByTicker = await getLatestPriceDatesByTicker();
+    const latestBenchmarkDatesByTicker = await getLatestBenchmarkDates();
     const latestMarketSeriesDates = await getLatestMarketSeriesDates();
 
     let activeConstituents = await getActiveConstituents();
@@ -138,25 +142,36 @@ async function run() {
     }
 
     const yahooResult = await fetchYahooForConstituents(activeConstituents, latestPriceDatesByTicker);
+    const benchmarkResult = await fetchBenchmarkData({
+      benchmarkTickers: BENCHMARK_TICKERS,
+      latestBenchmarkDatesByTicker,
+      fallbackRange: yahooDailyRange,
+      hasRangeOverride: hasYahooDailyRangeOverride(),
+      fetchYahooDailyCandlesFn: fetchYahooDailyCandles,
+      upsertBenchmarkDailyPricesFn: upsertBenchmarkDailyPrices,
+    });
     const fredResult = await fetchFredData(latestMarketSeriesDates);
 
-    const failedItems = yahooResult.failedTickers.length + fredResult.failedSeries.length;
+    const failedItems =
+      yahooResult.failedTickers.length +
+      benchmarkResult.failedBenchmarks.length +
+      fredResult.failedSeries.length;
     const status = failedItems > 0 ? 'partial_success' : 'success';
+    const completionDetails = buildFetchRunCompletionDetails({
+      constituentsParsed: constituents.length,
+      activeConstituentCount: activeConstituents.length,
+      yahooResult,
+      benchmarkResult,
+      fredResult,
+    });
 
     await fetchRunGuard.finish(status, {
-      totalItems: activeConstituents.length + FRED_SERIES.length,
-      successfulItems: yahooResult.successfulTickers + fredResult.successfulSeries.length,
-      failedItems,
-      metadata: {
-        constituentsParsed: constituents.length,
-        tickersAttempted: activeConstituents.length,
-        yahoo: yahooResult,
-        fred: fredResult,
-      },
+      ...completionDetails,
     });
 
     console.log(`Fetch daily completed with status: ${status}`);
     console.log(`Yahoo: ${yahooResult.successfulTickers}/${activeConstituents.length} tickers succeeded.`);
+    console.log(`Benchmark: ${benchmarkResult.successfulBenchmarks}/${BENCHMARK_TICKERS.length} tickers succeeded.`);
     console.log(`FRED: ${fredResult.successfulSeries.length}/${FRED_SERIES.length} series succeeded.`);
   } catch (error) {
     await fetchRunGuard.finish('failure', {

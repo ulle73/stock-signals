@@ -82,6 +82,7 @@ npm run db:migrate
 Det skapar:
 
 - `sp500_constituents`
+- `benchmark_daily_prices`
 - `stock_daily_prices`
 - `stock_daily_indicators`
 - `market_series_daily`
@@ -123,6 +124,7 @@ Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
 
 - nya tickers får normal backfill
 - befintliga tickers hämtas från senaste lagrade datum med en liten overlap-buffert
+- `SPY` hämtas också inkrementellt till `benchmark_daily_prices`
 - FRED-serier upsertas också inkrementellt med liten overlap
 
 ---
@@ -250,9 +252,10 @@ Schemat ligger medvetet inte på exakt hel timme, eftersom GitHubs schemalagda w
 3. Upsertar komponenter till `sp500_constituents`.
 4. Hämtar 400 dagar daily candles från Yahoo för varje aktiv ticker.
 5. Upsertar candles till `stock_daily_prices`.
-6. Hämtar `SP500`, `VIXCLS` och `BAMLH0A0HYM2` från FRED.
-7. Upsertar FRED-data till `market_series_daily`.
-8. Loggar körningen i `data_fetch_runs`.
+6. Hämtar daily OHLCV för `SPY` från Yahoo och upsertar till `benchmark_daily_prices`.
+7. Hämtar `SP500`, `VIXCLS` och `BAMLH0A0HYM2` från FRED.
+8. Upsertar FRED-data till `market_series_daily`.
+9. Loggar körningen i `data_fetch_runs`, inklusive benchmark-resultatet i `metadata.benchmark`.
 
 ---
 
