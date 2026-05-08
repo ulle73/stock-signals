@@ -1,0 +1,180 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { buildSwingSignalRowsFromSources } from '../lib/utils/swing-signals.js';
+
+function buildSectorSignalRow(date, sector, signal) {
+  return {
+    date,
+    sector,
+    signal,
+  };
+}
+
+test('buildSwingSignalRowsFromSources sequences watchlist, long, risk reduction, and short watch decisions', () => {
+  const sectorSignalRows = [
+    buildSectorSignalRow('2026-02-01', 'Information Technology', 'mixed'),
+    buildSectorSignalRow('2026-02-01', 'Financials', 'mixed'),
+    buildSectorSignalRow('2026-02-01', 'Utilities', 'mixed'),
+    buildSectorSignalRow('2026-02-01', 'Energy', 'mixed'),
+
+    buildSectorSignalRow('2026-02-02', 'Information Technology', 'improving'),
+    buildSectorSignalRow('2026-02-02', 'Financials', 'improving'),
+    buildSectorSignalRow('2026-02-02', 'Utilities', 'mixed'),
+    buildSectorSignalRow('2026-02-02', 'Energy', 'mixed'),
+
+    buildSectorSignalRow('2026-02-03', 'Information Technology', 'leading'),
+    buildSectorSignalRow('2026-02-03', 'Financials', 'leading'),
+    buildSectorSignalRow('2026-02-03', 'Utilities', 'improving'),
+    buildSectorSignalRow('2026-02-03', 'Energy', 'mixed'),
+
+    buildSectorSignalRow('2026-02-04', 'Information Technology', 'leading'),
+    buildSectorSignalRow('2026-02-04', 'Financials', 'leading'),
+    buildSectorSignalRow('2026-02-04', 'Utilities', 'improving'),
+    buildSectorSignalRow('2026-02-04', 'Energy', 'mixed'),
+
+    buildSectorSignalRow('2026-02-05', 'Information Technology', 'weakening'),
+    buildSectorSignalRow('2026-02-05', 'Financials', 'weakening'),
+    buildSectorSignalRow('2026-02-05', 'Utilities', 'mixed'),
+    buildSectorSignalRow('2026-02-05', 'Energy', 'mixed'),
+
+    buildSectorSignalRow('2026-02-06', 'Information Technology', 'lagging'),
+    buildSectorSignalRow('2026-02-06', 'Financials', 'lagging'),
+    buildSectorSignalRow('2026-02-06', 'Utilities', 'mixed'),
+    buildSectorSignalRow('2026-02-06', 'Energy', 'mixed'),
+
+    buildSectorSignalRow('2026-02-07', 'Information Technology', 'lagging'),
+    buildSectorSignalRow('2026-02-07', 'Financials', 'lagging'),
+    buildSectorSignalRow('2026-02-07', 'Utilities', 'lagging'),
+    buildSectorSignalRow('2026-02-07', 'Energy', 'mixed'),
+  ];
+
+  const marketSignalRows = [
+    { date: '2026-02-01', signal: 'warning', market_regime_score: '0' },
+    { date: '2026-02-02', signal: 'warning', market_regime_score: '1' },
+    { date: '2026-02-03', signal: 'risk_on', market_regime_score: '4.5' },
+    { date: '2026-02-04', signal: 'risk_on', market_regime_score: '5' },
+    { date: '2026-02-05', signal: 'warning', market_regime_score: '0.5' },
+    { date: '2026-02-06', signal: 'warning', market_regime_score: '-0.5' },
+    { date: '2026-02-07', signal: 'risk_off', market_regime_score: '-3' },
+  ];
+
+  const rows = buildSwingSignalRowsFromSources({
+    sectorSignalRows,
+    marketSignalRows,
+  });
+
+  assert.deepEqual(rows, [
+    {
+      date: '2026-02-01',
+      setup: 'neutral',
+      decision: 'SITT STILL',
+      previous_state: 'cash',
+      target_state: 'cash',
+      active_sector_count: 4,
+      leading_sector_count: 0,
+      improving_sector_count: 0,
+      weakening_sector_count: 0,
+      lagging_sector_count: 0,
+      mixed_sector_count: 4,
+      market_signal: 'warning',
+      market_regime_score: 0,
+      reason_summary: 'mixed_sector_rotation',
+    },
+    {
+      date: '2026-02-02',
+      setup: 'improving',
+      decision: 'LONG WATCHLIST',
+      previous_state: 'cash',
+      target_state: 'long_watchlist',
+      active_sector_count: 4,
+      leading_sector_count: 0,
+      improving_sector_count: 2,
+      weakening_sector_count: 0,
+      lagging_sector_count: 0,
+      mixed_sector_count: 2,
+      market_signal: 'warning',
+      market_regime_score: 1,
+      reason_summary: 'sector_rotation_improving',
+    },
+    {
+      date: '2026-02-03',
+      setup: 'bullish',
+      decision: 'KÖP STARKA SEKTORER',
+      previous_state: 'long_watchlist',
+      target_state: 'long',
+      active_sector_count: 4,
+      leading_sector_count: 2,
+      improving_sector_count: 1,
+      weakening_sector_count: 0,
+      lagging_sector_count: 0,
+      mixed_sector_count: 1,
+      market_signal: 'risk_on',
+      market_regime_score: 4.5,
+      reason_summary: 'sector_leadership_expanding',
+    },
+    {
+      date: '2026-02-04',
+      setup: 'bullish',
+      decision: 'BEHÅLL LONGS',
+      previous_state: 'long',
+      target_state: 'long',
+      active_sector_count: 4,
+      leading_sector_count: 2,
+      improving_sector_count: 1,
+      weakening_sector_count: 0,
+      lagging_sector_count: 0,
+      mixed_sector_count: 1,
+      market_signal: 'risk_on',
+      market_regime_score: 5,
+      reason_summary: 'sector_leadership_expanding',
+    },
+    {
+      date: '2026-02-05',
+      setup: 'weakening',
+      decision: 'MINSKA RISK',
+      previous_state: 'long',
+      target_state: 'cash',
+      active_sector_count: 4,
+      leading_sector_count: 0,
+      improving_sector_count: 0,
+      weakening_sector_count: 2,
+      lagging_sector_count: 0,
+      mixed_sector_count: 2,
+      market_signal: 'warning',
+      market_regime_score: 0.5,
+      reason_summary: 'sector_rotation_weakening',
+    },
+    {
+      date: '2026-02-06',
+      setup: 'bearish_watch',
+      decision: 'SHORT WATCHLIST',
+      previous_state: 'cash',
+      target_state: 'short_watchlist',
+      active_sector_count: 4,
+      leading_sector_count: 0,
+      improving_sector_count: 0,
+      weakening_sector_count: 0,
+      lagging_sector_count: 2,
+      mixed_sector_count: 2,
+      market_signal: 'warning',
+      market_regime_score: -0.5,
+      reason_summary: 'sector_short_watch',
+    },
+    {
+      date: '2026-02-07',
+      setup: 'risk_off',
+      decision: 'SITT STILL',
+      previous_state: 'short_watchlist',
+      target_state: 'short_watchlist',
+      active_sector_count: 4,
+      leading_sector_count: 0,
+      improving_sector_count: 0,
+      weakening_sector_count: 0,
+      lagging_sector_count: 3,
+      mixed_sector_count: 1,
+      market_signal: 'risk_off',
+      market_regime_score: -3,
+      reason_summary: 'broad_sector_breakdown',
+    },
+  ]);
+});

@@ -1,0 +1,60 @@
+import { closePool } from '../lib/db.js';
+import { ensureEnvLoaded } from '../lib/env.js';
+import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
+import { buildTradingSignalRowsFromSources } from '../lib/utils/trading-signals.js';
+import { getTradingSignalSourceRows, upsertTradingSignals } from '../lib/repositories/trading-signals.js';
+import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
+
+ensureEnvLoaded();
+
+const fetchRunGuard = createFetchRunGuard({
+  finishRun: finishFetchRun,
+  closePool,
+  setExitCode(code) {
+    process.exitCode = code;
+  },
+});
+
+const unregisterSignalHandlers = fetchRunGuard.register(process);
+
+async function run() {
+  await failRunningFetchRuns('calculate_trading_signals', 'calculate:trading-signals interrupted before completion', {
+    recoveredBy: 'calculate_trading_signals',
+  });
+  const fetchRunId = await startFetchRun('calculate_trading_signals');
+  fetchRunGuard.setRunId(fetchRunId);
+
+  try {
+    const sourceRows = await getTradingSignalSourceRows();
+    const signalRows = buildTradingSignalRowsFromSources(sourceRows);
+    const inserted = await upsertTradingSignals(signalRows);
+
+    await fetchRunGuard.finish('success', {
+      totalItems: signalRows.length,
+      successfulItems: inserted,
+      failedItems: 0,
+      metadata: {
+        marketSignalsRead: sourceRows.marketSignalRows.length,
+        tradingSignalsCalculated: signalRows.length,
+      },
+    });
+
+    console.log(`Calculated ${signalRows.length} trading signal rows.`);
+  } catch (error) {
+    await fetchRunGuard.finish('failure', {
+      errorMessage: error.message,
+      metadata: { stack: error.stack },
+    });
+    throw error;
+  }
+}
+
+run()
+  .catch((error) => {
+    console.error('calculate:trading-signals failed:', error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    unregisterSignalHandlers();
+    await closePool();
+  });

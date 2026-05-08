@@ -105,6 +105,28 @@ test('calculateDailyStrategyReturn returns zero for cash-to-cash days', () => {
   assert.equal(result.tradeAction, 'stay_out');
 });
 
+test('calculateDailyStrategyReturn supports partial allocations and open rebalance costs', () => {
+  const result = calculateDailyStrategyReturn({
+    previousWeight: 0.5,
+    nextWeight: 1,
+    previousBar: {
+      open: 100,
+      close: 110,
+      adj_close: 110,
+    },
+    currentBar: {
+      open: 121,
+      close: 133.1,
+      adj_close: 133.1,
+    },
+    transactionCostBps: 5,
+  });
+
+  assert.equal(result.strategyReturnPct, 14.975);
+  assert.equal(result.transactionCostPct, 0.025);
+  assert.equal(result.tradeAction, 'rebalance');
+});
+
 test('calculateDrawdown returns percentage drop from the running peak', () => {
   assert.equal(calculateDrawdown(120, 150), -20);
   assert.equal(calculateDrawdown(150, 150), 0);
