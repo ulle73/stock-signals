@@ -160,7 +160,7 @@ This is the original active PLCE short-volume block from the combined TradingVie
 ```pinescript
 // // Hämta historiska data för aktien
 
-//A_symbol = "USI:PVLCE" 
+
 A_symbol = "FINRA:PLCE_SHORT_VOLUME"
 
 A_price = request.security(A_symbol, "D", close)
