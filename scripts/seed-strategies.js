@@ -103,6 +103,22 @@ const STRATEGY_DEFINITIONS = [
     },
     is_active: true,
   },
+  {
+    code: 'trading_signal_v1_long_cash',
+    name: 'Trading Signal V1 Long/Cash',
+    description: 'Trade SPY long/cash from the explicit trading decision layer, ignoring short entries for now.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 5,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'trading_signal_long_cash',
+    params_json: {
+      initial_state: 'cash',
+    },
+    is_active: true,
+  },
 ];
 
 async function run() {

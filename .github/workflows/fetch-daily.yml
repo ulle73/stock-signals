@@ -41,6 +41,9 @@ jobs:
       - name: Calculate sector breadth
         run: npm run calculate:sector-breadth
 
+      - name: Calculate sector signals
+        run: npm run calculate:sector-signals
+
       - name: Calculate market signals
         run: npm run calculate:signals
 
@@ -52,6 +55,12 @@ jobs:
 
       - name: Calculate position signals
         run: npm run calculate:position-signals
+
+      - name: Calculate swing signals
+        run: npm run calculate:swing-signals
+
+      - name: Calculate swing watchlists
+        run: npm run calculate:swing-watchlists
 
       - name: Seed strategy definitions
         run: npm run seed:strategies

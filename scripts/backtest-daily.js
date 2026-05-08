@@ -15,6 +15,7 @@ import { getBenchmarkBars } from '../lib/repositories/benchmark-prices.js';
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
 import { getMarketSignalRows } from '../lib/repositories/market-signals.js';
 import { getPositionSignalRows } from '../lib/repositories/position-signals.js';
+import { getTradingSignalRows } from '../lib/repositories/trading-signals.js';
 
 ensureEnvLoaded();
 
@@ -50,6 +51,7 @@ async function run() {
     const benchmarkBars = await getBenchmarkBars('SPY');
     const signalRows = await getMarketSignalRows();
     const positionSignalRows = await getPositionSignalRows();
+    const tradingSignalRows = await getTradingSignalRows();
 
     let successfulStrategies = 0;
     const failedStrategies = [];
@@ -67,6 +69,7 @@ async function run() {
           benchmarkBars,
           signalRows,
           positionSignalRows,
+          tradingSignalRows,
         });
 
         await upsertStrategyPositions(
@@ -115,6 +118,7 @@ async function run() {
         benchmarkBars: benchmarkBars.length,
         marketSignals: signalRows.length,
         positionSignals: positionSignalRows.length,
+        tradingSignals: tradingSignalRows.length,
         successRunRetention,
         failureRunRetention,
         prunedSuccessfulRuns,

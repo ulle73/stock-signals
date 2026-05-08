@@ -88,10 +88,13 @@ Det skapar:
 - `market_series_daily`
 - `market_breadth_daily`
 - `sector_breadth_daily`
+- `sector_signal_daily`
 - `market_signal_daily`
 - `trading_signal_daily`
 - `position_facts_daily`
 - `position_signal_daily`
+- `swing_signal_daily`
+- `swing_watchlist_daily`
 - `strategy_definitions`
 - `backtest_runs`
 - `strategy_positions_daily`
@@ -147,10 +150,13 @@ npm run db:migrate
 npm run fetch:daily
 npm run calculate:daily
 npm run calculate:sector-breadth
+npm run calculate:sector-signals
 npm run calculate:signals
 npm run calculate:trading-signals
 npm run calculate:position-facts
 npm run calculate:position-signals
+npm run calculate:swing-signals
+npm run calculate:swing-watchlists
 npm run seed:strategies
 npm run backtest:daily
 npm run validate:indicator -- AAPL
@@ -204,6 +210,22 @@ Samma körning bygger också dagliga breadth-rader i `market_breadth_daily`:
 - `is_valid_signal_date`
 
 Det gör det möjligt att följa om indexrörelsen bärs av många sektorer eller bara några få, utan att ännu låsa in logiken i en separat sektor-signalmodell.
+
+`npm run calculate:sector-signals` bygger sedan ett rent sektorbeslutslager i `sector_signal_daily` ovanpå `sector_breadth_daily`. Varje rad per `date + sector` sparar bland annat:
+
+- `pct_above_sma50`
+- `pct_above_sma50_14d_change`
+- `pct_above_sma200`
+- `pct_above_sma200_14d_change`
+- `ad_net`
+- `ad_net_14d_change`
+- `new_highs_52w`
+- `new_lows_52w`
+- `sector_regime_score`
+- `signal` (`leading`, `improving`, `weakening`, `lagging`, `mixed`)
+- `reason_summary`
+
+Det ger ett separat faktalager för sektorrotation som går att använda både för läsyta och senare swing-/watchlistlogik utan att blanda ihop det med det bredare marknadssignallagret.
 
 `npm run calculate:signals` bygger sedan en rad per marknadsdag i `market_signal_daily` med bland annat:
 
@@ -308,6 +330,72 @@ Yield curve-inversion används nu som makrokontext i försiktighetslagret, inte 
 
 Det gör att positionssystemet ligger närmare `buy-and-hold` i normalläge och bara kliver av kraftigt när riskbilden är både bred och ihållande.
 
+`npm run calculate:swing-signals` bygger sedan ett swinglager i `swing_signal_daily` som kombinerar `sector_signal_daily` med `market_signal_daily`. Första versionen fokuserar på sektorrotation och timing för `1-4 veckor` och outputtar raka beslut:
+
+- `KÖP STARKA SEKTORER`
+- `BEHÅLL LONGS`
+- `MINSKA RISK`
+- `GÅ TILL CASH`
+- `LONG WATCHLIST`
+- `SHORT WATCHLIST`
+- `SITT STILL`
+
+Varje rad sparar också:
+
+- `setup` (`bullish`, `improving`, `weakening`, `bearish_watch`, `risk_off`, `neutral`)
+- `previous_state`
+- `target_state`
+- `active_sector_count`
+- `leading_sector_count`
+- `improving_sector_count`
+- `weakening_sector_count`
+- `lagging_sector_count`
+- `mixed_sector_count`
+- `market_signal`
+- `market_regime_score`
+- `reason_summary`
+
+Swing v1 är avsiktligt ett beslutslager för sektorrörelse och watchlists, inte en egen backtestmotor eller portföljallokator ännu.
+
+`npm run calculate:swing-watchlists` bygger sedan en rankad watchlist i `swing_watchlist_daily` ovanpå `stock_daily_indicators`, `sector_signal_daily` och `swing_signal_daily`. Första versionen sparar toppkandidater per dag och bias:
+
+- `bias` (`long`, `short`)
+- `rank_in_bias`
+- `ticker`
+- `sector`
+- `sector_signal`
+- `swing_setup`
+- `swing_decision`
+- `playbook`
+- `is_actionable`
+- `watchlist_score`
+- `indicator_price`
+- `daily_return_pct`
+- `relative_volume20`
+- `pct_from_52w_high`
+- `pct_from_52w_low`
+- `distance_from_sma50_pct`
+- `distance_from_sma200_pct`
+- `reason_summary`
+
+Long-kandidater kommer från `leading` och `improving` sektorer. Short-kandidater kommer från `lagging` och `weakening` sektorer. Score v1 använder bara indikatorer som redan finns i systemet:
+
+- pris över/under `SMA50`
+- pris över/under `SMA200`
+- närhet till `52w high/low`
+- daglig riktning
+- relativ volym
+- sektorstyrka
+
+Själva watchlisten ersätts i full längd vid varje körning i stället för att bara upsertas. Det gör att gamla toppkandidater inte ligger kvar om rankingreglerna eller score-trösklar ändras senare.
+
+Watchlisten får nu också ett litet exekveringslager så att listan går att tolka operativt:
+
+- `playbook` beskriver hur raden ska användas, t.ex. `deploy_long`, `defensive_watch`, `hedge_watch` eller `standby_short`
+- `is_actionable` markerar om raden är tänkt som faktisk kandidat att agera på i nuvarande swingläge, eller bara som observations-/beredskapsnamn
+
+Det gör att samma kandidatlista kan visas även under `MINSKA RISK` eller `risk_off`, utan att den ser ut som en aktiv köplista när den egentligen bara är en defensiv eller informationsmässig watchlist.
+
 `npm run seed:strategies` upsertar sedan de första strategidefinitionerna:
 
 - `buy_and_hold_spy`
@@ -316,12 +404,21 @@ Det gör att positionssystemet ligger närmare `buy-and-hold` i normalläge och 
 - `bullish_divergence_context_v1`
 - `pct_above_50_threshold_v1`
 - `position_macro_signal_v1`
+- `trading_signal_v1_long_cash`
 
 `npm run backtest:daily` kör dessa strategier mot `SPY` och fyller:
 
 - `backtest_runs`
 - `strategy_positions_daily`
 - `strategy_equity_daily`
+
+För `trading_signal_v1_long_cash` tolkas tradingbesluten just nu så här i backtestet:
+
+- `KÖP SPY` och `BEHÅLL` med `target_state = long` => `long`
+- `SÄLJ SPY`, `GÅ TILL CASH`, `SITT STILL` => `cash`
+- `GÅ KORT SPY` och `STÄNG KORT` behandlas också som `cash`
+
+Det gör att tradinglagret går att validera direkt som en första `long/cash`-strategi innan backtestmotorn byggs ut med riktig short-support.
 
 För att databasen inte ska växa okontrollerat behålls nu som standard bara den senaste lyckade backtest-runen per strategi. Äldre lyckade runs rensas automatiskt efter varje ny lyckad körning, och detaljraderna i `strategy_positions_daily` och `strategy_equity_daily` försvinner samtidigt via `on delete cascade`.
 
@@ -399,10 +496,14 @@ Workflowen kör:
 - manuellt via `workflow_dispatch`
 - automatiskt vardagar `07:23 UTC`
 - därefter `npm run calculate:daily`
+- därefter `npm run calculate:sector-breadth`
+- därefter `npm run calculate:sector-signals`
 - därefter `npm run calculate:signals`
 - därefter `npm run calculate:trading-signals`
 - därefter `npm run calculate:position-facts`
 - därefter `npm run calculate:position-signals`
+- därefter `npm run calculate:swing-signals`
+- därefter `npm run calculate:swing-watchlists`
 - därefter `npm run seed:strategies`
 - därefter `npm run backtest:daily`
 
@@ -433,7 +534,11 @@ Efter `npm run fetch:daily` ska databasen innehålla:
 - dagliga indikatorvärden i `stock_daily_indicators`,
 - SP500/VIX/HY spread i `market_series_daily`,
 - dagliga breadth-sammanställningar i `market_breadth_daily`,
+- dagliga sektorbreadth-rader i `sector_breadth_daily`,
+- dagliga sektorsignaler i `sector_signal_daily`,
 - dagliga positionsfakta i `position_facts_daily`,
+- dagliga swing-signaler i `swing_signal_daily`,
+- dagliga swing-watchlists i `swing_watchlist_daily`,
 - dagliga positionssignaler i `position_signal_daily`,
 - körlogg i `data_fetch_runs`.
 
