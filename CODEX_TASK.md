@@ -1,190 +1,113 @@
 # CODEX_TASK.md
 
-## Uppgift
+## Current task direction
 
-Implementera fas 1 för Stock Signals: Data Foundation.
+This repo is no longer only a phase-1 data-foundation project.
 
-Du ska bygga en fungerande grund för att hämta och lagra marknadsdata.
+The current goal is to evolve Stock Signals into a modular TradingView-like signal engine.
 
-Läs dessa filer innan du kodar:
-
-1. `GOALS.md`
-2. `PRD.md`
-3. `DATA_FETCH_FREQUENCY.md`
-4. `IMPLEMENTATION_PLAN.md`
-5. `db/migrations/001_initial_schema.sql`
-
----
-
-## Mycket viktigt
-
-Implementera endast datahämtning och databasgrund.
-
-Bygg inte:
-
-- dashboard,
-- signaler,
-- alerts,
-- Market Regime Score,
-- intraday polling,
-- indikatorberäkningar,
-- backtesting.
-
----
-
-## Teknisk riktning
-
-Använd:
-
-- JavaScript
-- Next.js App Router
-- Neon Postgres
-- `pg`
-- scripts i `scripts/`
-
-Första fungerande scripts ska vara:
-
-```bash
-npm run db:migrate
-npm run fetch:daily
-```
-
----
-
-## Data som ska hämtas
-
-### S&P 500-komponenter
-
-Från Wikipedia:
+The main product flow is:
 
 ```text
-https://en.wikipedia.org/wiki/List_of_S%26P_500_companies
+market data → core indicators → custom indicator modules → raw signals → signal_events → Telegram alerts
 ```
 
-Spara i:
+Backtesting exists, but it is not the main product focus right now.
 
-```text
-sp500_constituents
-```
+## Read these files first
 
-Ticker-normalisering:
+Before coding, read these files in this order:
 
-```text
-BRK.B -> BRK-B
-BF.B  -> BF-B
-```
+1. `AGENTS.md`
+2. `PROJECT_DIRECTION.md`
+3. `PRD_SIGNAL_ENGINE.md`
+4. `IMPLEMENTATION_PLAN_SIGNAL_ENGINE.md`
+5. `INDICATOR_WARMUP_POLICY.md`
+6. `DATA_FETCH_FREQUENCY.md`
+7. `README.md`
 
-Generell regel:
+Older files such as `PRD.md`, `GOALS.md`, and `IMPLEMENTATION_PLAN.md` describe the original data-foundation phase. They are useful context, but they should not override the current signal-engine direction.
+
+## Core rule
+
+When adding a new TradingView-like indicator:
+
+1. Add it as a separate module under `lib/indicators/`.
+2. Do not put every new indicator into `lib/utils/rolling-indicators.js`.
+3. Store raw indicator values and raw signal fields first.
+4. Do not add Telegram behavior unless explicitly requested.
+5. Do not add a new backtest strategy unless explicitly requested.
+6. Do not make large rewrites unless necessary.
+
+## Indicator source price
+
+Unless the user explicitly instructs otherwise, use:
 
 ```js
-ticker.replaceAll('.', '-')
+adj_close ?? close
 ```
 
----
+If the user provides TradingView/Pine Script using `close`, preserve the same rules and formulas, but default the source price to `adj_close ?? close` in this repo unless the user asks for exact TradingView close matching.
 
-### Yahoo Finance daily candles
+## Preferred new indicator shape
 
-För varje aktiv S&P 500-ticker:
+Each new custom indicator should have:
 
 ```text
-https://query1.finance.yahoo.com/v8/finance/chart/{YAHOO_TICKER}?range=400d&interval=1d
+lib/indicators/{indicator-name}.js
+tests/{indicator-name}.test.js
+db/migrations/XXX_add_{indicator_name}_fields.sql
 ```
 
-Spara i:
+The indicator should return fields that can be merged into `stock_daily_indicators`.
+
+Example raw fields:
 
 ```text
-stock_daily_prices
+ryd_obv
+ryd_obv_zscore_80
+ryd_obv_buy_signal
+ryd_obv_sell_signal
+ryd_obv_signal
 ```
 
----
+## Desired development order
 
-### FRED-serier
+Build in this order:
 
-Hämta:
+1. Keep existing data pipeline stable.
+2. Add custom indicators one by one.
+3. Store raw values and raw signals.
+4. Add generic `signal_events` layer.
+5. Add Telegram routing.
+6. Improve dashboard/backtests later only when useful.
+
+## Guardrail
+
+If a requested change would make it harder to add indicators one by one, suggest a smaller modular alternative.
+
+Default recommendation should be:
 
 ```text
-SP500
-VIXCLS
-BAMLH0A0HYM2
+Add the indicator as a module, store raw values/signals, decide routing later.
 ```
 
-Endpoint:
+## Do not prioritize unless explicitly requested
 
-```text
-https://fred.stlouisfed.org/graph/fredgraph.csv?id={SERIES_ID}
-```
+- Full dashboard redesign.
+- Complex backtest expansion.
+- Intraday polling.
+- AI-generated commentary.
+- Auto-trading or broker integrations.
+- Telegram sending directly from indicator modules.
 
-Spara i:
+## When a task is complete
 
-```text
-market_series_daily
-```
+Report:
 
----
-
-## Fetch-loggning
-
-Varje körning av `npm run fetch:daily` ska skapa/uppdatera en rad i:
-
-```text
-data_fetch_runs
-```
-
-Statusar:
-
-```text
-running
-success
-partial_success
-failure
-```
-
-Om vissa tickers misslyckas men jobbet i stort fungerar ska status bli:
-
-```text
-partial_success
-```
-
-Misslyckade tickers ska sparas i `metadata.failedTickers`.
-
----
-
-## Acceptanskriterier
-
-Uppgiften är klar när:
-
-1. `npm install` fungerar.
-2. `npm run dev` fungerar.
-3. `npm run db:migrate` skapar tabellerna.
-4. `npm run fetch:daily` hämtar data.
-5. Datan sparas i Neon Postgres.
-6. Scriptet kan köras flera gånger utan dubbletter.
-7. Fetch-run loggas.
-8. README är uppdaterad med exakta körsteg.
-
----
-
-## Rekommenderad testväg
-
-Implementera stöd för:
-
-```env
-FETCH_TICKER_LIMIT=10
-```
-
-Det gör att man kan testa med 10 tickers innan man kör alla.
-
-Standardbeteende utan limit ska vara att hämta alla aktiva tickers.
-
----
-
-## Slutrapport
-
-När du är klar, redovisa:
-
-- vilka filer du skapade,
-- hur man kör migration,
-- hur man kör datahämtning,
-- vilka env vars som krävs,
-- kända begränsningar,
-- hur många tickers som lyckades i testkörning.
+- which files changed
+- which migration was added
+- which indicator fields were added
+- how to run the calculation
+- how tests were added or updated
+- any assumptions about source price, warmup, or signal rules
