@@ -1,166 +1,104 @@
 # GOALS.md
 
-## Projekt: Stock Signals
+## Current goal
 
-Målet är att bygga grunden till ett eget signalsystem för S&P 500, men första fasen ska **endast** handla om att hämta, normalisera och lagra marknadsdata korrekt.
+Stock Signals should become a personal TradingView-like signal engine.
 
-Det här projektet ska börja som en stabil data-engine. Inga trading-signaler, ingen dashboard, inga alerts och ingen AI-tolkning ska byggas i första steget.
+The goal is to recreate the user's own multi-indicator TradingView setup inside this repo, calculate the indicators from stored market data, detect raw signals, and eventually send alerts to the correct Telegram group based on indicator category and timeframe.
 
----
-
-## Övergripande mål
-
-Bygg en databasdriven grund som varje dag kan:
-
-1. Hämta aktuell S&P 500-komponentlista.
-2. Hämta historisk daily prisdata för alla S&P 500-aktier.
-3. Hämta basdata för S&P 500-index, VIX och High Yield Spread.
-4. Spara datan strukturerat i Neon Postgres.
-5. Göra datan redo för senare indikatorer som MA20, MA50, MA200, advancers, decliners, new highs/lows, A/D-line, McClellan och divergenser.
-
----
-
-## Viktig princip
-
-Första versionen ska inte försöka skapa den perfekta marknadssignalen.
-
-Första versionen ska bara svara på frågan:
-
-> Kan vi stabilt hämta all rådata som behövs för att senare bygga ett robust breadth-baserat signalsystem?
-
-Om svaret är ja är första fasen lyckad.
-
----
-
-## Fas 1: Data foundation
-
-### Ska byggas
-
-- Next.js-projekt med JavaScript.
-- API-/backend-logik i Next.js, men håll datajobben separerade från UI.
-- Neon Postgres som databas.
-- Skript eller route/cron-kompatibel funktion för att hämta data.
-- Databastabeller för:
-  - S&P 500-komponenter.
-  - Daily stock prices.
-  - Market index daily prices.
-  - Data fetch logs.
-
-### Ska inte byggas ännu
-
-- Dashboard.
-- Market Regime Score.
-- Trading-signaler.
-- Live alerts.
-- Intraday polling.
-- MA20/MA50/MA200-beräkning.
-- A/D-line.
-- McClellan.
-- Divergenslogik.
-- Backtesting.
-
----
-
-## Datakällor i fas 1
-
-### S&P 500-komponenter
-
-Primär källa:
-
-- Wikipedia: `https://en.wikipedia.org/wiki/List_of_S%26P_500_companies`
-
-Behov:
-
-- Ticker.
-- Yahoo-kompatibel ticker.
-- Bolagsnamn.
-- Sektor.
-- Industri, om tillgängligt.
-
-Ticker-normalisering:
-
-- `BRK.B` ska sparas som original ticker men Yahoo-symbol ska vara `BRK-B`.
-- `BF.B` ska sparas som original ticker men Yahoo-symbol ska vara `BF-B`.
-- Generell regel: Yahoo ticker = original ticker där `.` ersätts med `-`.
-
----
-
-### Aktiepriser
-
-Primär källa:
-
-- Yahoo Finance chart endpoint.
-
-Exempel:
+The main product flow is:
 
 ```text
-https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=400d&interval=1d
+Fetch market data → calculate indicators → detect raw signals → create signal events → send Telegram alerts
 ```
 
-Krav:
+Backtesting can exist, but it is not the main product focus right now.
 
-- Hämta minst 400 handelsdagar daily candles per ticker.
-- Spara open, high, low, close, adjusted close om tillgängligt, volume och datum.
-- Hantera misslyckade tickers utan att hela jobbet kraschar.
-- Logga fel per ticker.
+## Product north star
 
----
+The system should make it easy to add custom indicators one by one.
 
-### Index/riskdata
+The user may provide TradingView/Pine Script indicators over time. Each one should be translated into a modular JavaScript indicator module and added to the daily calculation pipeline.
 
-Primär källa:
-
-- FRED CSV endpoints.
-
-Serier:
+The final product should support roughly this model:
 
 ```text
-SP500             = S&P 500 daily close
-VIXCLS            = VIX daily close
-BAMLH0A0HYM2      = ICE BofA US High Yield Index Option-Adjusted Spread
+Many indicators → categorized signals → Telegram alerts by channel
 ```
 
-CSV-format:
+Example categories:
+
+- momentum signals
+- long-term signals
+- swing signals
+- macro signals
+- breadth signals
+- risk signals
+- sector-rotation signals
+
+## Development priorities
+
+Current priorities are:
+
+1. Keep the existing data pipeline stable.
+2. Add custom indicators as isolated modules under `lib/indicators/`.
+3. Store raw indicator values and raw signal fields.
+4. Add a generic `signal_events` layer.
+5. Add Telegram routing after signal events exist.
+6. Improve dashboards/backtests later, only when they help the signal workflow.
+
+## Important architecture principle
+
+Do not turn every new indicator into a hardcoded strategy immediately.
+
+A new indicator can be complete before Telegram routing is decided.
+
+The correct first step for a new indicator is usually:
 
 ```text
-https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500
-https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS
-https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLH0A0HYM2
+calculate values → store raw signal fields → decide routing later
 ```
 
----
+## Indicator source price rule
 
-## Fas 1 acceptanskriterier
+Unless explicitly instructed otherwise, indicator source price should be:
 
-Fas 1 är klar när följande fungerar:
+```js
+adj_close ?? close
+```
 
-1. Projektet kan installeras med `npm install`.
-2. Projektet kan köras lokalt med `npm run dev`.
-3. Det finns ett tydligt script, exempelvis `npm run fetch:daily`, som:
-   - hämtar S&P 500-komponenter,
-   - hämtar 400 dagar daily data för varje aktiv ticker,
-   - hämtar SP500, VIXCLS och BAMLH0A0HYM2 från FRED,
-   - sparar allt i Neon Postgres,
-   - loggar lyckade och misslyckade hämtningar.
-4. Dubbletter skapas inte om scriptet körs flera gånger.
-5. Data sparas med `upsert` där det är rimligt.
-6. Det finns en README-sektion eller instruktion i PRD som visar exakt vilka env vars som krävs.
+If the user provides TradingView code using `close`, preserve the same formula and signal rules, but use `adj_close ?? close` in this repo unless the user explicitly requests exact TradingView close matching.
 
----
+## What not to prioritize right now
 
-## Nästa fas, senare
+Do not prioritize these unless explicitly requested:
 
-När datahämtningen är stabil kan nästa fas lägga till:
+- full dashboard redesign
+- complex backtest expansion
+- intraday polling
+- AI-generated market commentary
+- auto-trading
+- broker integrations
+- Telegram sending directly from indicator modules
 
-- MA20, MA50, MA200.
-- % aktier över MA20/50/200.
-- Advancers/decliners.
-- New highs/new lows.
-- A/D-line.
-- McClellan Oscillator.
-- Market Regime Score.
-- Daglig rapport.
-- Intraday breadth pulse.
-- Live alerts.
+## Relationship to the original phase 1 goal
 
-Men detta ska inte implementeras i första steget.
+The original project goal was to build a stable data foundation for S&P 500 market data.
+
+That foundation is still important, but it is no longer the only product goal.
+
+Current work should follow:
+
+1. `AGENTS.md`
+2. `PROJECT_DIRECTION.md`
+3. `PRD_SIGNAL_ENGINE.md`
+4. `IMPLEMENTATION_PLAN_SIGNAL_ENGINE.md`
+5. `CODEX_TASK.md`
+
+Older data-foundation details remain useful context, but they should not block the current signal-engine direction.
+
+## Guardrail for future work
+
+If a requested change makes the system harder to extend indicator-by-indicator, suggest a smaller modular alternative.
+
+The app should stay focused on becoming a clean, extensible market signal engine.
