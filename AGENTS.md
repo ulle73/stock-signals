@@ -12,6 +12,25 @@ Data → Core indicators → Custom indicator modules → Raw signals → Signal
 
 Backtesting exists, but it is not the main product focus right now.
 
+## Data pipeline protection
+
+The existing data foundation is considered working infrastructure.
+
+Do not modify the data-fetching pipeline unless the user explicitly asks for a data-source, fetch, schema, or scheduling change.
+
+For normal indicator work, do not change these areas:
+
+- `scripts/fetch-daily.js`
+- `lib/sources/`
+- ticker fetching / S&P 500 constituent fetching
+- Yahoo/FRED fetch logic
+- existing data-fetch schedules
+- existing raw price/market-series tables
+
+When adding a new indicator, read from the existing stored data and extend the calculation layer instead of changing how raw data is fetched.
+
+If a new indicator needs new raw data that is not currently available, state that clearly and propose the smallest possible data-fetch addition before changing the fetch pipeline.
+
 ## Indicator architecture
 
 Do not put every new indicator directly into `lib/utils/rolling-indicators.js`.
@@ -101,6 +120,7 @@ indicator raw signal → signal_events row → Telegram sender
 
 ## Development rules
 
+- Keep the existing data-fetching pipeline stable.
 - Keep new indicators modular.
 - Avoid large rewrites.
 - Do not mix many unrelated indicators into one file.
