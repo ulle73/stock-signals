@@ -28,6 +28,25 @@ Before coding, read these files in this order:
 
 Older files such as `PRD.md`, `GOALS.md`, and `IMPLEMENTATION_PLAN.md` describe the original data-foundation phase. They are useful context, but they should not override the current signal-engine direction.
 
+## Data pipeline protection
+
+The existing data-fetching pipeline is working infrastructure.
+
+Do not change it during normal indicator work.
+
+For indicator tasks, do not modify:
+
+- `scripts/fetch-daily.js`
+- `lib/sources/`
+- Yahoo/FRED fetch logic
+- S&P 500 constituent fetching
+- existing raw price/market-series schemas
+- existing GitHub Actions fetch schedule
+
+New indicators should use already stored data whenever possible.
+
+If an indicator requires data that is not currently stored, report the missing data and propose the smallest possible fetch/schema addition before touching the data pipeline.
+
 ## Core rule
 
 When adding a new TradingView-like indicator:
@@ -38,6 +57,7 @@ When adding a new TradingView-like indicator:
 4. Do not add Telegram behavior unless explicitly requested.
 5. Do not add a new backtest strategy unless explicitly requested.
 6. Do not make large rewrites unless necessary.
+7. Do not alter the data-fetching pipeline unless explicitly requested.
 
 ## Indicator source price
 
@@ -94,6 +114,7 @@ Add the indicator as a module, store raw values/signals, decide routing later.
 
 ## Do not prioritize unless explicitly requested
 
+- Data-fetch rewrites.
 - Full dashboard redesign.
 - Complex backtest expansion.
 - Intraday polling.
@@ -111,3 +132,4 @@ Report:
 - how to run the calculation
 - how tests were added or updated
 - any assumptions about source price, warmup, or signal rules
+- whether the data pipeline was left untouched
