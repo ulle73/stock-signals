@@ -2,6 +2,7 @@ import { getDashboardSnapshot } from '../lib/repositories/dashboard.js';
 import { interpretMarketSignal } from '../lib/utils/signal-interpretation.js';
 import {
   buildMarketSeriesCards,
+  buildPositionStatusViewModel,
   normalizeTickerInput,
 } from '../lib/utils/dashboard-view.js';
 
@@ -121,6 +122,20 @@ export default async function Home({ searchParams }) {
   const interpretation = interpretMarketSignal(latestSignal);
   const backtests = snapshot.backtests;
   const recentSignals = snapshot.recentSignals ?? [];
+  const positionStatus = buildPositionStatusViewModel({
+    ...snapshot.positionStatus,
+    backtests,
+  });
+  const positionCurrent = positionStatus.current;
+  const activeCautionFlags = positionStatus.flags.caution.filter((flag) => flag.active);
+  const latestPositionBacktest = positionStatus.backtest.position;
+  const benchmarkBacktest = positionStatus.backtest.benchmark;
+  const drawdownDeltaCopy = positionStatus.backtest.deltaDrawdownPct === null
+    ? 'ingen drawdown-data'
+    : `${formatNumber(Math.abs(positionStatus.backtest.deltaDrawdownPct), { maximumFractionDigits: 2 })} pp ${positionStatus.backtest.deltaDrawdownPct > 0 ? 'lägre drawdown' : positionStatus.backtest.deltaDrawdownPct < 0 ? 'högre drawdown' : 'oförändrad drawdown'}`;
+  const cagrDeltaCopy = positionStatus.backtest.deltaCagrPct === null
+    ? 'ingen CAGR-data'
+    : `${formatNumber(Math.abs(positionStatus.backtest.deltaCagrPct), { maximumFractionDigits: 2 })} pp ${positionStatus.backtest.deltaCagrPct < 0 ? 'lägre CAGR' : positionStatus.backtest.deltaCagrPct > 0 ? 'högre CAGR' : 'oförändrad CAGR'}`;
 
   return (
     <main className="page-shell">
@@ -161,6 +176,139 @@ export default async function Home({ searchParams }) {
           </article>
         ))}
       </section>
+
+      {positionCurrent ? (
+        <section className="dashboard-grid position-grid">
+          <article className={`card position-status-card ${toneClass(positionCurrent.tone)}`}>
+            <div className="position-card-head">
+              <div>
+                <p className="section-kicker">Dagens positionsbeslut</p>
+                <h2>{formatPercent(positionCurrent.appliedEquityPct, 0)} investerat</h2>
+                <p className="hero-copy compact">
+                  {positionCurrent.decision}. Status per {formatDate(positionCurrent.date)}.
+                </p>
+              </div>
+              <span className={`mini-pill ${toneClass(positionCurrent.tone)}`}>
+                {positionCurrent.signalLabel}
+              </span>
+            </div>
+
+            <div className="metric-grid position-metric-grid">
+              <div className="metric-tile">
+                <span>Applicerad aktievikt</span>
+                <strong>{formatPercent(positionCurrent.appliedEquityPct, 0)}</strong>
+                <p className="footnote compact">{formatPercent(positionCurrent.appliedCashPct, 0)} kassa</p>
+              </div>
+              <div className="metric-tile">
+                <span>Rå modellvikt</span>
+                <strong>{formatPercent(positionCurrent.rawEquityPct, 0)}</strong>
+                <p className="footnote compact">{positionCurrent.rawDecision}</p>
+              </div>
+              <div className="metric-tile">
+                <span>Mot gårdagen</span>
+                <strong>{positionCurrent.dayOverDayChangePct === null ? '—' : formatPoints(positionCurrent.dayOverDayChangePct, 0)}</strong>
+                <p className="footnote compact">Applicerad viktändring</p>
+              </div>
+              <div className="metric-tile">
+                <span>Risklager</span>
+                <strong>{positionCurrent.hardRiskOffCount} hårda / {positionCurrent.cautionCount} caution</strong>
+                <p className="footnote compact">{positionCurrent.reasonSummary ? formatStatus(positionCurrent.reasonSummary) : 'Ingen sammanfattning'}</p>
+              </div>
+            </div>
+
+            <div className="position-note">
+              <p className="section-kicker">Bekräftelselager</p>
+              <p className="hero-copy compact">
+                {positionCurrent.isPending
+                  ? `Råmodellen vill ${formatPercent(positionCurrent.rawEquityPct, 0)} aktievikt, men den applicerade modellen väntar fortfarande. ${positionStatus.persistence.directionLabel}: ${positionStatus.persistence.progressLabel.toLowerCase()}.`
+                  : 'Ingen väntande viktändring just nu.'}
+              </p>
+            </div>
+
+            <div className="position-flag-section">
+              <p className="section-kicker">Hårda riskflaggor</p>
+              <div className="pill-list">
+                {positionStatus.flags.hard.map((flag) => (
+                  <span className={`mini-pill ${toneClass(flag.active ? flag.tone : 'neutral')}`} key={flag.key}>
+                    {flag.active ? 'Aktiv' : 'Av'} · {flag.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="position-flag-section">
+              <p className="section-kicker">Aktiv makrokontext</p>
+              <div className="pill-list">
+                {activeCautionFlags.length
+                  ? activeCautionFlags.map((flag) => (
+                    <span className={`mini-pill ${toneClass(flag.tone)}`} key={flag.key}>
+                      Aktiv · {flag.label}
+                    </span>
+                  ))
+                  : (
+                    <span className={`mini-pill ${toneClass('neutral')}`}>
+                      Inga mjuka varningsflaggor just nu
+                    </span>
+                  )}
+              </div>
+            </div>
+          </article>
+
+          <article className="card position-context-card">
+            <p className="section-kicker">Strategikoll</p>
+            <div className="metric-grid compact-grid">
+              <div className="metric-tile">
+                <span>Senaste viktändring</span>
+                <strong>
+                  {positionStatus.latestChange
+                    ? `${formatPercent(positionStatus.latestChange.previousEquityPct, 0)} → ${formatPercent(positionStatus.latestChange.newEquityPct, 0)}`
+                    : 'Ingen ännu'}
+                </strong>
+                <p className="footnote compact">
+                  {positionStatus.latestChange
+                    ? `${formatDate(positionStatus.latestChange.date)} · ${positionStatus.latestChange.decision}`
+                    : 'Ingen applicerad ändring sparad ännu.'}
+                </p>
+              </div>
+              <div className="metric-tile">
+                <span>Breadth-input</span>
+                <strong>{positionCurrent.marketSignal ? formatStatus(positionCurrent.marketSignal) : 'No data'}</strong>
+                <p className="footnote compact">
+                  Regime score {positionCurrent.marketRegimeScore === null ? '—' : formatNumber(positionCurrent.marketRegimeScore, { maximumFractionDigits: 1 })}
+                </p>
+              </div>
+            </div>
+
+            <div className="backtest-compare-grid">
+              <div className="comparison-tile">
+                <p className="section-kicker">Position Macro v1</p>
+                <strong>{latestPositionBacktest ? formatPercent(latestPositionBacktest.cagr) : 'No data'}</strong>
+                <p className="footnote compact">
+                  CAGR · Max DD {latestPositionBacktest ? formatPercent(latestPositionBacktest.max_drawdown) : 'No data'}
+                </p>
+              </div>
+              <div className="comparison-tile">
+                <p className="section-kicker">Buy & Hold SPY</p>
+                <strong>{benchmarkBacktest ? formatPercent(benchmarkBacktest.cagr) : 'No data'}</strong>
+                <p className="footnote compact">
+                  CAGR · Max DD {benchmarkBacktest ? formatPercent(benchmarkBacktest.max_drawdown) : 'No data'}
+                </p>
+              </div>
+              <div className="comparison-tile">
+                <p className="section-kicker">Skillnad</p>
+                <strong>{positionStatus.backtest.deltaDrawdownPct === null ? 'No data' : `${formatNumber(positionStatus.backtest.deltaDrawdownPct, { maximumFractionDigits: 2 })} pp`}</strong>
+                <p className="footnote compact">
+                  {drawdownDeltaCopy}, men {cagrDeltaCopy}
+                </p>
+              </div>
+            </div>
+
+            <p className="footnote">
+              Senaste backtest: {latestPositionBacktest?.finished_at ? formatTimestamp(latestPositionBacktest.finished_at) : 'Ej kört ännu'}.
+            </p>
+          </article>
+        </section>
+      ) : null}
 
       <section className="dashboard-grid signal-grid">
         <article className={`card price-breadth-card ${toneClass(interpretation.priceBreadth.tone)}`}>

@@ -87,3 +87,51 @@ test('buildMarketSignalRowsFromSources aligns breadth and market series, skips i
   assert.equal(latest.market_regime_score, -3.5);
   assert.equal(latest.signal, 'risk_off');
 });
+
+test('buildMarketSignalRowsFromSources carries forward the latest available VIX row when FRED lags one day', () => {
+  const breadthRows = [
+    {
+      date: '2026-05-06',
+      pct_above_sma50: 60,
+      pct_above_sma200: 55,
+      advancers: 8,
+      decliners: 7,
+      new_highs_52w: 10,
+      new_lows_52w: 2,
+      is_valid_signal_date: true,
+    },
+    {
+      date: '2026-05-07',
+      pct_above_sma50: 61,
+      pct_above_sma200: 56,
+      advancers: 9,
+      decliners: 6,
+      new_highs_52w: 11,
+      new_lows_52w: 2,
+      is_valid_signal_date: true,
+    },
+  ];
+  const spxRows = [
+    { date: '2026-05-06', value: 100 },
+    { date: '2026-05-07', value: 101 },
+  ];
+  const vixRows = [
+    { date: '2026-05-06', value: 17 },
+  ];
+
+  const signalRows = buildMarketSignalRowsFromSources(
+    {
+      breadthRows,
+      spxRows,
+      vixRows,
+    },
+    {
+      shortWindow: 1,
+      longWindow: 1,
+    }
+  );
+
+  assert.equal(signalRows.length, 2);
+  assert.equal(signalRows[1].date, '2026-05-07');
+  assert.equal(signalRows[1].vix, 17);
+});

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  buildBacktestRunRetentionStatement,
   buildStrategyDefinitionUpsertStatements,
   buildStrategyEquityUpsertStatements,
   buildStrategyPositionUpsertStatements,
@@ -54,6 +55,8 @@ test('buildStrategyPositionUpsertStatements batches daily positions by run and d
       effective_trade_date: '2026-01-02',
       target_state: 'long',
       applied_state: 'long',
+      target_equity_weight: 1,
+      applied_equity_weight: 1,
       trade_action: 'enter',
       reason_code: 'always_long',
     },
@@ -64,6 +67,8 @@ test('buildStrategyPositionUpsertStatements batches daily positions by run and d
       effective_trade_date: null,
       target_state: 'long',
       applied_state: 'long',
+      target_equity_weight: 1,
+      applied_equity_weight: 1,
       trade_action: 'hold',
       reason_code: 'always_long',
     },
@@ -75,8 +80,8 @@ test('buildStrategyPositionUpsertStatements batches daily positions by run and d
   assert.match(statements[0].sql, /insert into strategy_positions_daily/i);
   assert.match(statements[0].sql, /on conflict \(run_id, date\) do update set/i);
   assert.deepEqual(statements[0].params, [
-    1, '2026-01-02', '2026-01-01', '2026-01-02', 'long', 'long', 'enter', 'always_long',
-    1, '2026-01-03', '2026-01-02', null, 'long', 'long', 'hold', 'always_long',
+    1, '2026-01-02', '2026-01-01', '2026-01-02', 'long', 'long', '1', '1', 'enter', 'always_long',
+    1, '2026-01-03', '2026-01-02', null, 'long', 'long', '1', '1', 'hold', 'always_long',
   ]);
 });
 
@@ -106,4 +111,18 @@ test('buildStrategyEquityUpsertStatements batches daily equity rows by run and d
   assert.deepEqual(statements[0].params, [
     1, '2026-01-02', '100', '100.95', '0.95', '1', '0', '1', '0.05', '0.05', '0', true,
   ]);
+});
+
+test('buildBacktestRunRetentionStatement prunes older runs for one strategy and status while keeping the latest N', () => {
+  const statement = buildBacktestRunRetentionStatement({
+    strategyId: 42,
+    status: 'success',
+    retainedRuns: 1,
+  });
+
+  assert.match(statement.sql, /delete from backtest_runs/i);
+  assert.match(statement.sql, /where strategy_id = \$1/i);
+  assert.match(statement.sql, /status = \$2/i);
+  assert.match(statement.sql, /offset \$3/i);
+  assert.deepEqual(statement.params, [42, 'success', 1]);
 });

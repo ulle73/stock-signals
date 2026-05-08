@@ -1,9 +1,9 @@
 import { closePool } from '../lib/db.js';
 import { ensureEnvLoaded } from '../lib/env.js';
 import { DEFAULT_YAHOO_DAILY_RANGE, getYahooDailyRange } from '../lib/utils/fetch-settings.js';
+import { FRED_SERIES_DEFINITIONS, FRED_SERIES_IDS, filterFredRowsForUpsert } from '../lib/utils/fred-series.js';
 import {
   buildYahooFetchRequest,
-  filterIncrementalRows,
   hasYahooDailyRangeOverride,
 } from '../lib/utils/incremental-fetch.js';
 import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
@@ -17,7 +17,6 @@ import { getLatestMarketSeriesDates, upsertMarketSeries } from '../lib/repositor
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
 import { buildFetchRunCompletionDetails, fetchBenchmarkData } from '../lib/utils/fetch-benchmark.js';
 
-const FRED_SERIES = ['SP500', 'VIXCLS', 'BAMLH0A0HYM2'];
 const BENCHMARK_TICKERS = ['SPY'];
 const DEFAULT_CONCURRENCY = 5;
 const fetchRunGuard = createFetchRunGuard({
@@ -96,11 +95,17 @@ async function fetchFredData(latestMarketSeriesDates) {
   const successfulSeries = [];
   let totalRows = 0;
 
-  for (const seriesId of FRED_SERIES) {
+  for (const definition of FRED_SERIES_DEFINITIONS) {
+    const { seriesId } = definition;
+
     try {
       console.log(`Fetching FRED series ${seriesId}`);
       const rows = await fetchFredSeries(seriesId);
-      const incrementalRows = filterIncrementalRows(rows, latestMarketSeriesDates[seriesId] || null);
+      const incrementalRows = filterFredRowsForUpsert(
+        definition,
+        rows,
+        latestMarketSeriesDates[seriesId] || null
+      );
       const inserted = await upsertMarketSeries(seriesId, incrementalRows);
       successfulSeries.push({ seriesId, rows: inserted });
       totalRows += inserted;
@@ -172,7 +177,7 @@ async function run() {
     console.log(`Fetch daily completed with status: ${status}`);
     console.log(`Yahoo: ${yahooResult.successfulTickers}/${activeConstituents.length} tickers succeeded.`);
     console.log(`Benchmark: ${benchmarkResult.successfulBenchmarks}/${BENCHMARK_TICKERS.length} tickers succeeded.`);
-    console.log(`FRED: ${fredResult.successfulSeries.length}/${FRED_SERIES.length} series succeeded.`);
+    console.log(`FRED: ${fredResult.successfulSeries.length}/${FRED_SERIES_IDS.length} series succeeded.`);
   } catch (error) {
     await fetchRunGuard.finish('failure', {
       errorMessage: error.message,

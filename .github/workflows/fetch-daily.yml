@@ -38,8 +38,20 @@ jobs:
       - name: Calculate daily indicators
         run: npm run calculate:daily
 
+      - name: Calculate sector breadth
+        run: npm run calculate:sector-breadth
+
       - name: Calculate market signals
         run: npm run calculate:signals
+
+      - name: Calculate trading signals
+        run: npm run calculate:trading-signals
+
+      - name: Calculate position facts
+        run: npm run calculate:position-facts
+
+      - name: Calculate position signals
+        run: npm run calculate:position-signals
 
       - name: Seed strategy definitions
         run: npm run seed:strategies

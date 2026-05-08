@@ -127,6 +127,7 @@ button, input { font: inherit; }
 .detail-grid { grid-template-columns: 2fr 1fr; }
 .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .horizon-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.position-grid { grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr); }
 
 .eyebrow,
 .section-kicker,
@@ -244,6 +245,61 @@ h2 {
 }
 
 .warning-item { color: #744100; }
+
+.position-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 22px;
+}
+
+.position-metric-grid,
+.backtest-compare-grid {
+  margin-bottom: 20px;
+}
+
+.position-note {
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(90, 82, 68, 0.1);
+}
+
+.position-flag-section + .position-flag-section {
+  margin-top: 16px;
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.position-context-card {
+  display: grid;
+  align-content: start;
+}
+
+.backtest-compare-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.comparison-tile {
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(90, 82, 68, 0.1);
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.comparison-tile strong {
+  display: block;
+  font-size: 1.6rem;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
 
 .heatmap-grid {
   display: grid;
@@ -394,4 +450,5 @@ tbody tr:last-child td { border-bottom: none; }
   h1 { max-width: none; }
   .ticker-header { flex-direction: column; }
   .ticker-form { width: 100%; }
+  .position-card-head { flex-direction: column; }
 }

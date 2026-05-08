@@ -86,6 +86,23 @@ const STRATEGY_DEFINITIONS = [
     },
     is_active: true,
   },
+  {
+    code: 'position_macro_signal_v1',
+    name: 'Position Macro Signal V1',
+    description: 'Scale SPY exposure between 0-100% from the position macro signal.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 5,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'position_macro_signal',
+    params_json: {
+      initial_state: 'cash',
+      initial_equity_weight: 0,
+    },
+    is_active: true,
+  },
 ];
 
 async function run() {
