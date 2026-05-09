@@ -1,5 +1,6 @@
 import { closePool } from '../lib/db.js';
 import { ensureEnvLoaded } from '../lib/env.js';
+import { buildRydObvIndicatorRows } from '../lib/indicators/ryd-obv-zscore.js';
 import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
 import { calculateTickerIndicators } from '../lib/utils/rolling-indicators.js';
 import {
@@ -38,7 +39,12 @@ function getCalculationOptions() {
 }
 
 async function processTickerRows(rows) {
-  const indicators = calculateTickerIndicators(rows);
+  const baseIndicators = calculateTickerIndicators(rows);
+  const rydObvIndicators = buildRydObvIndicatorRows(rows);
+  const indicators = baseIndicators.map((indicatorRow, index) => ({
+    ...indicatorRow,
+    ...rydObvIndicators[index],
+  }));
   const inserted = await upsertStockDailyIndicators(indicators);
   return { indicators, inserted };
 }

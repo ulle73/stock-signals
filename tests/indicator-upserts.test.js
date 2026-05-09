@@ -18,6 +18,11 @@ test('buildStockDailyIndicatorUpsertStatements batches multiple indicator rows i
       sma20: null,
       sma50: null,
       sma200: null,
+      ryd_obv: 0,
+      ryd_obv_zscore_80: null,
+      ryd_obv_buy_signal: false,
+      ryd_obv_sell_signal: false,
+      ryd_obv_signal: 'none',
     },
     {
       ticker: 'AAPL',
@@ -33,6 +38,11 @@ test('buildStockDailyIndicatorUpsertStatements batches multiple indicator rows i
       sma20: 100.1,
       sma50: null,
       sma200: null,
+      ryd_obv: 5000000,
+      ryd_obv_zscore_80: 2.812345,
+      ryd_obv_buy_signal: true,
+      ryd_obv_sell_signal: false,
+      ryd_obv_signal: 'buy',
     },
     {
       ticker: 'AAPL',
@@ -48,6 +58,11 @@ test('buildStockDailyIndicatorUpsertStatements batches multiple indicator rows i
       sma20: 101.4,
       sma50: null,
       sma200: null,
+      ryd_obv: 4200000,
+      ryd_obv_zscore_80: 2.612345,
+      ryd_obv_buy_signal: false,
+      ryd_obv_sell_signal: true,
+      ryd_obv_signal: 'sell',
     },
   ];
 
@@ -56,10 +71,10 @@ test('buildStockDailyIndicatorUpsertStatements batches multiple indicator rows i
   assert.equal(statements.length, 2);
   assert.match(statements[0].sql, /insert into stock_daily_indicators/i);
   assert.deepEqual(statements[0].params, [
-    'AAPL', '2026-01-01', '101.25', null, null, null, null, null, null, null, null, null, null,
-    'AAPL', '2026-01-02', '102.5', '1.23', '5000000', '1.15', '-2.5', '18.8', '99.5', '98.1', '100.1', null, null,
+    'AAPL', '2026-01-01', '101.25', null, null, null, null, null, null, null, null, null, null, '0', null, false, false, 'none',
+    'AAPL', '2026-01-02', '102.5', '1.23', '5000000', '1.15', '-2.5', '18.8', '99.5', '98.1', '100.1', null, null, '5000000', '2.812345', true, false, 'buy',
   ]);
   assert.deepEqual(statements[1].params, [
-    'AAPL', '2026-01-03', '103.75', '-0.45', '5100000', '0.92', '-1.25', '20.1', '100.2', '99.7', '101.4', null, null,
+    'AAPL', '2026-01-03', '103.75', '-0.45', '5100000', '0.92', '-1.25', '20.1', '100.2', '99.7', '101.4', null, null, '4200000', '2.612345', false, true, 'sell',
   ]);
 });

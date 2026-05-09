@@ -208,6 +208,11 @@ Miljövariabler för manuella körningar:
 - `relative_volume20`
 - `pct_from_52w_high`
 - `pct_from_52w_low`
+- `ryd_obv`
+- `ryd_obv_zscore_80`
+- `ryd_obv_buy_signal`
+- `ryd_obv_sell_signal`
+- `ryd_obv_signal`
 
 per ticker och datum i `stock_daily_indicators`.
 
@@ -541,6 +546,8 @@ Scriptet skriver ut:
 - omräknad indikatorrad från råpriser,
 - om de matchar exakt,
 - vilka datumfönster som användes för `sma20/50/200`.
+
+`validate:indicator` verifierar nu också `ryd_obv`, `ryd_obv_zscore_80`, `ryd_obv_buy_signal`, `ryd_obv_sell_signal` och `ryd_obv_signal` mot råpriserna.
 
 ---
 

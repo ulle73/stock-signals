@@ -1,5 +1,6 @@
 import { closePool } from '../lib/db.js';
 import { ensureEnvLoaded } from '../lib/env.js';
+import { buildRydObvIndicatorRows } from '../lib/indicators/ryd-obv-zscore.js';
 import {
   getIndicatorValidationWindow,
   getLatestIndicatorDateForTicker,
@@ -14,6 +15,20 @@ import {
 } from '../lib/utils/rolling-indicators.js';
 
 ensureEnvLoaded();
+
+const CUSTOM_NUMERIC_KEYS = [
+  'ryd_obv',
+  'ryd_obv_zscore_80',
+];
+
+const CUSTOM_BOOLEAN_KEYS = [
+  'ryd_obv_buy_signal',
+  'ryd_obv_sell_signal',
+];
+
+const CUSTOM_TEXT_KEYS = [
+  'ryd_obv_signal',
+];
 
 function getArgs() {
   const ticker = process.argv[2]?.trim().toUpperCase() || 'AAPL';
@@ -60,6 +75,23 @@ function buildDerivedFieldMap(row) {
   );
 }
 
+function buildCustomFieldMap(row) {
+  return Object.fromEntries([
+    ...CUSTOM_NUMERIC_KEYS.map((key) => [
+      key,
+      formatIndicatorValueForStorage(row[key]),
+    ]),
+    ...CUSTOM_BOOLEAN_KEYS.map((key) => [
+      key,
+      row[key] ?? false,
+    ]),
+    ...CUSTOM_TEXT_KEYS.map((key) => [
+      key,
+      row[key] ?? 'none',
+    ]),
+  ]);
+}
+
 async function run() {
   const { ticker, date: requestedDate } = getArgs();
   const date = requestedDate || await getLatestIndicatorDateForTicker(ticker);
@@ -78,7 +110,10 @@ async function run() {
     throw new Error(`No price history found for ${ticker} on or before ${date}.`);
   }
 
-  const recalculatedRow = calculateTickerIndicators(windowRows).at(-1);
+  const recalculatedRow = {
+    ...calculateTickerIndicators(windowRows).at(-1),
+    ...buildRydObvIndicatorRows(windowRows).at(-1),
+  };
   const lastPriceRow = windowRows.at(-1);
 
   const report = {
@@ -96,6 +131,7 @@ async function run() {
       indicator_price: formatIndicatorValueForStorage(recalculatedRow.indicator_price),
       ...buildDerivedFieldMap(recalculatedRow),
       ...buildIndicatorFieldMap(recalculatedRow),
+      ...buildCustomFieldMap(recalculatedRow),
     },
     matches: {
       indicator_price: valuesMatch(storedRow.indicator_price, recalculatedRow.indicator_price),
@@ -109,6 +145,24 @@ async function run() {
         DEFAULT_INDICATOR_WINDOWS.map((window) => [
           window.key,
           valuesMatch(storedRow[window.key], recalculatedRow[window.key]),
+        ])
+      ),
+      ...Object.fromEntries(
+        CUSTOM_NUMERIC_KEYS.map((key) => [
+          key,
+          valuesMatch(storedRow[key], recalculatedRow[key]),
+        ])
+      ),
+      ...Object.fromEntries(
+        CUSTOM_BOOLEAN_KEYS.map((key) => [
+          key,
+          storedRow[key] === recalculatedRow[key],
+        ])
+      ),
+      ...Object.fromEntries(
+        CUSTOM_TEXT_KEYS.map((key) => [
+          key,
+          storedRow[key] === recalculatedRow[key],
         ])
       ),
     },
