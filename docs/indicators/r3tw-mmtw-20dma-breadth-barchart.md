@@ -5,7 +5,7 @@
 Status: planned
 Implemented commit: TBD
 Barchart R3TW data verification: partial
-Barchart MMTW data verification: pending
+Barchart MMTW data verification: partial
 TradingView verification: pending
 
 ## Purpose
@@ -66,21 +66,25 @@ TradingView source:
 INDEX:MMTW
 ```
 
-Expected Barchart replacement candidate:
+Barchart replacement source:
 
 ```text
 https://www.barchart.com/stocks/quotes/%24MMTW
 ```
 
-This must be verified before implementation.
+User-tested Playwright scrape found:
 
-Expected mapping if the Barchart page works:
+```text
+Last Price      53.72
+```
+
+Mapping:
 
 ```text
 INDEX:MMTW close ≈ Barchart $MMTW Last Price
 ```
 
-Do not implement this indicator until both `$R3TW` and `$MMTW` data are verified.
+Note: the user test confirmed that the page returns a Last Price for `$MMTW`, but the current line filter did not include a specific MMTW name/title. Implementation should parse the Last Price from the configured URL/symbol, not rely on finding the full descriptive title text.
 
 ## Data pipeline note
 
@@ -137,7 +141,7 @@ source = barchart
 
 series_key = MMTW
 symbol = $MMTW
-name = TBD after verification
+name = MMTW
 value = Last Price from Barchart
 source = barchart
 ```
@@ -177,8 +181,6 @@ with:
 Barchart $R3TW Last Price
 Barchart $MMTW Last Price
 ```
-
-after both sources are verified.
 
 ### Signal rule
 
@@ -276,30 +278,33 @@ Russell 3000 Stocks Above 20-Day Average ($R3TW)
 Last Price      53.52
 ```
 
-## MMTW verification command
+## User-tested MMTW scrape
 
-Before implementation, run the same test with:
+The user tested the same Playwright approach with:
 
 ```js
 const URL = "https://www.barchart.com/stocks/quotes/%24MMTW";
 ```
 
-and look for:
+Observed output:
 
 ```text
-MMTW
-Last Price
+Last Price      53.72
 ```
+
+The filter used in the test still looked for `R3TW|Russell 3000...|Last Price|Latest|Price`, so it captured the Last Price but not necessarily the MMTW title. That is acceptable for now because the configured URL determines the symbol.
 
 ## Codex task prompt
 
 ```text
-Implement the indicator/data intake described in docs/indicators/r3tw-mmtw-20dma-breadth-barchart.md only after both $R3TW and $MMTW Barchart pages have been verified.
+Implement the indicator/data intake described in docs/indicators/r3tw-mmtw-20dma-breadth-barchart.md.
 
 Important:
 - This replaces TradingView INDEX:R3TW and INDEX:MMTW using Barchart breadth pages.
 - Use Barchart $R3TW Last Price as R3TW value.
-- Use Barchart $MMTW Last Price as MMTW value, but only after it has been verified.
+- Use Barchart $MMTW Last Price as MMTW value.
+- Parse Last Price from the configured Barchart URL for each symbol.
+- Do not rely on finding a full descriptive title for each page.
 - Add the smallest possible separate Barchart data fetch/storage path.
 - Do not rewrite the existing Yahoo/FRED/S&P 500 fetch pipeline.
 - Do not add Telegram behavior yet.
