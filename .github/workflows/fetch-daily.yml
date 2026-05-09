@@ -3,7 +3,7 @@ name: Fetch Daily Market Data
 on:
   workflow_dispatch:
   schedule:
-    - cron: '23 7 * * 1-5'
+    - cron: '53 21 * * 1-5'
 
 concurrency:
   group: fetch-daily
@@ -35,8 +35,26 @@ jobs:
       - name: Fetch daily market data
         run: npm run fetch:daily
 
+      - name: Fetch OCC daily volume totals
+        run: npm run fetch:occ-volume-totals
+
+      - name: Fetch FINRA PLCE short volume
+        run: npm run fetch:finra-short-volume
+
+      - name: Fetch Barchart breadth snapshots
+        run: npm run fetch:barchart-breadth
+
       - name: Calculate daily indicators
         run: npm run calculate:daily
+
+      - name: Calculate CVOL call-volume indicator
+        run: npm run calculate:cvol-call-volume
+
+      - name: Calculate PLCE short-volume indicator
+        run: npm run calculate:plce-short-volume
+
+      - name: Calculate R3TW MMTW breadth indicator
+        run: npm run calculate:r3tw-mmtw-breadth
 
       - name: Calculate sector breadth
         run: npm run calculate:sector-breadth

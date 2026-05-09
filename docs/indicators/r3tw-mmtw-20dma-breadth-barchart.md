@@ -2,8 +2,8 @@
 
 ## Status
 
-Status: planned
-Implemented commit: TBD
+Status: implemented
+Implemented commit: uncommitted
 Barchart R3TW data verification: partial
 Barchart MMTW data verification: partial
 TradingView verification: pending

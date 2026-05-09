@@ -31,6 +31,13 @@ When adding a new indicator, read from the existing stored data and extend the c
 
 If a new indicator needs new raw data that is not currently available, state that clearly and propose the smallest possible data-fetch addition before changing the fetch pipeline.
 
+For new external end-of-day indicator sources that are outside Yahoo/FRED/S&P 500:
+
+- do not fold them into `scripts/fetch-daily.js`
+- create separate source/repository/script modules
+- wire them into the existing daily GitHub Actions workflow as separate fetch/calculate steps
+- keep the main daily workflow unified, but keep the core fetch script isolated
+
 ## Indicator architecture
 
 Do not put every new indicator directly into `lib/utils/rolling-indicators.js`.

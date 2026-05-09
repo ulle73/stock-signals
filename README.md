@@ -86,6 +86,12 @@ Det skapar:
 - `stock_daily_prices`
 - `stock_daily_indicators`
 - `market_series_daily`
+- `occ_daily_volume_totals`
+- `cvol_call_volume_indicator_daily`
+- `finra_daily_short_volume`
+- `plce_short_volume_indicator_daily`
+- `external_breadth_daily`
+- `r3tw_mmtw_20dma_breadth_indicator_daily`
 - `market_breadth_daily`
 - `sector_breadth_daily`
 - `sector_signal_daily`
@@ -148,7 +154,13 @@ Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
 npm run dev
 npm run db:migrate
 npm run fetch:daily
+npm run fetch:occ-volume-totals
+npm run fetch:finra-short-volume
+npm run fetch:barchart-breadth
 npm run calculate:daily
+npm run calculate:cvol-call-volume
+npm run calculate:plce-short-volume
+npm run calculate:r3tw-mmtw-breadth
 npm run calculate:sector-breadth
 npm run calculate:sector-signals
 npm run calculate:signals
@@ -161,6 +173,21 @@ npm run seed:strategies
 npm run backtest:daily
 npm run validate:indicator -- AAPL
 ```
+
+De tre nya externa indikatorerna körs separat och lämnar den befintliga Yahoo/FRED/S&P 500-pipelinen orörd:
+
+- `npm run fetch:occ-volume-totals` hämtar OCC daily volume totals till `occ_daily_volume_totals`
+- `npm run calculate:cvol-call-volume` bygger `cvol_call_volume_indicator_daily`
+- `npm run fetch:finra-short-volume` hämtar FINRA PLCE short volume till `finra_daily_short_volume`
+- `npm run calculate:plce-short-volume` bygger `plce_short_volume_indicator_daily`
+- `npm run fetch:barchart-breadth` hämtar dagens `$R3TW` och `$MMTW` från Barchart till `external_breadth_daily`
+- `npm run calculate:r3tw-mmtw-breadth` bygger `r3tw_mmtw_20dma_breadth_indicator_daily`
+
+Miljövariabler för manuella körningar:
+
+- `OCC_REPORT_DATE` eller `OCC_START_DATE` + `OCC_END_DATE`
+- `FINRA_SHORT_VOLUME_DATE` eller `FINRA_SHORT_VOLUME_START_DATE` + `FINRA_SHORT_VOLUME_END_DATE`
+- `BARCHART_BREADTH_DATE`
 
 `npm run dev` öppnar nu en server-renderad startsida som visar:
 
@@ -389,6 +416,51 @@ Long-kandidater kommer från `leading` och `improving` sektorer. Short-kandidate
 
 Själva watchlisten ersätts i full längd vid varje körning i stället för att bara upsertas. Det gör att gamla toppkandidater inte ligger kvar om rankingreglerna eller score-trösklar ändras senare.
 
+De nya indikator-specifika rå- och signallagren är separata från den ordinarie aktie- och marknadsbreddspipelinen:
+
+- `occ_daily_volume_totals` sparar OCC `calls`, `puts`, `ratio`, `volume` och `market_share` per `report_date + exchange`
+- `cvol_call_volume_indicator_daily` sparar CVOL-ersättningen från OCC med:
+  - `cvol_calls`
+  - `cvol_puts`
+  - `cvol_ratio`
+  - `cvol_total_volume`
+  - `cvol_market_share`
+  - `cvol_zscore_20`
+  - `cvol_zscore_15`
+  - `cvol_zscore_10`
+  - `cvol_price_condition`
+  - `cvol_sell_signal_1`
+  - `cvol_sell_signal_2`
+  - `cvol_sell_signal_3`
+  - `cvol_signal`
+
+- `finra_daily_short_volume` sparar PLCE:s FINRA-rad per datum med:
+  - `short_volume`
+  - `short_exempt_volume`
+  - `total_volume`
+  - `market`
+- `plce_short_volume_indicator_daily` sparar:
+  - `plce_short_volume`
+  - `plce_short_exempt_volume`
+  - `plce_total_volume`
+  - `plce_short_volume_market`
+  - `plce_short_volume_zscore_50`
+  - `plce_short_volume_zscore_20`
+  - `plce_short_volume_price_condition`
+  - `plce_short_volume_buy_signal_50`
+  - `plce_short_volume_buy_signal_20`
+  - `plce_short_volume_extreme_signal`
+  - `plce_short_volume_signal`
+
+- `external_breadth_daily` sparar dagliga Barchart-värden för `R3TW` och `MMTW`
+- `r3tw_mmtw_20dma_breadth_indicator_daily` sparar:
+  - `r3tw_value`
+  - `mmtw_value`
+  - `r3tw_cross_up_20`
+  - `mmtw_cross_up_20`
+  - `r3tw_mmtw_buy_signal`
+  - `r3tw_mmtw_signal`
+
 Watchlisten får nu också ett litet exekveringslager så att listan går att tolka operativt:
 
 - `playbook` beskriver hur raden ska användas, t.ex. `deploy_long`, `defensive_watch`, `hedge_watch` eller `standby_short`
@@ -494,7 +566,7 @@ För att den ska fungera behöver du lägga in repository secret:
 Workflowen kör:
 
 - manuellt via `workflow_dispatch`
-- automatiskt vardagar `07:23 UTC`
+- automatiskt vardagar `21:53 UTC`
 - därefter `npm run calculate:daily`
 - därefter `npm run calculate:sector-breadth`
 - därefter `npm run calculate:sector-signals`
@@ -507,7 +579,31 @@ Workflowen kör:
 - därefter `npm run seed:strategies`
 - därefter `npm run backtest:daily`
 
-Schemat ligger medvetet inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
+Workflowen kör nu också de externa daily-källorna som separata steg i samma pipeline:
+
+- `npm run fetch:occ-volume-totals`
+- `npm run fetch:finra-short-volume`
+- `npm run fetch:barchart-breadth`
+- `npm run calculate:cvol-call-volume`
+- `npm run calculate:plce-short-volume`
+- `npm run calculate:r3tw-mmtw-breadth`
+
+Principen framåt är:
+
+- behåll `fetch:daily` för Yahoo/FRED/S&P 500-kärnan
+- lägg nya externa daily-indikatorer som egna fetch/calculate-scripts
+- kör dem i samma dagliga workflow som separata steg
+
+Det motsvarar normalt ungefär:
+
+- `22:53` svensk vintertid (`CET`)
+- `23:53` svensk sommartid (`CEST`)
+
+Schemat ligger medvetet:
+
+- efter USA-stängning så att daily-källor hinner uppdateras,
+- före `00:00 UTC` så att Barchart-snapshots för `$R3TW` och `$MMTW` lagras på rätt USA-marknadsdatum,
+- och inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
 
 ---
 

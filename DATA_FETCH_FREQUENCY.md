@@ -18,7 +18,7 @@ Rekommenderad körning:
 
 ```text
 1 gång per handelsdag efter USA-börsens stängning
-Tid: cirka 22:15–22:45 svensk tid
+Tid: sent på kvällen svensk tid, men före 00:00 UTC om datumet i externa breadth-snapshots ska matcha USA-marknadsdagen
 ```
 
 Yahoo Finance daily endpoint:
@@ -52,6 +52,7 @@ Daily-jobbet ska vara den officiella datakällan för:
 - A/D-line,
 - McClellan,
 - Market Regime Score.
+- externa end-of-day indikatorserier som OCC, FINRA eller Barchart-breadth när sådana läggs till
 
 Rekommenderad frekvens:
 
@@ -62,8 +63,24 @@ Rekommenderad frekvens:
 Rekommenderad tid:
 
 ```text
-22:15–22:45 svensk tid
+ca 21:53 UTC
+ca 22:53 CET
+ca 23:53 CEST
 ```
+
+Den här tiden är vald som kompromiss:
+
+- USA-marknaden har stängt
+- Yahoo/FRED/OCC/FINRA/Barchart har haft tid att uppdatera
+- workflowen kör fortfarande före midnatt UTC, vilket gör att Barchart-baserade snapshotserier kan sparas på rätt marknadsdatum utan extra datum-omräkning
+
+När nya externa daily-källor läggs till ska de normalt:
+
+- köras i samma dagliga GitHub Actions-workflow
+- ligga som separata fetch/calculate-steg
+- inte byggas in i `scripts/fetch-daily.js`
+
+Det ger ett samlat dagligt jobb utan att blanda ihop Yahoo/FRED-kärnan med externa indikator-specifika hämtningar.
 
 ---
 

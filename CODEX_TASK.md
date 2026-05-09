@@ -47,6 +47,13 @@ New indicators should use already stored data whenever possible.
 
 If an indicator requires data that is not currently stored, report the missing data and propose the smallest possible fetch/schema addition before touching the data pipeline.
 
+If a new external daily indicator source is approved:
+
+- do not add it inside `scripts/fetch-daily.js`
+- add it as a separate fetch/calculate path
+- connect that path into `.github/workflows/fetch-daily.yml` as separate daily steps
+- prefer one unified daily workflow over many separate workflows unless timing or reliability clearly requires a split
+
 ## Core rule
 
 When adding a new TradingView-like indicator:

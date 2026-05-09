@@ -2,8 +2,8 @@
 
 ## Status
 
-Status: planned
-Implemented commit: TBD
+Status: implemented
+Implemented commit: uncommitted
 TradingView verification: pending
 FINRA data verification: pending
 
