@@ -1,5 +1,6 @@
 import { getDashboardSnapshot } from '../lib/repositories/dashboard.js';
 import { interpretMarketSignal } from '../lib/utils/signal-interpretation.js';
+import { getVolumeEventLabel } from '../lib/utils/volume-events.js';
 import {
   buildMarketSeriesCards,
   buildPositionStatusViewModel,
@@ -91,10 +92,41 @@ function movingAverageCellStyle(adjClose, movingAverage) {
     : { background: 'var(--danger-bg)', color: 'var(--danger)', fontWeight: 700 };
 }
 
+function volumeCellStyle(tone) {
+  if (!tone || tone === 'neutral') return undefined;
+
+  const styleByTone = {
+    positive: { background: 'var(--positive-bg)', color: 'var(--accent)', fontWeight: 700 },
+    caution: { background: 'var(--caution-bg)', color: 'var(--caution)', fontWeight: 700 },
+    warning: { background: 'var(--warning-bg)', color: 'var(--warning)', fontWeight: 700 },
+    danger: { background: 'var(--danger-bg)', color: 'var(--danger)', fontWeight: 700 },
+  };
+
+  return styleByTone[tone] ?? undefined;
+}
+
 function renderMovingAverageCell(row, key) {
   return (
     <td style={movingAverageCellStyle(row.adj_close, row[key])}>
       {formatNumber(row[key], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+    </td>
+  );
+}
+
+function renderVolumeCell(row) {
+  const relativeVolume = row.relative_volume20 === null || row.relative_volume20 === undefined
+    ? null
+    : Number(row.relative_volume20);
+  const eventLabel = getVolumeEventLabel(row.volume_event);
+
+  return (
+    <td style={volumeCellStyle(row.volume_event_tone)}>
+      <div>{formatNumber(row.volume)}</div>
+      {Number.isFinite(relativeVolume) ? (
+        <div style={{ fontSize: '0.78rem', marginTop: 4, opacity: 0.82 }}>
+          {formatNumber(relativeVolume, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}x · {eventLabel}
+        </div>
+      ) : null}
     </td>
   );
 }
@@ -110,7 +142,7 @@ function renderPriceRow(row) {
       {renderMovingAverageCell(row, 'sma20')}
       {renderMovingAverageCell(row, 'sma50')}
       {renderMovingAverageCell(row, 'sma200')}
-      <td>{formatNumber(row.volume)}</td>
+      {renderVolumeCell(row)}
     </tr>
   );
 }
