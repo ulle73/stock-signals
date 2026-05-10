@@ -74,17 +74,42 @@ function renderBacktestRow(row) {
   );
 }
 
+function movingAverageCellStyle(adjClose, movingAverage) {
+  if (adjClose === null || adjClose === undefined || movingAverage === null || movingAverage === undefined) {
+    return undefined;
+  }
+
+  const adjCloseNumber = Number(adjClose);
+  const movingAverageNumber = Number(movingAverage);
+
+  if (!Number.isFinite(adjCloseNumber) || !Number.isFinite(movingAverageNumber) || adjCloseNumber === movingAverageNumber) {
+    return undefined;
+  }
+
+  return adjCloseNumber > movingAverageNumber
+    ? { background: 'var(--positive-bg)', color: 'var(--accent)', fontWeight: 700 }
+    : { background: 'var(--danger-bg)', color: 'var(--danger)', fontWeight: 700 };
+}
+
+function renderMovingAverageCell(row, key) {
+  return (
+    <td style={movingAverageCellStyle(row.adj_close, row[key])}>
+      {formatNumber(row[key], { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+    </td>
+  );
+}
+
 function renderPriceRow(row) {
   return (
     <tr key={row.date}>
       <td>{formatDate(row.date)}</td>
       <td>{formatNumber(row.close, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
       <td>{formatNumber(row.adj_close, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-      <td>{formatNumber(row.sma5, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-      <td>{formatNumber(row.sma10, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-      <td>{formatNumber(row.sma20, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-      <td>{formatNumber(row.sma50, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-      <td>{formatNumber(row.sma200, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      {renderMovingAverageCell(row, 'sma5')}
+      {renderMovingAverageCell(row, 'sma10')}
+      {renderMovingAverageCell(row, 'sma20')}
+      {renderMovingAverageCell(row, 'sma50')}
+      {renderMovingAverageCell(row, 'sma200')}
       <td>{formatNumber(row.volume)}</td>
     </tr>
   );
