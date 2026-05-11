@@ -14,6 +14,69 @@ The purpose is to preserve:
 - the Codex implementation task
 - the manual verification step against TradingView
 
+## Matrix momentum philosophy
+
+All matrix-style indicators in this folder must follow the shared philosophy documented in:
+
+```text
+docs/indicators/MATRIX_MOMENTUM_PHILOSOPHY.md
+```
+
+This is especially important for the macro, breadth, sector/style, PMI, and volatility matrix images stored in:
+
+```text
+docs/indicators/pictures/
+```
+
+The key rule is:
+
+```text
+Markets care more about change than level.
+Markets buy improvement before the data looks good.
+Markets sell deterioration before the data looks bad.
+```
+
+Therefore, an implementation must not treat matrix colors as simple static signals:
+
+```text
+blue = buy
+red = sell
+```
+
+Instead, every matrix indicator must store and use both:
+
+```text
+1. current level
+2. transition / momentum / change in color intensity
+```
+
+Examples:
+
+```text
+dark_blue -> lighter_blue = strength is fading; possible top/risk warning
+strong_positive -> neutral = deterioration from strong levels
+neutral -> blue = improvement / recovery confirmation
+dark_red -> lighter_red = deterioration is slowing; possible bottoming process
+red -> neutral = early recovery attempt
+neutral -> red = deterioration starting
+```
+
+This means a weak macro level can become bullish if it stops getting worse, and a strong macro level can become dangerous if it stops getting better.
+
+Codex must preserve this principle when implementing any of the following docs:
+
+```text
+macro-matrix-us-high-frequency-growth-data.md
+macro-matrix-pmi-growth-momentum.md
+macro-matrix-europe-growth-indicators.md
+macro-matrix-global-manufacturing-pmi.md
+macro-matrix-growth-data-base-effects.md
+macro-matrix-sector-factor-regime-performance.md
+macro-matrix-equity-sector-style-regime-performance.md
+market-breadth-ma200-forward-return-signal-model.md
+implied-volatility-ratio-rvol-short-squeeze.md
+```
+
 ## Workflow
 
 1. Add a new indicator intake `.md` file in `docs/indicators/`.
@@ -66,6 +129,11 @@ TradingView verification: pending
 ## Purpose
 
 Short description of what this indicator does and which category/timeframe it probably belongs to.
+
+## Matrix momentum philosophy
+
+If this is a matrix-style indicator, it must follow `docs/indicators/MATRIX_MOMENTUM_PHILOSOPHY.md`.
+Do not generate signals from static color/level alone. Store both level and momentum/transition.
 
 ## Source price rule for this repo
 
