@@ -1,4 +1,5 @@
 import './globals.css';
+import './macro-matrix-colors.css';
 import EuropeGrowthSection from './europe-growth-section.js';
 import GlobalManufacturingPmiSection from './global-manufacturing-pmi-section.js';
 
