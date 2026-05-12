@@ -15,6 +15,7 @@ import { upsertConstituents, getActiveConstituents } from '../lib/repositories/c
 import { getLatestPriceDatesByTicker, upsertStockDailyPrices } from '../lib/repositories/prices.js';
 import { getLatestMarketSeriesDates, upsertMarketSeries } from '../lib/repositories/market-series.js';
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
+import { fetchAndStoreGlobalManufacturingPmi } from '../lib/repositories/global-manufacturing-pmi.js';
 import { buildFetchRunCompletionDetails, fetchBenchmarkData } from '../lib/utils/fetch-benchmark.js';
 
 const BENCHMARK_TICKERS = ['SPY'];
@@ -118,6 +119,25 @@ async function fetchFredData(latestMarketSeriesDates) {
   return { failedSeries, successfulSeries, totalRows };
 }
 
+async function fetchGlobalPmiData() {
+  try {
+    console.log('Fetching global manufacturing PMI from Trading Economics HTML pages...');
+    const result = await fetchAndStoreGlobalManufacturingPmi();
+    return {
+      successfulRows: result.inserted,
+      failedSeries: result.failures,
+      periodDate: result.periodDate,
+    };
+  } catch (error) {
+    console.warn(`Failed global manufacturing PMI scrape: ${error.message}`);
+    return {
+      successfulRows: 0,
+      failedSeries: [{ seriesId: 'GLOBAL_MANUFACTURING_PMI', error: error.message }],
+      periodDate: null,
+    };
+  }
+}
+
 async function run() {
   await failRunningFetchRuns('fetch_daily', 'fetch:daily interrupted before completion', {
     recoveredBy: 'fetch_daily',
@@ -156,11 +176,13 @@ async function run() {
       upsertBenchmarkDailyPricesFn: upsertBenchmarkDailyPrices,
     });
     const fredResult = await fetchFredData(latestMarketSeriesDates);
+    const globalPmiResult = await fetchGlobalPmiData();
 
     const failedItems =
       yahooResult.failedTickers.length +
       benchmarkResult.failedBenchmarks.length +
-      fredResult.failedSeries.length;
+      fredResult.failedSeries.length +
+      globalPmiResult.failedSeries.length;
     const status = failedItems > 0 ? 'partial_success' : 'success';
     const completionDetails = buildFetchRunCompletionDetails({
       constituentsParsed: constituents.length,
@@ -172,12 +194,17 @@ async function run() {
 
     await fetchRunGuard.finish(status, {
       ...completionDetails,
+      metadata: {
+        ...completionDetails.metadata,
+        globalManufacturingPmi: globalPmiResult,
+      },
     });
 
     console.log(`Fetch daily completed with status: ${status}`);
     console.log(`Yahoo: ${yahooResult.successfulTickers}/${activeConstituents.length} tickers succeeded.`);
     console.log(`Benchmark: ${benchmarkResult.successfulBenchmarks}/${BENCHMARK_TICKERS.length} tickers succeeded.`);
     console.log(`FRED: ${fredResult.successfulSeries.length}/${FRED_SERIES_IDS.length} series succeeded.`);
+    console.log(`Global Manufacturing PMI: ${globalPmiResult.successfulRows} rows updated.`);
   } catch (error) {
     await fetchRunGuard.finish('failure', {
       errorMessage: error.message,
