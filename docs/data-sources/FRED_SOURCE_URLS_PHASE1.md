@@ -96,8 +96,8 @@ docs/indicators/pictures/macro-matrix-us-high-frequency-growth-data.png
 |---|---|---|---|---|
 | consumer_sentiment_michigan | Consumer Sentiment, Michigan | UMCSENT | raw level / MoM / z-score | `https://api.stlouisfed.org/fred/series/observations?series_id=UMCSENT&api_key=FRED_API_KEY&file_type=json` |
 | philadelphia_fed_general_activity | Philadelphia Fed General Business Activity | GACDFSA066MSFRBPHI | raw level / MoM | `https://api.stlouisfed.org/fred/series/observations?series_id=GACDFSA066MSFRBPHI&api_key=FRED_API_KEY&file_type=json` |
-| oecd_leading_indicator_us_proxy | OECD Leading Indicator US | USALOLITONOSTSAM | raw level | `https://api.stlouisfed.org/fred/series/observations?series_id=USALOLITONOSTSAM&api_key=FRED_API_KEY&file_type=json` |
-| oecd_leading_indicator_us_yoy_proxy | OECD Leading Indicator US Y/Y | USALOLITONOSTSAM | YoY via `units=pc1` | `https://api.stlouisfed.org/fred/series/observations?series_id=USALOLITONOSTSAM&api_key=FRED_API_KEY&file_type=json&units=pc1` |
+| oecd_leading_indicator_us_proxy | OECD Leading Indicator US | USALOLITOAASTSAM | raw level | `https://api.stlouisfed.org/fred/series/observations?series_id=USALOLITOAASTSAM&api_key=FRED_API_KEY&file_type=json` |
+| oecd_leading_indicator_us_yoy_proxy | OECD Leading Indicator US Y/Y | USALOLITOAASTSAM | YoY via `units=pc1` | `https://api.stlouisfed.org/fred/series/observations?series_id=USALOLITOAASTSAM&api_key=FRED_API_KEY&file_type=json&units=pc1` |
 
 ### ISM / PMI candidates to verify
 
