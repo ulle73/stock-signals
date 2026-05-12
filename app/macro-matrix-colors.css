@@ -1,0 +1,71 @@
+.macro-blue-5,
+.macro-strong_positive {
+  background: #2f8fa0;
+  color: #083f4a;
+}
+
+.macro-blue-4 {
+  background: #5aa9b7;
+  color: #0b4852;
+}
+
+.macro-blue-3 {
+  background: #88c3cb;
+  color: #104f59;
+}
+
+.macro-blue-2,
+.macro-positive {
+  background: #b9dce0;
+  color: #245b62;
+}
+
+.macro-blue-1 {
+  background: #dceff0;
+  color: #3f6870;
+}
+
+.macro-neutral {
+  background: #f7f4ee;
+  color: #665f54;
+}
+
+.macro-red-1 {
+  background: #f8e8e4;
+  color: #7f4c40;
+}
+
+.macro-red-2,
+.macro-negative {
+  background: #f4cfc8;
+  color: #8d3f34;
+}
+
+.macro-red-3 {
+  background: #edaea9;
+  color: #8e312c;
+}
+
+.macro-red-4 {
+  background: #e48686;
+  color: #7d2425;
+}
+
+.macro-red-5,
+.macro-strong_negative {
+  background: #d76168;
+  color: #6f1c22;
+}
+
+.macro-missing {
+  background: #fbfaf6;
+  color: #b2ac9f;
+}
+
+.delta-up {
+  color: #1f7380;
+}
+
+.delta-down {
+  color: #9d3d34;
+}
