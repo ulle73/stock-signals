@@ -1,4 +1,5 @@
 import './globals.css';
+import EuropeGrowthSection from './europe-growth-section.js';
 import GlobalManufacturingPmiSection from './global-manufacturing-pmi-section.js';
 
 export const metadata = {
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <GlobalManufacturingPmiSection />
+        <EuropeGrowthSection />
       </body>
     </html>
   );
