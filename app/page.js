@@ -44,11 +44,46 @@ function formatPercent(value, digits = 2) {
   })}%`;
 }
 
+function formatCompactMetric(value, digits = 1) {
+  if (value === null || value === undefined) return '—';
+  const number = Number(value);
+  const resolvedDigits = Math.abs(number) >= 100 ? 0 : digits;
+  return formatNumber(number, {
+    minimumFractionDigits: resolvedDigits,
+    maximumFractionDigits: resolvedDigits,
+  });
+}
+
+function formatMonthLabel(value) {
+  if (!value) return '—';
+  const label = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    year: '2-digit',
+    timeZone: 'UTC',
+  }).format(new Date(`${value}T00:00:00Z`));
+
+  return label.replace(' ', '-');
+}
+
 function formatPoints(value, digits = 1) {
   if (value === null || value === undefined) return 'No data';
   const number = Number(value);
   const sign = number > 0 ? '+' : '';
   return `${sign}${number.toFixed(digits)} pp`;
+}
+
+function formatMatrixDelta(value) {
+  if (value === null || value === undefined) return '—';
+  const number = Number(value);
+  const sign = number > 0 ? '+' : '';
+  return `${sign}${formatCompactMetric(number)}`;
+}
+
+function macroActionTone(action) {
+  if (action === 'RISK_ON' || action === 'NEUTRAL_TO_RISK_ON') return 'positive';
+  if (action === 'NO_NEW_BUYS') return 'caution';
+  if (action === 'REDUCE_RISK' || action === 'GO_TO_CASH') return 'danger';
+  return 'neutral';
 }
 
 function statusTone(status) {
@@ -183,10 +218,22 @@ export default async function Home({ searchParams }) {
     ...snapshot.positionStatus,
     backtests,
   });
+  const macroMatrix = snapshot.macroMatrix;
   const positionCurrent = positionStatus.current;
   const activeCautionFlags = positionStatus.flags.caution.filter((flag) => flag.active);
   const latestPositionBacktest = positionStatus.backtest.position;
   const benchmarkBacktest = positionStatus.backtest.benchmark;
+  const macroMatrixLatest = macroMatrix?.latest ?? null;
+  const macroMatrixLatestAvailable = macroMatrix?.latestAvailable ?? null;
+  const macroMatrixMeaningfulMonths = macroMatrix?.summaryByMonth?.filter((item) => !item.isPartial) ?? [];
+  const macroMatrixPreviousMonth = macroMatrixMeaningfulMonths.at(-2) ?? null;
+  const macroMatrixPositiveDelta =
+    macroMatrixLatest?.percentPositive !== null &&
+    macroMatrixLatest?.percentPositive !== undefined &&
+    macroMatrixPreviousMonth?.percentPositive !== null &&
+    macroMatrixPreviousMonth?.percentPositive !== undefined
+      ? Number(macroMatrixLatest.percentPositive) - Number(macroMatrixPreviousMonth.percentPositive)
+      : null;
   const drawdownDeltaCopy = positionStatus.backtest.deltaDrawdownPct === null
     ? 'ingen drawdown-data'
     : `${formatNumber(Math.abs(positionStatus.backtest.deltaDrawdownPct), { maximumFractionDigits: 2 })} pp ${positionStatus.backtest.deltaDrawdownPct > 0 ? 'lägre drawdown' : positionStatus.backtest.deltaDrawdownPct < 0 ? 'högre drawdown' : 'oförändrad drawdown'}`;
@@ -542,6 +589,113 @@ export default async function Home({ searchParams }) {
           <p className="footnote">This branch does not change the saved model calculation yet. It only adds a clearer interpretation layer and dashboard layout.</p>
         </article>
       </section>
+
+      {macroMatrix ? (
+        <section className="card macro-matrix-card">
+          <div className="macro-matrix-topline">
+            <div>
+              <p className="section-kicker">Macro · Medium/Long-Term</p>
+              <h2>Högfrekvent tillväxtdata: USA</h2>
+              <p className="hero-copy compact">
+                FRED-only fas 1 av macro-matrixen som pekades ut i `FRED_SOURCE_URLS_PHASE1.md`. Den använder bara serier som redan finns listade där och visar månatlig förbättring/försämring i samma heatmap-logik som referensbilden.
+              </p>
+            </div>
+
+            <div className="macro-matrix-status">
+              <span className={`mini-pill ${toneClass(macroActionTone(macroMatrixLatest?.macroGrowthRiskAction))}`}>
+                {macroMatrixLatest ? formatStatus(macroMatrixLatest.macroGrowthRiskAction) : 'No data'}
+              </span>
+              <strong>{macroMatrixLatest?.macroGrowthScore === null || macroMatrixLatest?.macroGrowthScore === undefined ? '—' : formatCompactMetric(macroMatrixLatest.macroGrowthScore, 2)}</strong>
+              <span>score · {macroMatrixLatest?.periodDate ? formatMonthLabel(macroMatrixLatest.periodDate) : '—'}</span>
+            </div>
+          </div>
+
+          <div className="macro-matrix-metric-strip">
+            <div className="macro-mini-stat">
+              <span>Regim</span>
+              <strong>{macroMatrixLatest ? formatStatus(macroMatrixLatest.macroGrowthRegime) : 'No data'}</strong>
+            </div>
+            <div className="macro-mini-stat">
+              <span>% positiva</span>
+              <strong>{macroMatrixLatest?.percentPositive === null || macroMatrixLatest?.percentPositive === undefined ? '—' : formatPercent(macroMatrixLatest.percentPositive, 0)}</strong>
+            </div>
+            <div className="macro-mini-stat">
+              <span>Senaste månadstäckning</span>
+              <strong>{macroMatrixLatest?.validRowCount ?? 0}/{macroMatrix?.totalRowCount ?? 0}</strong>
+            </div>
+            <div className="macro-mini-stat">
+              <span>FRED-rader live</span>
+              <strong>{macroMatrix?.availableRowCount ?? 0}/{macroMatrix?.totalRowCount ?? 0}</strong>
+            </div>
+          </div>
+
+          <div className="macro-matrix-scroll">
+            <table className="macro-matrix-table">
+              <thead>
+                <tr>
+                  <th>Growth Indicators US</th>
+                  {macroMatrix.months.map((periodDate) => (
+                    <th key={periodDate}>{formatMonthLabel(periodDate)}</th>
+                  ))}
+                  {macroMatrix.quarters.map((quarter) => (
+                    <th className="macro-quarter-head" key={quarter.key}>{quarter.label}</th>
+                  ))}
+                  <th className="macro-delta-head">Δ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {macroMatrix.rows.map((row) => (
+                  <tr key={row.key}>
+                    <th scope="row">
+                      <div className="macro-row-label">{row.label}</div>
+                    </th>
+                    {row.cells.map((cell) => (
+                      <td
+                        className={`macro-cell macro-${cell.colorBucket}`}
+                        key={`${row.key}-${cell.periodDate}`}
+                        title={`${row.label} · ${formatMonthLabel(cell.periodDate)} · ${cell.transformedValue === null ? 'No data' : formatCompactMetric(cell.transformedValue)}`}
+                      >
+                        {cell.transformedValue === null ? '—' : formatCompactMetric(cell.transformedValue)}
+                      </td>
+                    ))}
+                    {row.quarterlyCells.map((cell) => (
+                      <td
+                        className={`macro-cell macro-cell-quarter macro-${cell.colorBucket}`}
+                        key={`${row.key}-${cell.quarterKey}`}
+                        title={`${row.label} · ${cell.label} · ${cell.transformedValue === null ? 'No data' : formatCompactMetric(cell.transformedValue)}`}
+                      >
+                        {cell.transformedValue === null ? '—' : formatCompactMetric(cell.transformedValue)}
+                      </td>
+                    ))}
+                    <td className={`macro-delta-cell delta-${row.deltaDirection}`}>
+                      {formatMatrixDelta(row.delta)}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="macro-summary-row">
+                  <th scope="row">% Positive Change M/M</th>
+                  {macroMatrix.summaryByMonth.map((item) => (
+                    <td key={item.periodDate}>{item.percentPositive === null ? '—' : formatPercent(item.percentPositive, 0)}</td>
+                  ))}
+                  {macroMatrix.summaryByQuarter.map((item) => (
+                    <td className="macro-cell-quarter" key={item.quarterKey}>{item.percentPositive === null ? '—' : formatPercent(item.percentPositive, 0)}</td>
+                  ))}
+                  <td className={`macro-delta-cell ${macroMatrixPositiveDelta === null ? 'delta-flat' : macroMatrixPositiveDelta > 0 ? 'delta-up' : macroMatrixPositiveDelta < 0 ? 'delta-down' : 'delta-flat'}`}>
+                    {formatMatrixDelta(macroMatrixPositiveDelta)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p className="footnote">
+            {macroMatrixLatestAvailable?.periodDate && macroMatrixLatest?.periodDate && macroMatrixLatestAvailable.periodDate !== macroMatrixLatest.periodDate
+              ? `Topprutan använder ${formatMonthLabel(macroMatrixLatest.periodDate)} eftersom ${formatMonthLabel(macroMatrixLatestAvailable.periodDate)} fortfarande är en partiell makromånad. `
+              : ''}
+            Saknade serier exkluderas från nämnaren varje månad. Färglogiken bygger på riktning månad mot månad, med specialregler för inflation, PMI och jobless claims.
+          </p>
+        </section>
+      ) : null}
     </main>
   );
 }

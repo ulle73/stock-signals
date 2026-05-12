@@ -418,6 +418,219 @@ tbody tr:last-child td { border-bottom: none; }
     var(--card-strong);
 }
 
+.macro-matrix-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 247, 240, 0.95)),
+    var(--card-strong);
+  border-color: rgba(63, 74, 96, 0.14);
+}
+
+.macro-matrix-card h2,
+.macro-matrix-table,
+.macro-matrix-status,
+.macro-matrix-metric-strip {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.macro-matrix-card h2 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.macro-matrix-topline {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(220px, 0.7fr);
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 22px;
+}
+
+.macro-matrix-status,
+.macro-mini-stat {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(63, 74, 96, 0.14);
+  border-radius: 24px;
+}
+
+.macro-matrix-status {
+  padding: 20px 22px;
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.macro-matrix-status strong {
+  font-size: 2.8rem;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+
+.macro-matrix-status span:last-child {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.macro-matrix-metric-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.macro-mini-stat {
+  padding: 16px 18px;
+}
+
+.macro-mini-stat span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.macro-mini-stat strong {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: #101820;
+}
+
+.macro-matrix-scroll {
+  overflow-x: auto;
+  border: 1px solid rgba(63, 74, 96, 0.16);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  margin-bottom: 16px;
+}
+
+.macro-matrix-table {
+  width: 100%;
+  min-width: 1320px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(255, 255, 255, 0.98);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.macro-matrix-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  padding: 11px 10px;
+  border-bottom: 1px solid rgba(63, 74, 96, 0.16);
+  background: #f7f8fb;
+  color: #5b616e;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.macro-matrix-table thead th:first-child {
+  left: 0;
+  z-index: 4;
+  text-align: left;
+  min-width: 260px;
+}
+
+.macro-quarter-head,
+.macro-cell-quarter {
+  border-left: 1px solid rgba(63, 74, 96, 0.16);
+}
+
+.macro-delta-head {
+  min-width: 82px;
+}
+
+.macro-matrix-table tbody th,
+.macro-matrix-table tbody td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(63, 74, 96, 0.1);
+  text-align: center;
+}
+
+.macro-matrix-table tbody tr:last-child th,
+.macro-matrix-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.macro-matrix-table tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #ffffff;
+  text-align: left;
+  min-width: 260px;
+  color: #20252d;
+  font-weight: 600;
+}
+
+.macro-row-label {
+  line-height: 1.25;
+}
+
+.macro-cell {
+  min-width: 62px;
+  font-weight: 600;
+}
+
+.macro-strong_positive {
+  background: #cfe8e3;
+  color: #0d5f50;
+}
+
+.macro-positive {
+  background: #e7f2ee;
+  color: #1c6455;
+}
+
+.macro-neutral {
+  background: #f7f4ee;
+  color: #665f54;
+}
+
+.macro-negative {
+  background: #f8dfd6;
+  color: #a14632;
+}
+
+.macro-strong_negative {
+  background: #efc9bd;
+  color: #8c3424;
+}
+
+.macro-missing {
+  background: #fbfaf6;
+  color: #b2ac9f;
+}
+
+.macro-summary-row th,
+.macro-summary-row td {
+  background: #f4efe6;
+  font-weight: 700;
+}
+
+.macro-delta-cell {
+  background: #fffdfa;
+  font-weight: 700;
+}
+
+.delta-up {
+  color: #0d5f50;
+}
+
+.delta-down {
+  color: #a14632;
+}
+
+.delta-flat {
+  color: #7b7469;
+}
+
 .path-list {
   margin: 0 0 20px;
   padding-left: 20px;
@@ -431,6 +644,11 @@ tbody tr:last-child td { border-bottom: none; }
   .dashboard-grid,
   .detail-grid,
   .horizon-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .macro-matrix-topline,
+  .macro-matrix-metric-strip {
     grid-template-columns: 1fr;
   }
 
@@ -451,4 +669,6 @@ tbody tr:last-child td { border-bottom: none; }
   .ticker-header { flex-direction: column; }
   .ticker-form { width: 100%; }
   .position-card-head { flex-direction: column; }
+  .macro-matrix-status { padding: 18px; }
+  .macro-matrix-status strong { font-size: 2.2rem; }
 }
