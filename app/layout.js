@@ -1,4 +1,5 @@
 import './globals.css';
+import GlobalManufacturingPmiSection from './global-manufacturing-pmi-section.js';
 
 export const metadata = {
   title: 'Stock Signals',
@@ -8,7 +9,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <GlobalManufacturingPmiSection />
+      </body>
     </html>
   );
 }
