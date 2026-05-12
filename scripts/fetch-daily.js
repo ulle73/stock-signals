@@ -15,6 +15,7 @@ import { upsertConstituents, getActiveConstituents } from '../lib/repositories/c
 import { getLatestPriceDatesByTicker, upsertStockDailyPrices } from '../lib/repositories/prices.js';
 import { getLatestMarketSeriesDates, upsertMarketSeries } from '../lib/repositories/market-series.js';
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
+import { fetchAndStoreEuropeGrowthIndicators } from '../lib/repositories/europe-growth-indicators.js';
 import { fetchAndStoreGlobalManufacturingPmi } from '../lib/repositories/global-manufacturing-pmi.js';
 import { buildFetchRunCompletionDetails, fetchBenchmarkData } from '../lib/utils/fetch-benchmark.js';
 
@@ -138,6 +139,25 @@ async function fetchGlobalPmiData() {
   }
 }
 
+async function fetchEuropeGrowthData() {
+  try {
+    console.log('Fetching Europe growth indicators from Trading Economics HTML pages...');
+    const result = await fetchAndStoreEuropeGrowthIndicators();
+    return {
+      successfulRows: result.inserted,
+      failedSeries: result.failures,
+      periodDate: result.periodDate,
+    };
+  } catch (error) {
+    console.warn(`Failed Europe growth scrape: ${error.message}`);
+    return {
+      successfulRows: 0,
+      failedSeries: [{ seriesId: 'EUROPE_GROWTH_INDICATORS', error: error.message }],
+      periodDate: null,
+    };
+  }
+}
+
 async function run() {
   await failRunningFetchRuns('fetch_daily', 'fetch:daily interrupted before completion', {
     recoveredBy: 'fetch_daily',
@@ -177,12 +197,14 @@ async function run() {
     });
     const fredResult = await fetchFredData(latestMarketSeriesDates);
     const globalPmiResult = await fetchGlobalPmiData();
+    const europeGrowthResult = await fetchEuropeGrowthData();
 
     const failedItems =
       yahooResult.failedTickers.length +
       benchmarkResult.failedBenchmarks.length +
       fredResult.failedSeries.length +
-      globalPmiResult.failedSeries.length;
+      globalPmiResult.failedSeries.length +
+      europeGrowthResult.failedSeries.length;
     const status = failedItems > 0 ? 'partial_success' : 'success';
     const completionDetails = buildFetchRunCompletionDetails({
       constituentsParsed: constituents.length,
@@ -197,6 +219,7 @@ async function run() {
       metadata: {
         ...completionDetails.metadata,
         globalManufacturingPmi: globalPmiResult,
+        europeGrowth: europeGrowthResult,
       },
     });
 
@@ -205,6 +228,7 @@ async function run() {
     console.log(`Benchmark: ${benchmarkResult.successfulBenchmarks}/${BENCHMARK_TICKERS.length} tickers succeeded.`);
     console.log(`FRED: ${fredResult.successfulSeries.length}/${FRED_SERIES_IDS.length} series succeeded.`);
     console.log(`Global Manufacturing PMI: ${globalPmiResult.successfulRows} rows updated.`);
+    console.log(`Europe Growth Indicators: ${europeGrowthResult.successfulRows} rows updated.`);
   } catch (error) {
     await fetchRunGuard.finish('failure', {
       errorMessage: error.message,
