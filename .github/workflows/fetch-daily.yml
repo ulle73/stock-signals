@@ -44,6 +44,9 @@ jobs:
       - name: Fetch Barchart breadth snapshots
         run: npm run fetch:barchart-breadth
 
+      - name: Fetch implied-volatility proxy inputs
+        run: npm run fetch:implied-volatility-proxy
+
       - name: Calculate daily indicators
         run: npm run calculate:daily
 
@@ -56,6 +59,9 @@ jobs:
       - name: Calculate R3TW MMTW breadth indicator
         run: npm run calculate:r3tw-mmtw-breadth
 
+      - name: Calculate IVOL RVOL ratio indicator
+        run: npm run calculate:implied-volatility-ratio
+
       - name: Calculate sector breadth
         run: npm run calculate:sector-breadth
 
@@ -64,6 +70,12 @@ jobs:
 
       - name: Calculate market signals
         run: npm run calculate:signals
+
+      - name: Calculate MA200 breadth forward-return model
+        run: npm run calculate:market-breadth-ma200-forward-return
+
+      - name: Calculate empirical MA200 breadth forward-return model
+        run: npm run calculate:market-breadth-ma200-forward-return-empirical
 
       - name: Calculate trading signals
         run: npm run calculate:trading-signals

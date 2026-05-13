@@ -1,6 +1,13 @@
 import { getDashboardSnapshot } from '../lib/repositories/dashboard.js';
 import { interpretMarketSignal } from '../lib/utils/signal-interpretation.js';
 import { getVolumeEventLabel } from '../lib/utils/volume-events.js';
+import EquitySectorStyleRegimePerformanceSection from './equity-sector-style-regime-performance-section.js';
+import EuropeGrowthSection from './europe-growth-section.js';
+import GlobalManufacturingPmiSection from './global-manufacturing-pmi-section.js';
+import GrowthDataBaseEffectsSection from './growth-data-base-effects-section.js';
+import MarketBreadthMa200ForwardReturnComparisonSection from './market-breadth-ma200-forward-return-comparison-section.js';
+import PmiGrowthMomentumSection from './pmi-growth-momentum-section.js';
+import SectorFactorRegimePerformanceSection from './sector-factor-regime-performance-section.js';
 import {
   buildMarketSeriesCards,
   buildPositionStatusViewModel,
@@ -456,6 +463,8 @@ export default async function Home({ searchParams }) {
         </div>
       </section>
 
+      <MarketBreadthMa200ForwardReturnComparisonSection />
+
       <section className="card">
         <p className="section-kicker">Senaste 10 signaler</p>
         <div className="table-wrap">
@@ -696,6 +705,13 @@ export default async function Home({ searchParams }) {
           </p>
         </section>
       ) : null}
+
+      <GlobalManufacturingPmiSection />
+      <EuropeGrowthSection />
+      <PmiGrowthMomentumSection />
+      <GrowthDataBaseEffectsSection />
+      <SectorFactorRegimePerformanceSection />
+      <EquitySectorStyleRegimePerformanceSection />
     </main>
   );
 }

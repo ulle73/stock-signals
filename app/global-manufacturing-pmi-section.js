@@ -48,8 +48,7 @@ export default async function GlobalManufacturingPmiSection() {
     : null;
 
   return (
-    <div className="page-shell global-pmi-page-shell">
-      <section className="card macro-matrix-card">
+    <section className="card macro-matrix-card">
         <div className="macro-matrix-topline">
           <div>
             <p className="section-kicker">Macro · Global Manufacturing PMI</p>
@@ -110,7 +109,6 @@ export default async function GlobalManufacturingPmiSection() {
         </div>
 
         <p className="footnote">Första körningen visar bara aktuell månad. Historiken fylls på automatiskt när nya månadsvärden sparas.</p>
-      </section>
-    </div>
+    </section>
   );
 }

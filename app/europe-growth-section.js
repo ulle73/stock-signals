@@ -48,8 +48,7 @@ export default async function EuropeGrowthSection() {
     : null;
 
   return (
-    <div className="page-shell europe-growth-page-shell">
-      <section className="card macro-matrix-card">
+    <section className="card macro-matrix-card">
         <div className="macro-matrix-topline">
           <div>
             <p className="section-kicker">Macro · Europe Growth Indicators</p>
@@ -110,7 +109,6 @@ export default async function EuropeGrowthSection() {
         </div>
 
         <p className="footnote">Detta är en egen tabell, separat från USA Growth och Global Manufacturing PMI. Historiken byggs framåt när månadsvärden sparas.</p>
-      </section>
-    </div>
+    </section>
   );
 }

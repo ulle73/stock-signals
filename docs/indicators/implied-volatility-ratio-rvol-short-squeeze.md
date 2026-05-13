@@ -2,8 +2,8 @@
 
 ## Status
 
-Status: planned
-Implemented commit: TBD
+Status: implemented
+Implemented commit: uncommitted
 TradingView verification: not_applicable
 Manual verification: pending
 
@@ -79,6 +79,24 @@ short_squeeze
 risk_sentiment
 cross_asset
 ```
+
+## Implementation notes
+
+V1 is implemented as a separate external indicator pipeline, not inside `fetch:daily`.
+
+Current v1 proxy universe:
+
+- `SPY` + `^VIX`
+- `QQQ` + `^VXN`
+- `DIA` + `^VXD`
+- `GLD` + `^GVZ`
+- `USO` + `^OVX`
+- `EWZ` + `^VXEWZ`
+- `EFA` + `^VXEFA`
+
+This keeps the existing data pipeline untouched while still using actual implied-volatility proxy series where Yahoo exposes enough history.
+
+Assets whose proxy history is too short are intentionally left out of v1 instead of being fabricated.
 
 ## Core formula
 

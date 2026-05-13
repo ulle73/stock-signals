@@ -92,6 +92,10 @@ Det skapar:
 - `plce_short_volume_indicator_daily`
 - `external_breadth_daily`
 - `r3tw_mmtw_20dma_breadth_indicator_daily`
+- `implied_volatility_proxy_source_daily`
+- `implied_volatility_ratio_signals_daily`
+- `market_breadth_ma200_forward_return_signal_daily`
+- `market_breadth_ma200_forward_return_empirical_daily`
 - `market_breadth_daily`
 - `sector_breadth_daily`
 - `sector_signal_daily`
@@ -157,10 +161,14 @@ npm run fetch:daily
 npm run fetch:occ-volume-totals
 npm run fetch:finra-short-volume
 npm run fetch:barchart-breadth
+npm run fetch:implied-volatility-proxy
 npm run calculate:daily
 npm run calculate:cvol-call-volume
 npm run calculate:plce-short-volume
 npm run calculate:r3tw-mmtw-breadth
+npm run calculate:implied-volatility-ratio
+npm run calculate:market-breadth-ma200-forward-return
+npm run calculate:market-breadth-ma200-forward-return-empirical
 npm run calculate:sector-breadth
 npm run calculate:sector-signals
 npm run calculate:signals
@@ -174,7 +182,7 @@ npm run backtest:daily
 npm run validate:indicator -- AAPL
 ```
 
-De tre nya externa indikatorerna körs separat och lämnar den befintliga Yahoo/FRED/S&P 500-pipelinen orörd:
+De fyra externa indikatorvägarna och ett separat breadth-modellager körs isolerat och lämnar den befintliga Yahoo/FRED/S&P 500-pipelinen orörd:
 
 - `npm run fetch:occ-volume-totals` hämtar OCC daily volume totals till `occ_daily_volume_totals`
 - `npm run calculate:cvol-call-volume` bygger `cvol_call_volume_indicator_daily`
@@ -182,12 +190,17 @@ De tre nya externa indikatorerna körs separat och lämnar den befintliga Yahoo/
 - `npm run calculate:plce-short-volume` bygger `plce_short_volume_indicator_daily`
 - `npm run fetch:barchart-breadth` hämtar dagens `$R3TW` och `$MMTW` från Barchart till `external_breadth_daily`
 - `npm run calculate:r3tw-mmtw-breadth` bygger `r3tw_mmtw_20dma_breadth_indicator_daily`
+- `npm run fetch:implied-volatility-proxy` hämtar ett separat cross-asset-universum med underliggande Yahoo-priser och Yahoo/Cboe-volatilitetsproxyserier till `implied_volatility_proxy_source_daily`
+- `npm run calculate:implied-volatility-ratio` bygger `implied_volatility_ratio_signals_daily`
+- `npm run calculate:market-breadth-ma200-forward-return` bygger ett separat MA200 breadth-signalmodellager i `market_breadth_ma200_forward_return_signal_daily`
+- `npm run calculate:market-breadth-ma200-forward-return-empirical` bygger ett separat empiriskt SPY-baserat priorlager i `market_breadth_ma200_forward_return_empirical_daily`
 
 Miljövariabler för manuella körningar:
 
 - `OCC_REPORT_DATE` eller `OCC_START_DATE` + `OCC_END_DATE`
 - `FINRA_SHORT_VOLUME_DATE` eller `FINRA_SHORT_VOLUME_START_DATE` + `FINRA_SHORT_VOLUME_END_DATE`
 - `BARCHART_BREADTH_DATE`
+- `IMPLIED_VOLATILITY_PROXY_RANGE` (default `800d`)
 
 `npm run dev` öppnar nu en server-renderad startsida som visar:
 
@@ -466,6 +479,81 @@ De nya indikator-specifika rå- och signallagren är separata från den ordinari
   - `r3tw_mmtw_buy_signal`
   - `r3tw_mmtw_signal`
 
+- `implied_volatility_proxy_source_daily` sparar dagliga råinput för ett separat cross-asset-volatilitetsuniversum:
+  - `asset_key`
+  - `source_symbol`
+  - `implied_volatility_symbol`
+  - `close`
+  - `adj_close`
+  - `volume`
+  - `implied_volatility`
+  - `source_status`
+
+- `implied_volatility_ratio_signals_daily` sparar IVOL/RVOL-indikatorn med bland annat:
+  - `realised_volatility_30d`
+  - `ivol_rvol_ratio`
+  - `ivol_rvol_ratio_z_1y`
+  - `ivol_rvol_ratio_z_1w_ago`
+  - `ivol_rvol_ratio_z_1w_change`
+  - `rvol_20d`
+  - `trend_regime`
+  - `range_position_20d`
+  - `ivol_rvol_level`
+  - `signal`
+  - `action`
+  - `opportunity_score`
+  - `ivol_rvol_rank`
+  - `ivol_rvol_percentile`
+
+- `market_breadth_ma200_forward_return_signal_daily` sparar MA200 breadth-modellen med bland annat:
+  - `ma200_breadth_pct`
+  - `ma200_breadth_bucket`
+  - `ma200_breadth_5d_change`
+  - `ma200_breadth_10d_change`
+  - `ma200_breadth_20d_change`
+  - `ma200_breadth_50d_change`
+  - `ma200_breadth_signal`
+  - `ma200_breadth_action`
+  - `ma200_breadth_confidence`
+  - `ma200_breadth_warning`
+  - `ma200_expected_return_5d`
+  - `ma200_expected_return_10d`
+  - `ma200_expected_return_1m`
+  - `ma200_expected_return_3m`
+  - `ma200_expected_return_6m`
+  - `ma200_expected_return_12m`
+  - `ma200_win_ratio_5d`
+  - `ma200_win_ratio_10d`
+  - `ma200_win_ratio_1m`
+  - `ma200_win_ratio_3m`
+  - `ma200_win_ratio_6m`
+  - `ma200_win_ratio_12m`
+  - `ma200_forward_model_version`
+
+- `market_breadth_ma200_forward_return_empirical_daily` sparar ett separat empiriskt priorlager för aktuell breadth-bucket på varje datum, baserat på historiskt känd `SPY`-utveckling:
+  - `benchmark_symbol`
+  - `ma200_breadth_pct`
+  - `ma200_breadth_bucket`
+  - `ma200_empirical_sample_count_5d`
+  - `ma200_empirical_sample_count_10d`
+  - `ma200_empirical_sample_count_1m`
+  - `ma200_empirical_sample_count_3m`
+  - `ma200_empirical_sample_count_6m`
+  - `ma200_empirical_sample_count_12m`
+  - `ma200_empirical_expected_return_5d`
+  - `ma200_empirical_expected_return_10d`
+  - `ma200_empirical_expected_return_1m`
+  - `ma200_empirical_expected_return_3m`
+  - `ma200_empirical_expected_return_6m`
+  - `ma200_empirical_expected_return_12m`
+  - `ma200_empirical_win_ratio_5d`
+  - `ma200_empirical_win_ratio_10d`
+  - `ma200_empirical_win_ratio_1m`
+  - `ma200_empirical_win_ratio_3m`
+  - `ma200_empirical_win_ratio_6m`
+  - `ma200_empirical_win_ratio_12m`
+  - `ma200_forward_model_version`
+
 Watchlisten får nu också ett litet exekveringslager så att listan går att tolka operativt:
 
 - `playbook` beskriver hur raden ska användas, t.ex. `deploy_long`, `defensive_watch`, `hedge_watch` eller `standby_short`
@@ -591,9 +679,13 @@ Workflowen kör nu också de externa daily-källorna som separata steg i samma p
 - `npm run fetch:occ-volume-totals`
 - `npm run fetch:finra-short-volume`
 - `npm run fetch:barchart-breadth`
+- `npm run fetch:implied-volatility-proxy`
 - `npm run calculate:cvol-call-volume`
 - `npm run calculate:plce-short-volume`
 - `npm run calculate:r3tw-mmtw-breadth`
+- `npm run calculate:implied-volatility-ratio`
+- `npm run calculate:market-breadth-ma200-forward-return`
+- `npm run calculate:market-breadth-ma200-forward-return-empirical`
 
 Principen framåt är:
 

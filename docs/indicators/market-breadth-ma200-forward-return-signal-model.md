@@ -2,8 +2,8 @@
 
 ## Status
 
-Status: planned
-Implemented commit: TBD
+Status: implemented
+Implemented commit: uncommitted
 TradingView verification: not_applicable
 Manual verification: pending
 
@@ -65,6 +65,30 @@ daily input
 signal evaluated daily
 forward model based on 5d, 10d, 1m, 3m, 6m, 12m historical outcomes
 ```
+
+## Implementation notes
+
+V1 is implemented as a separate daily model layer on top of stored `market_breadth_daily` data.
+
+It does not change the existing breadth accumulator or `market_signal_daily`.
+
+Current v1 design choices:
+
+- input = existing `pct_above_sma200`
+- priors = fixed reference-table priors from the image
+- output = separate `market_breadth_ma200_forward_return_signal_daily`
+- model version = `reference_static_v1`
+
+This keeps the model deterministic and isolated.
+
+An empirical companion layer is now also implemented as a separate daily table:
+
+- input = existing `pct_above_sma200` plus stored `SPY` benchmark history
+- output = `market_breadth_ma200_forward_return_empirical_daily`
+- model version = `empirical_spy_v2`
+- empirical priors are calculated only from history that was already known on each date
+
+This keeps `reference_static_v1` stable while adding a parallel S&P500-native comparison layer without lookahead bias.
 
 ## Existing indicator input
 
