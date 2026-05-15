@@ -3,8 +3,78 @@ import assert from 'node:assert/strict';
 import {
   buildImpliedVolatilityProxySourceRows,
   buildImpliedVolatilityProxySourceUpsertStatements,
+  IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS,
 } from '../lib/repositories/implied-volatility-proxy-source.js';
 import { buildImpliedVolatilityRatioSignalUpsertStatements } from '../lib/repositories/implied-volatility-ratio-signals.js';
+
+test('IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS includes the expanded cross-asset proxy universe', () => {
+  const byKey = new Map(
+    IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS.map((item) => [item.assetKey, item])
+  );
+
+  assert.deepEqual(
+    [
+      byKey.get('iwm_russell2000'),
+      byKey.get('xle_energy'),
+      byKey.get('smh_semiconductors'),
+      byKey.get('arkk_innovation'),
+      byKey.get('gdx_gold_miners'),
+      byKey.get('fxe_euro'),
+      byKey.get('uup_us_dollar'),
+    ],
+    [
+      {
+        assetKey: 'iwm_russell2000',
+        assetName: 'iShares Russell 2000 ETF',
+        assetType: 'equity_index',
+        sourceSymbol: 'IWM',
+        impliedVolatilitySymbol: '^VIX',
+      },
+      {
+        assetKey: 'xle_energy',
+        assetName: 'SPDR Energy Select Sector ETF',
+        assetType: 'equity_sector',
+        sourceSymbol: 'XLE',
+        impliedVolatilitySymbol: '^OVX',
+      },
+      {
+        assetKey: 'smh_semiconductors',
+        assetName: 'VanEck Semiconductor ETF',
+        assetType: 'equity_sector',
+        sourceSymbol: 'SMH',
+        impliedVolatilitySymbol: '^VXN',
+      },
+      {
+        assetKey: 'arkk_innovation',
+        assetName: 'ARK Innovation ETF',
+        assetType: 'equity_index',
+        sourceSymbol: 'ARKK',
+        impliedVolatilitySymbol: '^VXN',
+      },
+      {
+        assetKey: 'gdx_gold_miners',
+        assetName: 'VanEck Gold Miners ETF',
+        assetType: 'equity_sector',
+        sourceSymbol: 'GDX',
+        impliedVolatilitySymbol: '^GVZ',
+      },
+      {
+        assetKey: 'fxe_euro',
+        assetName: 'CurrencyShares Euro Trust',
+        assetType: 'currency_etf',
+        sourceSymbol: 'FXE',
+        impliedVolatilitySymbol: '^EVZ',
+      },
+      {
+        assetKey: 'uup_us_dollar',
+        assetName: 'Invesco DB US Dollar Index Bullish Fund',
+        assetType: 'currency_etf',
+        sourceSymbol: 'UUP',
+        impliedVolatilitySymbol: '^EVZ',
+      },
+    ]
+  );
+});
 
 test('buildImpliedVolatilityProxySourceRows merges asset candles with IV proxy rows and preserves missing-IV dates', () => {
   const definition = {

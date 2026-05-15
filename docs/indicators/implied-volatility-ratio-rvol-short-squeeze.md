@@ -93,6 +93,16 @@ Current v1 proxy universe:
 - `USO` + `^OVX`
 - `EWZ` + `^VXEWZ`
 - `EFA` + `^VXEFA`
+- `IWM` + `^VIX` (broad US equity vol proxy)
+- `XLE` + `^OVX` (energy equities via oil vol proxy)
+- `SMH` + `^VXN` (semiconductors via Nasdaq vol proxy)
+- `ARKK` + `^VXN` (high-beta growth via Nasdaq vol proxy)
+- `GDX` + `^GVZ` (gold miners via gold vol proxy)
+- `FXE` + `^EVZ`
+- `UUP` + `^EVZ`
+- `XLK` + `^VXN` (technology via Nasdaq vol proxy)
+- `XLF` + `^VIX` (financials via broad US equity vol proxy)
+- `XLV` + `^VIX` (healthcare via broad US equity vol proxy)
 
 This keeps the existing data pipeline untouched while still using actual implied-volatility proxy series where Yahoo exposes enough history.
 

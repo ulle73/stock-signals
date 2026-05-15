@@ -4,12 +4,25 @@ import {
   buildMarketSeriesCards,
   buildPositionStatusViewModel,
   normalizeTickerInput,
+  resolveSelectedTicker,
 } from '../lib/utils/dashboard-view.js';
 
 test('normalizeTickerInput uppercases, trims, and falls back to AAPL', () => {
   assert.equal(normalizeTickerInput(' msft '), 'MSFT');
   assert.equal(normalizeTickerInput(''), 'AAPL');
   assert.equal(normalizeTickerInput(undefined), 'AAPL');
+});
+
+test('resolveSelectedTicker keeps valid values and falls back to the first active constituent', () => {
+  const constituents = [
+    { ticker: 'AAPL', company_name: 'Apple' },
+    { ticker: 'MSFT', company_name: 'Microsoft' },
+  ];
+
+  assert.equal(resolveSelectedTicker(' msft ', constituents), 'MSFT');
+  assert.equal(resolveSelectedTicker('invalid', constituents), 'AAPL');
+  assert.equal(resolveSelectedTicker('', constituents), 'AAPL');
+  assert.equal(resolveSelectedTicker(undefined, []), 'AAPL');
 });
 
 test('buildMarketSeriesCards returns fixed cards and fills missing series with null', () => {

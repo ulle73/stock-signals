@@ -1,60 +1,60 @@
 .macro-blue-5,
 .macro-strong_positive {
-  background: #2f8fa0;
-  color: #083f4a;
+  background: #2f91a3;
+  color: #183f47;
 }
 
 .macro-blue-4 {
-  background: #5aa9b7;
-  color: #0b4852;
+  background: #5fadb9;
+  color: #1f4a52;
 }
 
 .macro-blue-3 {
-  background: #88c3cb;
-  color: #104f59;
+  background: #91c7ce;
+  color: #2c565d;
 }
 
 .macro-blue-2,
 .macro-positive {
-  background: #b9dce0;
-  color: #245b62;
+  background: #c3dde1;
+  color: #3b6268;
 }
 
 .macro-blue-1 {
-  background: #dceff0;
-  color: #3f6870;
+  background: #e1eef0;
+  color: #526d72;
 }
 
 .macro-neutral {
-  background: #f7f4ee;
-  color: #665f54;
+  background: #f4f1ef;
+  color: #68615b;
 }
 
 .macro-red-1 {
-  background: #f8e8e4;
-  color: #7f4c40;
+  background: #f6e3df;
+  color: #7e4d45;
 }
 
 .macro-red-2,
 .macro-negative {
-  background: #f4cfc8;
-  color: #8d3f34;
+  background: #f0c9c4;
+  color: #88443d;
 }
 
 .macro-red-3 {
-  background: #edaea9;
-  color: #8e312c;
+  background: #e8aaa8;
+  color: #833a38;
 }
 
 .macro-red-4 {
-  background: #e48686;
-  color: #7d2425;
+  background: #dc8385;
+  color: #782f32;
 }
 
 .macro-red-5,
 .macro-strong_negative {
-  background: #d76168;
-  color: #6f1c22;
+  background: #cf6269;
+  color: #6e2830;
 }
 
 .macro-missing {

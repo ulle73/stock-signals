@@ -1,116 +1,31 @@
 import { getMacroMatrixPmiGrowthSnapshot } from '../lib/repositories/macro-matrix-pmi-growth.js';
+import { MacroMatrixSlide, TimelineMacroMatrix } from './macro-matrix-renderers.js';
 
-function n(value, digits = 1) {
-  if (value === null || value === undefined) return '—';
-  const number = Number(value);
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: Math.abs(number) >= 100 ? 0 : digits,
-    maximumFractionDigits: Math.abs(number) >= 100 ? 0 : digits,
-  }).format(number);
-}
-
-function pct(value) {
-  return value === null || value === undefined ? '—' : `${n(value, 0)}%`;
-}
-
-function month(value) {
-  if (!value) return '—';
-  return new Intl.DateTimeFormat('en-US', { month: 'short', year: '2-digit', timeZone: 'UTC' })
-    .format(new Date(`${value}T00:00:00Z`))
-    .replace(' ', '-');
-}
-
-function status(value) {
-  return value ? value.replaceAll('_', ' ') : 'No data';
-}
-
-function tone(action) {
-  if (action === 'RISK_ON' || action === 'NEUTRAL_TO_RISK_ON') return 'tone-positive';
-  if (action === 'NO_NEW_BUYS') return 'tone-caution';
-  if (action === 'REDUCE_RISK' || action === 'GO_TO_CASH') return 'tone-danger';
-  return 'tone-neutral';
-}
-
-function delta(value) {
-  if (value === null || value === undefined) return '—';
-  return `${Number(value) > 0 ? '+' : ''}${n(value)}`;
-}
+const HIGHLIGHT_SERVICE_PMI_KEYS = [
+  'service_pmi_new_orders',
+  'service_pmi_business_activity',
+  'service_pmi_total',
+];
 
 export default async function PmiGrowthMomentumSection() {
-  const matrix = await getMacroMatrixPmiGrowthSnapshot();
+  const matrix = await getMacroMatrixPmiGrowthSnapshot({ monthCount: 27, quarterCount: 0 });
   if (!matrix) return null;
 
-  const latest = matrix.latest ?? null;
-  const validMonths = matrix.summaryByMonth?.filter((item) => !item.isPartial) ?? [];
-  const previous = validMonths.at(-2) ?? null;
-  const positiveDelta = latest?.percentPositive !== null && latest?.percentPositive !== undefined && previous?.percentPositive !== null && previous?.percentPositive !== undefined
-    ? Number(latest.percentPositive) - Number(previous.percentPositive)
-    : null;
-
   return (
-    <section className="card macro-matrix-card">
-      <div className="macro-matrix-topline">
-        <div>
-          <p className="section-kicker">Macro · PMI Growth Momentum</p>
-          <h2>Industri-PMI ner och tjänste-PMI upp</h2>
-          <p className="hero-copy compact">
-            US-first PMI/growth-matrix med FRED/OECD-rader och explicita proxyserier där stabil gratis historik saknas för exakta PMI-subindex.
-          </p>
-        </div>
-        <div className="macro-matrix-status">
-          <span className={`mini-pill ${tone(latest?.pmiGrowthRiskAction)}`}>{status(latest?.pmiGrowthRiskAction)}</span>
-          <strong>{n(latest?.pmiGrowthScore, 2)}</strong>
-          <span>score · {month(latest?.periodDate)}</span>
-        </div>
-      </div>
-
-      <div className="macro-matrix-metric-strip">
-        <div className="macro-mini-stat"><span>Regim</span><strong>{status(latest?.pmiGrowthRegime)}</strong></div>
-        <div className="macro-mini-stat"><span>% positiva</span><strong>{pct(latest?.percentPositive)}</strong></div>
-        <div className="macro-mini-stat"><span>Services minus manufacturing</span><strong>{n(latest?.manufacturingServicesSpread, 2)}</strong></div>
-        <div className="macro-mini-stat"><span>PMI/Growth-rader live</span><strong>{matrix.availableRowCount ?? 0}/{matrix.totalRowCount ?? 0}</strong></div>
-      </div>
-
-      <div className="macro-matrix-scroll">
-        <table className="macro-matrix-table">
-          <thead>
-            <tr>
-              <th>PMI Growth Indicators</th>
-              {matrix.months.map((periodDate) => <th key={periodDate}>{month(periodDate)}</th>)}
-              {matrix.quarters.map((quarter) => <th className="macro-quarter-head" key={quarter.key}>{quarter.label}</th>)}
-              <th className="macro-delta-head">Δ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {matrix.rows.map((row) => (
-              <tr key={row.key}>
-                <th scope="row"><div className="macro-row-label">{row.label}</div></th>
-                {row.cells.map((cell) => (
-                  <td className={`macro-cell macro-${cell.colorBucket}`} key={`${row.key}-${cell.periodDate}`}>
-                    {cell.transformedValue === null ? '—' : n(cell.transformedValue)}
-                  </td>
-                ))}
-                {row.quarterlyCells.map((cell) => (
-                  <td className={`macro-cell macro-cell-quarter macro-${cell.colorBucket}`} key={`${row.key}-${cell.quarterKey}`}>
-                    {cell.transformedValue === null ? '—' : n(cell.transformedValue)}
-                  </td>
-                ))}
-                <td className={`macro-delta-cell delta-${row.deltaDirection}`}>{delta(row.delta)}</td>
-              </tr>
-            ))}
-            <tr className="macro-summary-row">
-              <th scope="row">% Positive Change M/M</th>
-              {matrix.summaryByMonth.map((item) => <td key={item.periodDate}>{pct(item.percentPositive)}</td>)}
-              {matrix.summaryByQuarter.map((item) => <td className="macro-cell-quarter" key={item.quarterKey}>{pct(item.percentPositive)}</td>)}
-              <td className={`macro-delta-cell ${positiveDelta === null ? 'delta-flat' : positiveDelta > 0 ? 'delta-up' : positiveDelta < 0 ? 'delta-down' : 'delta-flat'}`}>{delta(positiveDelta)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <p className="footnote">
-        Matrixen använder alla 17 rader från PMI Growth-specen. Rader med historiska proxykällor är med i beräkningen men är explicit märkta i källdefinitionerna.
-      </p>
-    </section>
+    <MacroMatrixSlide
+      className="macro-slide-pmi-growth"
+      title="Industri-PMI ner och tjänste-PMI upp"
+      subtitle="Fortsatta tecken på avmattning i konjunkturen efter veckans industri-PMI. Tjänstesektorn återhämtade sig i april."
+      footnote="Röda ringar markerar senaste värdet i tjänste-PMI-raderna, precis som referensbildens högra fokusmarkering."
+    >
+      <TimelineMacroMatrix
+        matrix={matrix}
+        rowHeader=""
+        showQuarters={false}
+        showDelta={false}
+        valueDigits={2}
+        highlightLatestKeys={HIGHLIGHT_SERVICE_PMI_KEYS}
+      />
+    </MacroMatrixSlide>
   );
 }
