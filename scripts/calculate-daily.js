@@ -1,5 +1,10 @@
 import { closePool } from '../lib/db.js';
 import { ensureEnvLoaded } from '../lib/env.js';
+import { buildBreakout20dIndicatorRows } from '../lib/indicators/breakout-20d.js';
+import { buildIbsRsiIndicatorRows } from '../lib/indicators/ibs-rsi.js';
+import { buildMacdVIndicatorRows } from '../lib/indicators/macd-v.js';
+import { buildPlceThresholdIndicatorRows } from '../lib/indicators/plce-threshold.js';
+import { buildPriceZscoreIndicatorRows } from '../lib/indicators/price-zscore.js';
 import { buildRydObvIndicatorRows } from '../lib/indicators/ryd-obv-zscore.js';
 import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
 import { calculateTickerIndicators } from '../lib/utils/rolling-indicators.js';
@@ -10,6 +15,7 @@ import {
 } from '../lib/utils/market-breadth.js';
 import { upsertMarketBreadthDaily } from '../lib/repositories/breadth.js';
 import {
+  getPlceShortVolumeIndicatorRows,
   getPriceHistoryForIndicators,
   upsertStockDailyIndicators,
 } from '../lib/repositories/indicators.js';
@@ -38,12 +44,22 @@ function getCalculationOptions() {
   return { ticker, tickerLimit };
 }
 
-async function processTickerRows(rows) {
+async function processTickerRows(rows, plceShortVolumeRows) {
   const baseIndicators = calculateTickerIndicators(rows);
   const rydObvIndicators = buildRydObvIndicatorRows(rows);
+  const priceZscoreIndicators = buildPriceZscoreIndicatorRows(rows);
+  const ibsRsiIndicators = buildIbsRsiIndicatorRows(rows);
+  const macdVIndicators = buildMacdVIndicatorRows(rows);
+  const breakout20dIndicators = buildBreakout20dIndicatorRows(rows);
+  const plceThresholdIndicators = buildPlceThresholdIndicatorRows(rows, plceShortVolumeRows);
   const indicators = baseIndicators.map((indicatorRow, index) => ({
     ...indicatorRow,
     ...rydObvIndicators[index],
+    ...priceZscoreIndicators[index],
+    ...ibsRsiIndicators[index],
+    ...macdVIndicators[index],
+    ...breakout20dIndicators[index],
+    ...plceThresholdIndicators[index],
   }));
   const inserted = await upsertStockDailyIndicators(indicators);
   return { indicators, inserted };
@@ -65,7 +81,10 @@ async function run() {
       console.log(`CALCULATE_TICKER_LIMIT=${options.tickerLimit}; limiting indicator calculation for local test.`);
     }
 
-    const priceRows = await getPriceHistoryForIndicators(options);
+    const [priceRows, plceShortVolumeRows] = await Promise.all([
+      getPriceHistoryForIndicators(options),
+      getPlceShortVolumeIndicatorRows(),
+    ]);
     if (!priceRows.length) {
       throw new Error('No stock price history found for indicator calculation.');
     }
@@ -93,7 +112,7 @@ async function run() {
         if (attemptedTickers === 1 || attemptedTickers % 25 === 0 || attemptedTickers === totalTickers) {
           console.log(`Calculating indicators ${attemptedTickers}/${totalTickers}: ${currentTicker} (${currentRows.length} rows)`);
         }
-        const { indicators, inserted } = await processTickerRows(currentRows);
+        const { indicators, inserted } = await processTickerRows(currentRows, plceShortVolumeRows);
         rowsCalculated += inserted;
         successfulTickers += 1;
 
