@@ -2,7 +2,7 @@
   "name": "tf_sync_green_period_test",
   "studyType": "state_period",
   "returnInstrument": "SPY",
-  "signalInstrument": "AAPL",
+  "signalInstrument": "SPY",
   "stateField": "tf_sync.state",
   "entryState": "green",
   "oppositeState": "red",
@@ -10,6 +10,7 @@
   "neutralEndDays": 3,
   "entryDelayBars": 1,
   "exitDelayBars": 1,
+  "maxHoldBars": 60,
   "filtersApplyAt": "entry",
   "filterMode": "ALL",
   "filters": [
