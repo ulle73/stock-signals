@@ -1,0 +1,11 @@
+{
+  "name": "breadth_cross_above_50_forward",
+  "studyType": "forward_horizon",
+  "returnInstrument": "SPY",
+  "maxHorizonDays": 20,
+  "eventMode": "signal_start",
+  "conditionMode": "ALL",
+  "conditions": [
+    { "field": "market.pct_above_50", "operator": "crossed_above", "value": 50 }
+  ]
+}

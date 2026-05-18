@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "studyName": "tf_sync_green_only_forward_check",
+    "studyType": "forward_horizon",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "priceBarCount": 1256,
+    "fieldKeys": [
+      "tf_sync.state"
+    ],
+    "priceSourceTable": "benchmark_daily_prices",
+    "firstDate": "2021-05-17",
+    "lastDate": "2026-05-15",
+    "generatedAt": "2026-05-18T21:33:23.240Z",
+    "configPath": "C:\\Users\\ryd\\AppData\\Local\\Temp\\tf-sync-green-only-forward.json",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-only-forward-check--20260518-213323.json",
+    "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-only-forward-check.latest.json"
+  },
+  "result": {
+    "name": "tf_sync_green_only_forward_check",
+    "studyType": "forward_horizon",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "conditionMode": "ALL",
+    "eventMode": "signal_start",
+    "eventCount": 0,
+    "events": [],
+    "horizons": [
+      {
+        "horizon_days": 1,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 2,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 3,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 4,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 5,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,573 @@
+{
+  "meta": {
+    "studyName": "tf_sync_green_position75_breadth50",
+    "studyType": "forward_horizon",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "priceBarCount": 1256,
+    "fieldKeys": [
+      "tf_sync.state",
+      "position.target_equity_weight_pct",
+      "market.pct_above_50"
+    ],
+    "priceSourceTable": "benchmark_daily_prices",
+    "firstDate": "2021-05-17",
+    "lastDate": "2026-05-15",
+    "generatedAt": "2026-05-18T21:31:50.299Z",
+    "configPath": "C:\\dev\\stock-signals\\studies\\examples\\tf-sync-forward.json",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-position75-breadth50--20260518-213150.json",
+    "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-position75-breadth50.latest.json"
+  },
+  "result": {
+    "name": "tf_sync_green_position75_breadth50",
+    "studyType": "forward_horizon",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "conditionMode": "ALL",
+    "eventMode": "signal_start",
+    "eventCount": 0,
+    "events": [],
+    "horizons": [
+      {
+        "horizon_days": 1,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 2,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 3,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 4,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 5,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 6,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 7,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 8,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 9,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 10,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 11,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 12,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 13,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 14,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 15,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 16,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 17,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 18,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 19,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 20,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 21,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 22,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 23,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 24,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 25,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 26,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 27,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 28,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 29,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 30,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 31,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 32,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 33,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 34,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 35,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 36,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 37,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 38,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 39,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 40,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 41,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 42,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 43,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 44,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 45,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 46,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 47,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 48,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 49,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 50,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 51,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 52,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 53,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 54,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 55,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 56,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 57,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 58,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 59,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      },
+      {
+        "horizon_days": 60,
+        "sample_count": 0,
+        "avg_return_pct": null,
+        "median_return_pct": null,
+        "win_rate_pct": null,
+        "best_return_pct": null,
+        "worst_return_pct": null
+      }
+    ]
+  }
+}

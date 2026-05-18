@@ -255,6 +255,7 @@ npm run calculate:swing-signals
 npm run calculate:swing-watchlists
 npm run seed:strategies
 npm run backtest:daily
+npm run study:signal -- studies/examples/tf-sync-forward.json
 npm run validate:indicator -- AAPL
 ```
 
@@ -715,6 +716,80 @@ Scriptet skriver ut:
 - vilka datumfönster som användes för `sma20/50/200`.
 
 `validate:indicator` verifierar nu också `ryd_obv`, `ryd_obv_zscore_80`, `ryd_obv_buy_signal`, `ryd_obv_sell_signal` och `ryd_obv_signal` mot råpriserna.
+
+---
+
+## Signal study-labb
+
+Det dynamiska signaltest-labbet ligger separat från `backtest:daily` och använder bara befintliga datalager. V1 körs via JSON-konfigar och terminalscript.
+
+Det finns nu också en UI ovanpå samma registry och samma säkra study-engine:
+
+```text
+/signal-study-lab
+```
+
+Starta appen och öppna sidan lokalt:
+
+```powershell
+npm run dev
+```
+
+Besök sedan:
+
+```text
+http://localhost:3000/signal-study-lab
+```
+
+UI:t låter dig välja study-typ, return-instrument, signalinstrument, conditions, filters, operators och state-logik utan att skriva fri SQL eller hårdkoda nya tester.
+
+Exempel på körning:
+
+```powershell
+npm run study:signal -- studies/examples/tf-sync-forward.json
+npm run study:signal -- studies/examples/tf-sync-green-period.json
+npm run study:signal -- studies/examples/breadth-cross-forward.json
+```
+
+Du kan också lista alla valbara registry-fält som senare kan användas av ett UI:
+
+```powershell
+npm run study:signal -- --list-fields
+```
+
+V1 stödjer två studietyper:
+
+- `forward_horizon`
+- `state_period`
+
+`signalInstrument` är frivilligt. Om det utelämnas används samma ticker som `returnInstrument`.
+
+Resultatet skrivs ut som JSON och innehåller:
+
+- `meta`
+- `result`
+
+Varje körning sparar nu också två filer i `studies/results/`:
+
+- en tidsstämplad fil per körning
+- en `*.latest.json`-fil som alltid pekar på senaste körningen för just den studien
+
+Det gäller både terminalscriptet och UI-körningar från `/signal-study-lab`.
+
+Kärnfiler:
+
+- `lib/signal-registry/fields.js`
+- `lib/utils/dynamic-condition-engine.js`
+- `lib/utils/forward-return-study.js`
+- `lib/utils/state-period-study.js`
+- `lib/repositories/signal-studies.js`
+- `scripts/run-signal-study.js`
+
+Exempelkonfigar:
+
+- `studies/examples/tf-sync-forward.json`
+- `studies/examples/tf-sync-green-period.json`
+- `studies/examples/breadth-cross-forward.json`
 
 ---
 

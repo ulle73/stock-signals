@@ -1,0 +1,368 @@
+{
+  "meta": {
+    "studyName": "breadth_cross_above_50_forward",
+    "studyType": "forward_horizon",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "priceBarCount": 1256,
+    "fieldKeys": [
+      "market.pct_above_50"
+    ],
+    "priceSourceTable": "benchmark_daily_prices",
+    "firstDate": "2021-05-17",
+    "lastDate": "2026-05-15",
+    "generatedAt": "2026-05-18T21:31:48.243Z",
+    "configPath": "C:\\dev\\stock-signals\\studies\\examples\\breadth-cross-forward.json",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\breadth-cross-above-50-forward--20260518-213148.json",
+    "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\breadth-cross-above-50-forward.latest.json"
+  },
+  "result": {
+    "name": "breadth_cross_above_50_forward",
+    "studyType": "forward_horizon",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "conditionMode": "ALL",
+    "eventMode": "signal_start",
+    "eventCount": 39,
+    "events": [
+      {
+        "signal_date": "2022-07-20",
+        "signal_price": 375.17
+      },
+      {
+        "signal_date": "2022-09-07",
+        "signal_price": 378.03
+      },
+      {
+        "signal_date": "2022-10-26",
+        "signal_price": 364.55
+      },
+      {
+        "signal_date": "2022-12-29",
+        "signal_price": 367.58
+      },
+      {
+        "signal_date": "2023-01-04",
+        "signal_price": 367.89
+      },
+      {
+        "signal_date": "2023-01-06",
+        "signal_price": 372.03
+      },
+      {
+        "signal_date": "2023-01-20",
+        "signal_price": 379.51
+      },
+      {
+        "signal_date": "2023-02-27",
+        "signal_price": 381.28
+      },
+      {
+        "signal_date": "2023-03-03",
+        "signal_price": 387.48
+      },
+      {
+        "signal_date": "2023-03-31",
+        "signal_price": 393.96
+      },
+      {
+        "signal_date": "2023-04-10",
+        "signal_price": 394.17
+      },
+      {
+        "signal_date": "2023-04-27",
+        "signal_price": 396.86
+      },
+      {
+        "signal_date": "2023-05-05",
+        "signal_price": 397.08
+      },
+      {
+        "signal_date": "2023-05-17",
+        "signal_price": 399.58
+      },
+      {
+        "signal_date": "2023-06-02",
+        "signal_price": 411.79
+      },
+      {
+        "signal_date": "2023-08-30",
+        "signal_price": 435.62
+      },
+      {
+        "signal_date": "2023-11-03",
+        "signal_price": 421.34
+      },
+      {
+        "signal_date": "2023-11-10",
+        "signal_price": 427.08
+      },
+      {
+        "signal_date": "2024-04-29",
+        "signal_price": 497.94
+      },
+      {
+        "signal_date": "2024-05-06",
+        "signal_price": 504.3
+      },
+      {
+        "signal_date": "2024-05-31",
+        "signal_price": 514.84
+      },
+      {
+        "signal_date": "2024-06-12",
+        "signal_price": 528.5
+      },
+      {
+        "signal_date": "2024-06-18",
+        "signal_price": 535.46
+      },
+      {
+        "signal_date": "2024-06-27",
+        "signal_price": 535.11
+      },
+      {
+        "signal_date": "2024-07-10",
+        "signal_price": 549.75
+      },
+      {
+        "signal_date": "2024-08-08",
+        "signal_price": 519.71
+      },
+      {
+        "signal_date": "2024-11-01",
+        "signal_price": 560.99
+      },
+      {
+        "signal_date": "2025-01-21",
+        "signal_price": 594.43
+      },
+      {
+        "signal_date": "2025-02-05",
+        "signal_price": 595.58
+      },
+      {
+        "signal_date": "2025-02-28",
+        "signal_price": 585.68
+      },
+      {
+        "signal_date": "2025-05-02",
+        "signal_price": 560.34
+      },
+      {
+        "signal_date": "2025-10-14",
+        "signal_price": 658.48
+      },
+      {
+        "signal_date": "2025-10-20",
+        "signal_price": 667.5
+      },
+      {
+        "signal_date": "2025-11-11",
+        "signal_price": 679.13
+      },
+      {
+        "signal_date": "2025-11-25",
+        "signal_price": 671.2
+      },
+      {
+        "signal_date": "2025-12-10",
+        "signal_price": 683.68
+      },
+      {
+        "signal_date": "2026-04-09",
+        "signal_price": 679.91
+      },
+      {
+        "signal_date": "2026-04-13",
+        "signal_price": 686.1
+      },
+      {
+        "signal_date": "2026-04-30",
+        "signal_price": 718.66
+      }
+    ],
+    "horizons": [
+      {
+        "horizon_days": 1,
+        "sample_count": 39,
+        "avg_return_pct": 0.04,
+        "median_return_pct": 0.06,
+        "win_rate_pct": 56.41,
+        "best_return_pct": 1.22,
+        "worst_return_pct": -1.75
+      },
+      {
+        "horizon_days": 2,
+        "sample_count": 39,
+        "avg_return_pct": 0.09,
+        "median_return_pct": 0.04,
+        "win_rate_pct": 53.85,
+        "best_return_pct": 2.22,
+        "worst_return_pct": -2.91
+      },
+      {
+        "horizon_days": 3,
+        "sample_count": 39,
+        "avg_return_pct": 0.51,
+        "median_return_pct": 0.48,
+        "win_rate_pct": 71.79,
+        "best_return_pct": 3.5,
+        "worst_return_pct": -1.87
+      },
+      {
+        "horizon_days": 4,
+        "sample_count": 39,
+        "avg_return_pct": 0.46,
+        "median_return_pct": 0.63,
+        "win_rate_pct": 58.97,
+        "best_return_pct": 4.3,
+        "worst_return_pct": -3.61
+      },
+      {
+        "horizon_days": 5,
+        "sample_count": 39,
+        "avg_return_pct": 0.62,
+        "median_return_pct": 1.06,
+        "win_rate_pct": 64.1,
+        "best_return_pct": 4.75,
+        "worst_return_pct": -4.52
+      },
+      {
+        "horizon_days": 6,
+        "sample_count": 39,
+        "avg_return_pct": 0.76,
+        "median_return_pct": 1.15,
+        "win_rate_pct": 71.79,
+        "best_return_pct": 4.85,
+        "worst_return_pct": -5.65
+      },
+      {
+        "horizon_days": 7,
+        "sample_count": 39,
+        "avg_return_pct": 1.04,
+        "median_return_pct": 1.4,
+        "win_rate_pct": 71.79,
+        "best_return_pct": 5.46,
+        "worst_return_pct": -6.44
+      },
+      {
+        "horizon_days": 8,
+        "sample_count": 39,
+        "avg_return_pct": 1.19,
+        "median_return_pct": 1.27,
+        "win_rate_pct": 69.23,
+        "best_return_pct": 5.29,
+        "worst_return_pct": -5.94
+      },
+      {
+        "horizon_days": 9,
+        "sample_count": 39,
+        "avg_return_pct": 1.39,
+        "median_return_pct": 1.6,
+        "win_rate_pct": 76.92,
+        "best_return_pct": 5.65,
+        "worst_return_pct": -7.2
+      },
+      {
+        "horizon_days": 10,
+        "sample_count": 39,
+        "avg_return_pct": 1.41,
+        "median_return_pct": 1.79,
+        "win_rate_pct": 74.36,
+        "best_return_pct": 4.99,
+        "worst_return_pct": -5.28
+      },
+      {
+        "horizon_days": 11,
+        "sample_count": 39,
+        "avg_return_pct": 1.63,
+        "median_return_pct": 2.6,
+        "win_rate_pct": 74.36,
+        "best_return_pct": 5.93,
+        "worst_return_pct": -5.54
+      },
+      {
+        "horizon_days": 12,
+        "sample_count": 38,
+        "avg_return_pct": 1.57,
+        "median_return_pct": 2.06,
+        "win_rate_pct": 78.95,
+        "best_return_pct": 5.68,
+        "worst_return_pct": -7.12
+      },
+      {
+        "horizon_days": 13,
+        "sample_count": 38,
+        "avg_return_pct": 1.4,
+        "median_return_pct": 1.78,
+        "win_rate_pct": 68.42,
+        "best_return_pct": 5.82,
+        "worst_return_pct": -8.04
+      },
+      {
+        "horizon_days": 14,
+        "sample_count": 38,
+        "avg_return_pct": 1.49,
+        "median_return_pct": 2.34,
+        "win_rate_pct": 73.68,
+        "best_return_pct": 5.21,
+        "worst_return_pct": -8.27
+      },
+      {
+        "horizon_days": 15,
+        "sample_count": 38,
+        "avg_return_pct": 1.63,
+        "median_return_pct": 1.88,
+        "win_rate_pct": 76.32,
+        "best_return_pct": 6.39,
+        "worst_return_pct": -6.47
+      },
+      {
+        "horizon_days": 16,
+        "sample_count": 38,
+        "avg_return_pct": 1.9,
+        "median_return_pct": 2.31,
+        "win_rate_pct": 81.58,
+        "best_return_pct": 6.39,
+        "worst_return_pct": -8.42
+      },
+      {
+        "horizon_days": 17,
+        "sample_count": 38,
+        "avg_return_pct": 1.76,
+        "median_return_pct": 2.08,
+        "win_rate_pct": 76.32,
+        "best_return_pct": 8.19,
+        "worst_return_pct": -9.84
+      },
+      {
+        "horizon_days": 18,
+        "sample_count": 38,
+        "avg_return_pct": 1.86,
+        "median_return_pct": 2.49,
+        "win_rate_pct": 76.32,
+        "best_return_pct": 8.64,
+        "worst_return_pct": -7.83
+      },
+      {
+        "horizon_days": 19,
+        "sample_count": 38,
+        "avg_return_pct": 2.24,
+        "median_return_pct": 3.01,
+        "win_rate_pct": 78.95,
+        "best_return_pct": 8.85,
+        "worst_return_pct": -6.98
+      },
+      {
+        "horizon_days": 20,
+        "sample_count": 38,
+        "avg_return_pct": 2.25,
+        "median_return_pct": 2.73,
+        "win_rate_pct": 81.58,
+        "best_return_pct": 8.6,
+        "worst_return_pct": -7.6
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "tf_sync_green_period_test",
+  "studyType": "state_period",
+  "returnInstrument": "SPY",
+  "signalInstrument": "AAPL",
+  "stateField": "tf_sync.state",
+  "entryState": "green",
+  "oppositeState": "red",
+  "neutralState": "neutral",
+  "neutralEndDays": 3,
+  "entryDelayBars": 1,
+  "exitDelayBars": 1,
+  "filtersApplyAt": "entry",
+  "filterMode": "ALL",
+  "filters": [
+    { "field": "position.target_equity_weight_pct", "operator": ">=", "value": 75 },
+    { "field": "market.pct_above_50", "operator": ">", "value": 50 }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "studyName": "tf_sync_green_only_period_check",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "priceBarCount": 1256,
+    "fieldKeys": [
+      "tf_sync.state"
+    ],
+    "priceSourceTable": "benchmark_daily_prices",
+    "firstDate": "2021-05-17",
+    "lastDate": "2026-05-15",
+    "generatedAt": "2026-05-18T21:33:23.236Z",
+    "configPath": "C:\\Users\\ryd\\AppData\\Local\\Temp\\tf-sync-green-only-period.json",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-only-period-check--20260518-213323.json",
+    "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-only-period-check.latest.json"
+  },
+  "result": {
+    "name": "tf_sync_green_only_period_check",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "stateField": "tf_sync.state",
+    "entryState": "green",
+    "oppositeState": "red",
+    "neutralState": "neutral",
+    "neutralEndDays": 3,
+    "entryDelayBars": 1,
+    "exitDelayBars": 1,
+    "periods": [],
+    "summary": {
+      "period_count": 0,
+      "avg_return_pct": null,
+      "median_return_pct": null,
+      "win_rate_pct": null,
+      "avg_bars_held": null,
+      "median_bars_held": null,
+      "best_return_pct": null,
+      "worst_return_pct": null
+    }
+  }
+}

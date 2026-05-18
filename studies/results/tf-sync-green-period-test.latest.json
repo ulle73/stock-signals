@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "studyName": "tf_sync_green_period_test",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "AAPL",
+    "priceBarCount": 1256,
+    "fieldKeys": [
+      "tf_sync.state",
+      "position.target_equity_weight_pct",
+      "market.pct_above_50"
+    ],
+    "priceSourceTable": "benchmark_daily_prices",
+    "firstDate": "2021-05-17",
+    "lastDate": "2026-05-15",
+    "fieldCoverage": [
+      {
+        "fieldKey": "tf_sync.state",
+        "rowCount": 42,
+        "nonNullCount": 42,
+        "firstValueDate": "2026-03-18",
+        "lastValueDate": "2026-05-15"
+      },
+      {
+        "fieldKey": "position.target_equity_weight_pct",
+        "rowCount": 1256,
+        "nonNullCount": 1256,
+        "firstValueDate": "2021-05-17",
+        "lastValueDate": "2026-05-15"
+      },
+      {
+        "fieldKey": "market.pct_above_50",
+        "rowCount": 1005,
+        "nonNullCount": 1005,
+        "firstValueDate": "2022-05-13",
+        "lastValueDate": "2026-05-15"
+      }
+    ],
+    "warnings": [],
+    "generatedAt": "2026-05-18T22:00:39.463Z",
+    "configPath": "C:\\dev\\stock-signals\\studies\\examples\\tf-sync-green-period.json",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test--20260518-220039.json",
+    "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test.latest.json"
+  },
+  "result": {
+    "name": "tf_sync_green_period_test",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "AAPL",
+    "stateField": "tf_sync.state",
+    "entryState": "green",
+    "oppositeState": "red",
+    "neutralState": "neutral",
+    "neutralEndDays": 3,
+    "entryDelayBars": 1,
+    "exitDelayBars": 1,
+    "periods": [
+      {
+        "signal_start_date": "2026-04-08",
+        "entry_date": "2026-04-09",
+        "end_signal_date": "2026-04-21",
+        "exit_date": "2026-04-22",
+        "bars_held": 9,
+        "entry_price": 679.91,
+        "exit_price": 711.21,
+        "return_pct": 4.6,
+        "end_reason": "opposite_state"
+      },
+      {
+        "signal_start_date": "2026-04-15",
+        "entry_date": "2026-04-16",
+        "end_signal_date": "2026-04-21",
+        "exit_date": "2026-04-22",
+        "bars_held": 4,
+        "entry_price": 701.66,
+        "exit_price": 711.21,
+        "return_pct": 1.36,
+        "end_reason": "opposite_state"
+      },
+      {
+        "signal_start_date": "2026-04-17",
+        "entry_date": "2026-04-20",
+        "end_signal_date": "2026-04-21",
+        "exit_date": "2026-04-22",
+        "bars_held": 2,
+        "entry_price": 708.72,
+        "exit_price": 711.21,
+        "return_pct": 0.35,
+        "end_reason": "opposite_state"
+      },
+      {
+        "signal_start_date": "2026-04-22",
+        "entry_date": "2026-04-23",
+        "end_signal_date": "2026-04-30",
+        "exit_date": "2026-05-01",
+        "bars_held": 6,
+        "entry_price": 708.45,
+        "exit_price": 720.65,
+        "return_pct": 1.72,
+        "end_reason": "neutral_streak_3"
+      },
+      {
+        "signal_start_date": "2026-04-27",
+        "entry_date": "2026-04-28",
+        "end_signal_date": "2026-04-30",
+        "exit_date": "2026-05-01",
+        "bars_held": 3,
+        "entry_price": 711.69,
+        "exit_price": 720.65,
+        "return_pct": 1.26,
+        "end_reason": "neutral_streak_3"
+      }
+    ],
+    "summary": {
+      "period_count": 5,
+      "avg_return_pct": 1.86,
+      "median_return_pct": 1.36,
+      "win_rate_pct": 100,
+      "avg_bars_held": 4.8,
+      "median_bars_held": 4,
+      "best_return_pct": 4.6,
+      "worst_return_pct": 0.35
+    }
+  }
+}

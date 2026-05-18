@@ -1,0 +1,14 @@
+{
+  "name": "tf_sync_green_position75_breadth50",
+  "studyType": "forward_horizon",
+  "returnInstrument": "SPY",
+  "signalInstrument": "AAPL",
+  "maxHorizonDays": 60,
+  "eventMode": "signal_start",
+  "conditionMode": "ALL",
+  "conditions": [
+    { "field": "tf_sync.state", "operator": "changed_to", "value": "green" },
+    { "field": "position.target_equity_weight_pct", "operator": ">=", "value": 75 },
+    { "field": "market.pct_above_50", "operator": ">", "value": 50 }
+  ]
+}
