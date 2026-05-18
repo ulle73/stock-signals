@@ -22,3 +22,10 @@ test('buildYahooChartUrl uses the same daily interval for benchmark tickers', ()
     'https://query1.finance.yahoo.com/v8/finance/chart/SPY?range=1mo&interval=1d'
   );
 });
+
+test('buildYahooChartUrl accepts intraday intervals for separate fetch pipelines', () => {
+  assert.equal(
+    buildYahooChartUrl('AAPL', { range: '2mo', interval: '60m' }),
+    'https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=2mo&interval=60m'
+  );
+});

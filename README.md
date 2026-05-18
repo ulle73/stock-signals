@@ -68,10 +68,26 @@ cp .env.example .env.local
 Fyll i:
 
 ```env
+# default -> DATABASE_URL
+# cockroach -> DATABASE_URL_COCKROACH
+DATABASE_TARGET="default"
 DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require"
+DATABASE_URL_COCKROACH="postgresql://USER:PASSWORD@HOST.cockroachlabs.cloud:26257/DBNAME?sslmode=verify-full&sslrootcert=C:/Users/ryd/AppData/Roaming/postgresql/root.crt"
 ```
 
 `npm run db:migrate` och `npm run fetch:daily` laddar nu samma `.env*`-filer som Next.js gör, så `.env.local` fungerar även för scriptkörningar.
+
+Om du vill växla databas utan att ändra kod sätter du bara:
+
+```powershell
+$env:DATABASE_TARGET="cockroach"
+```
+
+eller låter `.env.local` stå på:
+
+```env
+DATABASE_TARGET="default"
+```
 
 ### 3. Kör migration
 
@@ -93,6 +109,7 @@ Det skapar:
 - `external_breadth_daily`
 - `r3tw_mmtw_20dma_breadth_indicator_daily`
 - `implied_volatility_proxy_source_daily`
+- `macro_matrix_yahoo_proxy_daily`
 - `implied_volatility_ratio_signals_daily`
 - `market_breadth_ma200_forward_return_signal_daily`
 - `market_breadth_ma200_forward_return_empirical_daily`
@@ -140,6 +157,14 @@ $env:YAHOO_DAILY_RANGE="800d"
 npm run fetch:daily
 ```
 
+För cirka fem års Yahoo-historik i vald databas:
+
+```powershell
+$env:DATABASE_TARGET="cockroach"
+$env:YAHOO_DAILY_RANGE="5y"
+npm run fetch:daily
+```
+
 Det kräver ingen rensning av databasen. Scriptet upsertar befintliga datum och lägger till äldre datum som saknas.
 
 Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
@@ -150,6 +175,55 @@ Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
 - dagliga FRED-serier upsertas inkrementellt med liten overlap
 - månadsvisa FRED-serier upsertas i full längd vid varje körning för att inte missa revisioner
 
+### 6. Hämta Yahoo 60m-candles separat
+
+`fetch:intraday-60m` är en egen pipeline och rör inte `stock_daily_prices`.
+
+Standard är två månader bakåt:
+
+```powershell
+npm run fetch:intraday-60m
+```
+
+Begränsa gärna första testet:
+
+```powershell
+$env:FETCH_TICKER_LIMIT="10"
+$env:YAHOO_INTRADAY_60M_RANGE="2mo"
+npm run fetch:intraday-60m
+```
+
+Eller en enskild ticker:
+
+```powershell
+$env:FETCH_TICKER="AAPL"
+$env:YAHOO_INTRADAY_60M_RANGE="2mo"
+npm run fetch:intraday-60m
+```
+
+### 7. Hämta macro-matrix Yahoo-proxyer separat
+
+Sektor/faktor- och equity/style-matriserna läser nu från databasen i stället för att hämta Yahoo live vid render.
+
+Första körningen backfillar symboler som saknas med lång historik:
+
+```powershell
+npm run fetch:macro-matrix-yahoo-proxy
+```
+
+Standard är:
+
+- nya symboler: `10y`
+- befintliga symboler: `400d`
+
+Du kan skriva över detta manuellt:
+
+```powershell
+$env:YAHOO_PROXY_DAILY_INITIAL_RANGE="10y"
+$env:YAHOO_PROXY_DAILY_RANGE="90d"
+npm run fetch:macro-matrix-yahoo-proxy
+```
+
 ---
 
 ## Scripts
@@ -158,6 +232,8 @@ Utan `YAHOO_DAILY_RANGE` kör scriptet inkrementellt:
 npm run dev
 npm run db:migrate
 npm run fetch:daily
+npm run fetch:intraday-60m
+npm run fetch:macro-matrix-yahoo-proxy
 npm run fetch:occ-volume-totals
 npm run fetch:finra-short-volume
 npm run fetch:barchart-breadth
@@ -191,6 +267,7 @@ De fyra externa indikatorvägarna och ett separat breadth-modellager körs isole
 - `npm run fetch:barchart-breadth` hämtar dagens `$R3TW` och `$MMTW` från Barchart till `external_breadth_daily`
 - `npm run calculate:r3tw-mmtw-breadth` bygger `r3tw_mmtw_20dma_breadth_indicator_daily`
 - `npm run fetch:implied-volatility-proxy` hämtar ett separat cross-asset-universum med underliggande Yahoo-priser och Yahoo/Cboe-volatilitetsproxyserier till `implied_volatility_proxy_source_daily`
+- `npm run fetch:macro-matrix-yahoo-proxy` hämtar Yahoo daily-proxyserierna för macro-matriserna till `macro_matrix_yahoo_proxy_daily`
 - `npm run calculate:implied-volatility-ratio` bygger `implied_volatility_ratio_signals_daily`
 - `npm run calculate:market-breadth-ma200-forward-return` bygger ett separat MA200 breadth-signalmodellager i `market_breadth_ma200_forward_return_signal_daily`
 - `npm run calculate:market-breadth-ma200-forward-return-empirical` bygger ett separat empiriskt SPY-baserat priorlager i `market_breadth_ma200_forward_return_empirical_daily`
@@ -201,6 +278,8 @@ Miljövariabler för manuella körningar:
 - `FINRA_SHORT_VOLUME_DATE` eller `FINRA_SHORT_VOLUME_START_DATE` + `FINRA_SHORT_VOLUME_END_DATE`
 - `BARCHART_BREADTH_DATE`
 - `IMPLIED_VOLATILITY_PROXY_RANGE` (default `800d`)
+- `YAHOO_PROXY_DAILY_INITIAL_RANGE` (default `10y` för symboler som saknas i proxy-tabellen)
+- `YAHOO_PROXY_DAILY_RANGE` (default `400d` för löpande uppdatering av redan backfillade proxy-symboler)
 
 `npm run dev` öppnar nu en server-renderad startsida som visar:
 
@@ -641,14 +720,17 @@ Scriptet skriver ut:
 
 ## Live-setup
 
-Projektet använder en enda Neon-databas, direkt mot `main`, för allt:
+Projektet använder alltid exakt en aktiv databas per körning, men du kan nu växla mellan flera connection strings via `DATABASE_TARGET`.
 
-- lokal utveckling
-- `npm run db:migrate`
-- `npm run fetch:daily`
-- live-miljön
+Standard:
 
-Det är kortaste vägen till live, men betyder också att alla schemaändringar och datakörningar träffar produktionsdatabasen direkt.
+- `DATABASE_TARGET=default` -> `DATABASE_URL`
+
+Exempel för sekundär databas:
+
+- `DATABASE_TARGET=cockroach` -> `DATABASE_URL_COCKROACH`
+
+Det gör att lokal utveckling, scriptkörningar och live kan använda olika databaser utan kodändringar, så länge rätt env-variabler finns.
 
 ## Daglig körning
 
@@ -657,6 +739,11 @@ Repo:t innehåller en GitHub Actions-workflow i [`.github/workflows/fetch-daily.
 För att den ska fungera behöver du lägga in repository secret:
 
 - `DATABASE_URL` = din Neon connection string
+
+Om du senare flyttar workflowen till Cockroach kan du i stället:
+
+- sätta `DATABASE_TARGET=cockroach`
+- lägga in `DATABASE_URL_COCKROACH` som repository secret
 
 Workflowen kör:
 

@@ -47,6 +47,9 @@ jobs:
       - name: Fetch implied-volatility proxy inputs
         run: npm run fetch:implied-volatility-proxy
 
+      - name: Fetch macro-matrix Yahoo proxy inputs
+        run: npm run fetch:macro-matrix-yahoo-proxy
+
       - name: Calculate daily indicators
         run: npm run calculate:daily
 

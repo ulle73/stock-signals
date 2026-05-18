@@ -1,0 +1,28 @@
+
+> stock-signals@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://100.89.35.20:3000
+- Environments: .env.local
+✓ Ready in 2.5s
+
+ GET /api/stock-signal-board 500 in 6.3s (next.js: 1378ms, application-code: 4.9s)
+ GET /api/sector-factor-regime-performance 200 in 10.3s (next.js: 1610ms, application-code: 8.7s)
+ GET / 200 in 10.3s (next.js: 1438ms, application-code: 8.9s)
+ GET /api/stock-signal-board 500 in 2.1s (next.js: 96ms, application-code: 2.0s)
+ GET / 200 in 60s (next.js: 579ms, application-code: 59s)
+ GET /api/sector-factor-regime-performance 200 in 22.0s (next.js: 45ms, application-code: 21.9s)
+ GET / 200 in 13.2s (next.js: 15ms, application-code: 13.2s)
+ GET / 200 in 13.3s (next.js: 13ms, application-code: 13.3s)
+ GET / 200 in 13.3s (next.js: 72ms, application-code: 13.2s)
+ GET / 200 in 13.8s (next.js: 260ms, application-code: 13.6s)
+ GET / 200 in 14.1s (next.js: 11ms, application-code: 14.1s)
+ GET / 200 in 14.0s (next.js: 15ms, application-code: 14.0s)
+ GET / 200 in 14.0s (next.js: 121ms, application-code: 13.9s)
+ GET / 200 in 14.0s (next.js: 69ms, application-code: 14.0s)
+ GET / 200 in 14.6s (next.js: 252ms, application-code: 14.3s)
+ GET / 200 in 7.1s (next.js: 17ms, application-code: 7.1s)
+ GET /api/stock-signal-board 200 in 7.5s (next.js: 213ms, application-code: 7.3s)
+[?25h

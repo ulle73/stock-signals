@@ -1,0 +1,65 @@
+(node:23048) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+⨯ error: relation "tf_sync_indicator_daily" does not exist
+    at async getStockSignalBoardRows (lib\repositories\stock-signal-board.js:4:18)
+    at async GET (app\api\stock-signal-board\route.js:8:16)
+  2 |
+  3 | export async function getStockSignalBoardRows() {
+> 4 |   const result = await query(
+    |                  ^
+  5 |     `with latest_indicator_rows as (
+  6 |        select *
+  7 |        from ( {
+  length: 124,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '3589',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
+⨯ error: relation "tf_sync_indicator_daily" does not exist
+    at async getStockSignalBoardRows (lib\repositories\stock-signal-board.js:4:18)
+    at async GET (app\api\stock-signal-board\route.js:8:16)
+  2 |
+  3 | export async function getStockSignalBoardRows() {
+> 4 |   const result = await query(
+    |                  ^
+  5 |     `with latest_indicator_rows as (
+  6 |        select *
+  7 |        from ( {
+  length: 124,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '3589',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}

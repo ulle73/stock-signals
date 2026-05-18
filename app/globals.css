@@ -439,7 +439,7 @@ h2 {
 
 .stock-signal-board-metric-strip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
   margin-bottom: 20px;
 }
@@ -467,16 +467,20 @@ h2 {
   vertical-align: top;
 }
 
+.signal-board-primary-row td {
+  background: rgba(255, 255, 255, 0.52);
+}
+
 .signal-board-ticker-cell strong,
 .signal-board-company-cell strong,
 .signal-board-latest-cell strong,
-.signal-board-watchlist-cell strong {
+.signal-board-detail-count-cell strong {
   display: block;
 }
 
 .signal-board-company-cell span,
 .signal-board-latest-cell span,
-.signal-board-watchlist-cell span {
+.signal-board-detail-count-cell span {
   display: block;
   margin-top: 6px;
   color: var(--muted);
@@ -494,8 +498,152 @@ h2 {
   font-weight: 700;
 }
 
+.signal-board-detail-row td {
+  padding: 0;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.signal-board-details {
+  background: rgba(255, 253, 248, 0.72);
+}
+
+.signal-board-details summary {
+  list-style: none;
+}
+
+.signal-board-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.signal-board-detail-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: start;
+  padding: 18px 20px;
+  cursor: pointer;
+}
+
+.signal-board-detail-summary-copy strong,
+.signal-board-detail-summary-copy span {
+  display: block;
+}
+
+.signal-board-detail-summary-copy strong {
+  font-size: 0.98rem;
+  margin-bottom: 6px;
+}
+
+.signal-board-detail-summary-copy span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.signal-board-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  padding: 0 20px 20px;
+}
+
+.signal-board-detail-card {
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid rgba(90, 82, 68, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.signal-board-detail-card[data-tone='positive'] {
+  border-color: rgba(12, 92, 76, 0.18);
+  background: rgba(12, 92, 76, 0.06);
+}
+
+.signal-board-detail-card[data-tone='danger'] {
+  border-color: rgba(184, 75, 52, 0.18);
+  background: rgba(184, 75, 52, 0.06);
+}
+
+.signal-board-detail-card[data-tone='warning'],
+.signal-board-detail-card[data-tone='caution'] {
+  border-color: rgba(194, 106, 36, 0.18);
+  background: rgba(194, 106, 36, 0.06);
+}
+
+.signal-board-detail-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.signal-board-detail-card-head strong {
+  display: block;
+  font-size: 1.05rem;
+  line-height: 1.1;
+}
+
+.signal-board-detail-metrics {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.signal-board-detail-metric {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.signal-board-detail-metric dt,
+.signal-board-detail-metric dd {
+  margin: 0;
+}
+
+.signal-board-detail-metric dt {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.signal-board-detail-metric dd {
+  font-weight: 700;
+  text-align: right;
+}
+
 .stock-signal-board-footnote {
   margin-bottom: 0;
+}
+
+.stock-signal-board-pagination {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.stock-signal-board-load-more {
+  border: 1px solid rgba(90, 82, 68, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
+  padding: 12px 18px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, opacity 120ms ease;
+}
+
+.stock-signal-board-load-more:hover:not(:disabled) {
+  background: rgba(245, 248, 246, 0.98);
+  border-color: rgba(12, 92, 76, 0.2);
+}
+
+.stock-signal-board-load-more:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 .ivol-rvol-card {
@@ -1505,6 +1653,15 @@ tbody tr:last-child td { border-bottom: none; }
   }
 
   .heatmap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .signal-board-detail-summary {
+    flex-direction: column;
+  }
+
+  .stock-signal-board-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 640px) {

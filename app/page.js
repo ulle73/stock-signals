@@ -1,17 +1,10 @@
+import { Suspense } from 'react';
 import { getDashboardSnapshot } from '../lib/repositories/dashboard.js';
 import { getActiveConstituents } from '../lib/repositories/constituents.js';
 import { interpretMarketSignal } from '../lib/utils/signal-interpretation.js';
 import { getVolumeEventLabel } from '../lib/utils/volume-events.js';
-import EquitySectorStyleRegimePerformanceSection from './equity-sector-style-regime-performance-section.js';
-import EuropeGrowthSection from './europe-growth-section.js';
-import GlobalManufacturingPmiSection from './global-manufacturing-pmi-section.js';
-import GrowthDataBaseEffectsSection from './growth-data-base-effects-section.js';
-import ImpliedVolatilityRatioSection from './implied-volatility-ratio-section.js';
 import MarketBreadthMa200ForwardReturnComparisonSection from './market-breadth-ma200-forward-return-comparison-section.js';
-import PmiGrowthMomentumSection from './pmi-growth-momentum-section.js';
-import SectorFactorRegimePerformanceSection from './sector-factor-regime-performance-section.js';
-import UsGrowthSection from './us-growth-section.js';
-import StockSignalBoardSection from './stock-signal-board-section.js';
+import StockSignalBoardClientSection from './stock-signal-board-client-section.js';
 import {
   buildMarketSeriesCards,
   buildPositionStatusViewModel,
@@ -195,7 +188,6 @@ export default async function Home({ searchParams }) {
     ...snapshot.positionStatus,
     backtests,
   });
-  const macroMatrix = snapshot.macroMatrix;
   const positionCurrent = positionStatus.current;
   const activeCautionFlags = positionStatus.flags.caution.filter((flag) => flag.active);
   const latestPositionBacktest = positionStatus.backtest.position;
@@ -422,7 +414,16 @@ export default async function Home({ searchParams }) {
         </div>
       </section>
 
-      <MarketBreadthMa200ForwardReturnComparisonSection />
+      <Suspense
+        fallback={(
+          <SectionLoadingCard
+            title="Breadth-jämförelse"
+            copy="Läser in jämförelsen mellan statisk och empirisk MA200-data."
+          />
+        )}
+      >
+        <MarketBreadthMa200ForwardReturnComparisonSection />
+      </Suspense>
 
       <section className="card">
         <p className="section-kicker">Senaste 10 signaler</p>
@@ -564,16 +565,17 @@ export default async function Home({ searchParams }) {
         </article>
       </section>
 
-      <UsGrowthSection matrix={macroMatrix} />
-
-      <GlobalManufacturingPmiSection />
-      <EuropeGrowthSection />
-      <PmiGrowthMomentumSection />
-      <GrowthDataBaseEffectsSection />
-      <SectorFactorRegimePerformanceSection />
-      <EquitySectorStyleRegimePerformanceSection />
-      <ImpliedVolatilityRatioSection />
-      <StockSignalBoardSection />
+      <StockSignalBoardClientSection />
     </main>
+  );
+}
+
+function SectionLoadingCard({ title, copy }) {
+  return (
+    <section className="card">
+      <p className="section-kicker">Laddar sektion</p>
+      <h2>{title}</h2>
+      <p className="hero-copy compact">{copy}</p>
+    </section>
   );
 }
