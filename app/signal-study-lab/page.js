@@ -2,7 +2,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import Link from 'next/link';
 import { getActiveConstituents } from '../../lib/repositories/constituents.js';
-import { listSignalStudyReturnInstruments } from '../../lib/repositories/signal-studies.js';
+import {
+  listSignalStudyFieldsWithAvailability,
+  listSignalStudyReturnInstruments,
+} from '../../lib/repositories/signal-studies.js';
 import { listSignalStudyFields } from '../../lib/signal-registry/fields.js';
 import SignalStudyLabClient from './signal-study-lab-client.js';
 
@@ -42,8 +45,9 @@ function buildSignalInstrumentOptions(constituents) {
 }
 
 export default async function SignalStudyLabPage() {
+  const baseFields = listSignalStudyFields();
   const [fields, returnInstruments, constituents, examples] = await Promise.all([
-    listSignalStudyFields(),
+    listSignalStudyFieldsWithAvailability(baseFields),
     listSignalStudyReturnInstruments(),
     getActiveConstituents(),
     Promise.all([
@@ -60,7 +64,7 @@ export default async function SignalStudyLabPage() {
       loadExample(
         'tf-sync-green-period.json',
         'TF Sync green period',
-        'Visar state period-läge med entry/exit-delays och neutralt avslut.'
+        'Visar state period-läge med entry/exit-delays, max hold och neutralt avslut.'
       ),
     ]),
   ]);
