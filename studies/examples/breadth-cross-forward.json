@@ -3,6 +3,9 @@
   "studyType": "forward_horizon",
   "returnInstrument": "SPY",
   "maxHorizonDays": 20,
+  "entryDelayBars": 1,
+  "minBarsBetweenEvents": 0,
+  "allowOverlappingEvents": true,
   "eventMode": "signal_start",
   "conditionMode": "ALL",
   "conditions": [
