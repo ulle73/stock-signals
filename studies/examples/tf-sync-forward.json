@@ -2,8 +2,11 @@
   "name": "tf_sync_green_position75_breadth50",
   "studyType": "forward_horizon",
   "returnInstrument": "SPY",
-  "signalInstrument": "AAPL",
+  "signalInstrument": "SPY",
   "maxHorizonDays": 60,
+  "entryDelayBars": 1,
+  "minBarsBetweenEvents": 0,
+  "allowOverlappingEvents": true,
   "eventMode": "signal_start",
   "conditionMode": "ALL",
   "conditions": [
