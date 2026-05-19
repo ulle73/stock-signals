@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "studyName": "tf_sync_green_period_test",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "priceBarCount": 1256,
+    "fieldKeys": [
+      "tf_sync.state",
+      "position.target_equity_weight_pct",
+      "market.pct_above_50"
+    ],
+    "priceSourceTable": "benchmark_daily_prices",
+    "firstDate": "2021-05-17",
+    "lastDate": "2026-05-15",
+    "fieldCoverage": [
+      {
+        "fieldKey": "tf_sync.state",
+        "rowCount": 0,
+        "nonNullCount": 0,
+        "firstValueDate": null,
+        "lastValueDate": null
+      },
+      {
+        "fieldKey": "position.target_equity_weight_pct",
+        "rowCount": 1256,
+        "nonNullCount": 1256,
+        "firstValueDate": "2021-05-17",
+        "lastValueDate": "2026-05-15"
+      },
+      {
+        "fieldKey": "market.pct_above_50",
+        "rowCount": 1005,
+        "nonNullCount": 1005,
+        "firstValueDate": "2022-05-13",
+        "lastValueDate": "2026-05-15"
+      }
+    ],
+    "warnings": [
+      "tf_sync.state saknar datapunkter för valt signalInstrument/date range."
+    ],
+    "generatedAt": "2026-05-18T22:54:41.132Z",
+    "configPath": "ui://signal-study-lab",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test--20260518-225441.json",
+    "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test.latest.json"
+  },
+  "result": {
+    "name": "tf_sync_green_period_test",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPY",
+    "stateField": "tf_sync.state",
+    "entryState": "green",
+    "oppositeState": "red",
+    "neutralState": "neutral",
+    "neutralEndDays": 3,
+    "entryDelayBars": 1,
+    "exitDelayBars": 1,
+    "maxHoldBars": 60,
+    "periods": [],
+    "summary": {
+      "period_count": 0,
+      "avg_return_pct": null,
+      "median_return_pct": null,
+      "win_rate_pct": null,
+      "avg_bars_held": null,
+      "median_bars_held": null,
+      "best_return_pct": null,
+      "worst_return_pct": null
+    }
+  }
+}

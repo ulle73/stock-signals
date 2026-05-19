@@ -40,24 +40,25 @@ test('forward horizon study detects composite signal starts and summarizes retur
 
   assert.equal(result.eventCount, 2);
   assert.deepEqual(result.events.map((item) => item.signal_date), ['2026-01-05', '2026-01-08']);
+  assert.deepEqual(result.events.map((item) => item.entry_date), ['2026-01-06', '2026-01-09']);
   assert.deepEqual(result.horizons, [
     {
       horizon_days: 1,
-      sample_count: 2,
-      avg_return_pct: 0.91,
-      median_return_pct: 0.91,
-      win_rate_pct: 50,
-      best_return_pct: 2.8,
-      worst_return_pct: -0.98,
+      sample_count: 1,
+      avg_return_pct: 3.96,
+      median_return_pct: 3.96,
+      win_rate_pct: 100,
+      best_return_pct: 3.96,
+      worst_return_pct: 3.96,
     },
     {
       horizon_days: 2,
       sample_count: 1,
-      avg_return_pct: 2.94,
-      median_return_pct: 2.94,
+      avg_return_pct: 5.94,
+      median_return_pct: 5.94,
       win_rate_pct: 100,
-      best_return_pct: 2.94,
-      worst_return_pct: 2.94,
+      best_return_pct: 5.94,
+      worst_return_pct: 5.94,
     },
   ]);
 });

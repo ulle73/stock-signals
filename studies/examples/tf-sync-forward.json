@@ -2,7 +2,7 @@
   "name": "tf_sync_green_position75_breadth50",
   "studyType": "forward_horizon",
   "returnInstrument": "SPY",
-  "signalInstrument": "SPY",
+  "signalInstrument": "AAPL",
   "maxHorizonDays": 60,
   "entryDelayBars": 1,
   "minBarsBetweenEvents": 0,

@@ -37,9 +37,9 @@
       }
     ],
     "warnings": [],
-    "generatedAt": "2026-05-18T22:59:35.411Z",
-    "configPath": "C:\\dev\\stock-signals\\studies\\examples\\tf-sync-green-period.json",
-    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test--20260518-225935.json",
+    "generatedAt": "2026-05-18T22:23:37.647Z",
+    "configPath": "ui://signal-study-lab",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test--20260518-222337.json",
     "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test.latest.json"
   },
   "result": {
@@ -49,78 +49,88 @@
     "signalInstrument": "AAPL",
     "stateField": "tf_sync.state",
     "entryState": "green",
-    "oppositeState": "red",
+    "oppositeState": "neutral",
     "neutralState": "neutral",
     "neutralEndDays": 3,
     "entryDelayBars": 1,
     "exitDelayBars": 1,
-    "maxHoldBars": 60,
     "periods": [
       {
         "signal_start_date": "2026-04-08",
         "entry_date": "2026-04-09",
-        "end_signal_date": "2026-04-21",
-        "exit_date": "2026-04-22",
-        "bars_held": 9,
+        "end_signal_date": "2026-04-13",
+        "exit_date": "2026-04-14",
+        "bars_held": 3,
         "entry_price": 679.91,
-        "exit_price": 711.21,
-        "return_pct": 4.6,
+        "exit_price": 694.46,
+        "return_pct": 2.14,
         "end_reason": "opposite_state"
       },
       {
         "signal_start_date": "2026-04-15",
         "entry_date": "2026-04-16",
-        "end_signal_date": "2026-04-21",
-        "exit_date": "2026-04-22",
-        "bars_held": 4,
+        "end_signal_date": "2026-04-16",
+        "exit_date": "2026-04-17",
+        "bars_held": 1,
         "entry_price": 701.66,
-        "exit_price": 711.21,
-        "return_pct": 1.36,
+        "exit_price": 710.14,
+        "return_pct": 1.21,
         "end_reason": "opposite_state"
       },
       {
         "signal_start_date": "2026-04-17",
         "entry_date": "2026-04-20",
-        "end_signal_date": "2026-04-21",
-        "exit_date": "2026-04-22",
-        "bars_held": 2,
+        "end_signal_date": "2026-04-23",
+        "exit_date": "2026-04-24",
+        "bars_held": 4,
         "entry_price": 708.72,
-        "exit_price": 711.21,
-        "return_pct": 0.35,
+        "exit_price": 713.94,
+        "return_pct": 0.74,
         "end_reason": "opposite_state"
       },
       {
         "signal_start_date": "2026-04-22",
         "entry_date": "2026-04-23",
-        "end_signal_date": "2026-04-30",
-        "exit_date": "2026-05-01",
-        "bars_held": 6,
+        "end_signal_date": "2026-04-23",
+        "exit_date": "2026-04-24",
+        "bars_held": 1,
         "entry_price": 708.45,
-        "exit_price": 720.65,
-        "return_pct": 1.72,
-        "end_reason": "neutral_streak_3"
+        "exit_price": 713.94,
+        "return_pct": 0.77,
+        "end_reason": "opposite_state"
       },
       {
         "signal_start_date": "2026-04-27",
         "entry_date": "2026-04-28",
-        "end_signal_date": "2026-04-30",
-        "exit_date": "2026-05-01",
-        "bars_held": 3,
+        "end_signal_date": "2026-04-28",
+        "exit_date": "2026-04-29",
+        "bars_held": 1,
         "entry_price": 711.69,
-        "exit_price": 720.65,
-        "return_pct": 1.26,
-        "end_reason": "neutral_streak_3"
+        "exit_price": 711.58,
+        "return_pct": -0.02,
+        "end_reason": "opposite_state"
+      },
+      {
+        "signal_start_date": "2026-05-11",
+        "entry_date": "2026-05-12",
+        "end_signal_date": "2026-05-13",
+        "exit_date": "2026-05-14",
+        "bars_held": 2,
+        "entry_price": 738.18,
+        "exit_price": 748.17,
+        "return_pct": 1.35,
+        "end_reason": "opposite_state"
       }
     ],
     "summary": {
-      "period_count": 5,
-      "avg_return_pct": 1.86,
-      "median_return_pct": 1.36,
-      "win_rate_pct": 100,
-      "avg_bars_held": 4.8,
-      "median_bars_held": 4,
-      "best_return_pct": 4.6,
-      "worst_return_pct": 0.35
+      "period_count": 6,
+      "avg_return_pct": 1.03,
+      "median_return_pct": 0.99,
+      "win_rate_pct": 83.33,
+      "avg_bars_held": 2,
+      "median_bars_held": 1.5,
+      "best_return_pct": 2.14,
+      "worst_return_pct": -0.02
     }
   }
 }

@@ -1,6 +1,10 @@
 'use client';
 
 import { useMemo, useState, useTransition } from 'react';
+import {
+  coerceSignalInstrumentSelection,
+  scopeNeedsSignalInstrument,
+} from '../../lib/utils/signal-study-ui-config.js';
 
 function groupFields(fields) {
   const groups = new Map();
@@ -156,17 +160,6 @@ function formatDate(value) {
 function formatTimestamp(value) {
   if (!value) return '—';
   return new Intl.DateTimeFormat('sv-SE', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(new Date(value));
-}
-
-function scopeNeedsSignalInstrument(config, fieldsByKey) {
-  const selectedKeys = [];
-  if (config.studyType === 'forward_horizon') {
-    for (const condition of config.conditions) selectedKeys.push(condition.field);
-  } else {
-    selectedKeys.push(config.stateField);
-    for (const filter of config.filters) selectedKeys.push(filter.field);
-  }
-  return selectedKeys.some((key) => fieldsByKey.get(key)?.scope === 'ticker');
 }
 
 function ResultMeta({ meta }) {
@@ -327,7 +320,14 @@ function ConditionBuilder({ title, description, rows, fields, fieldsByKey, mode,
 export default function SignalStudyLabClient({ examples, fields, returnInstrumentOptions, signalInstrumentOptions }) {
   const activeFields = useMemo(() => fields.filter((field) => field.isAvailable !== false), [fields]);
   const fieldsByKey = useMemo(() => new Map(fields.map((field) => [field.key, field])), [fields]);
-  const initialConfig = useMemo(() => normalizeExampleConfig(examples[0].config, fieldsByKey), [examples, fieldsByKey]);
+  const initialConfig = useMemo(
+    () => coerceSignalInstrumentSelection({
+      config: normalizeExampleConfig(examples[0].config, fieldsByKey),
+      fieldsByKey,
+      signalInstrumentOptions,
+    }),
+    [examples, fieldsByKey, signalInstrumentOptions]
+  );
   const [config, setConfig] = useState(initialConfig);
   const [selectedExampleId, setSelectedExampleId] = useState(examples[0]?.id ?? '');
   const [resultPayload, setResultPayload] = useState(null);
@@ -338,7 +338,16 @@ export default function SignalStudyLabClient({ examples, fields, returnInstrumen
   const stateField = config.studyType === 'state_period' ? fieldsByKey.get(config.stateField) : null;
   const payload = buildPayload(config);
 
-  function replaceConfig(nextConfig) { setConfig(nextConfig); setError(''); }
+  function replaceConfig(nextConfig) {
+    setConfig(
+      coerceSignalInstrumentSelection({
+        config: nextConfig,
+        fieldsByKey,
+        signalInstrumentOptions,
+      })
+    );
+    setError('');
+  }
   function loadExample(exampleId) {
     const example = examples.find((item) => item.id === exampleId);
     if (!example) return;

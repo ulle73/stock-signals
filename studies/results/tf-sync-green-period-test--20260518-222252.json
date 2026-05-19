@@ -37,9 +37,9 @@
       }
     ],
     "warnings": [],
-    "generatedAt": "2026-05-18T22:59:35.411Z",
-    "configPath": "C:\\dev\\stock-signals\\studies\\examples\\tf-sync-green-period.json",
-    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test--20260518-225935.json",
+    "generatedAt": "2026-05-18T22:22:52.998Z",
+    "configPath": "ui://signal-study-lab",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test--20260518-222252.json",
     "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test.latest.json"
   },
   "result": {
@@ -54,7 +54,6 @@
     "neutralEndDays": 3,
     "entryDelayBars": 1,
     "exitDelayBars": 1,
-    "maxHoldBars": 60,
     "periods": [
       {
         "signal_start_date": "2026-04-08",

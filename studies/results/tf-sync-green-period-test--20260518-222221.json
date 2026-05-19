@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "studyName": "tf_sync_green_period_test",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPGI",
+    "priceBarCount": 1256,
+    "fieldKeys": [
+      "tf_sync.state",
+      "position.target_equity_weight_pct",
+      "market.pct_above_50"
+    ],
+    "priceSourceTable": "benchmark_daily_prices",
+    "firstDate": "2021-05-17",
+    "lastDate": "2026-05-15",
+    "fieldCoverage": [
+      {
+        "fieldKey": "tf_sync.state",
+        "rowCount": 20,
+        "nonNullCount": 20,
+        "firstValueDate": "2026-04-20",
+        "lastValueDate": "2026-05-15"
+      },
+      {
+        "fieldKey": "position.target_equity_weight_pct",
+        "rowCount": 1256,
+        "nonNullCount": 1256,
+        "firstValueDate": "2021-05-17",
+        "lastValueDate": "2026-05-15"
+      },
+      {
+        "fieldKey": "market.pct_above_50",
+        "rowCount": 1005,
+        "nonNullCount": 1005,
+        "firstValueDate": "2022-05-13",
+        "lastValueDate": "2026-05-15"
+      }
+    ],
+    "warnings": [],
+    "generatedAt": "2026-05-18T22:22:21.030Z",
+    "configPath": "ui://signal-study-lab",
+    "savedResultPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test--20260518-222221.json",
+    "savedLatestPath": "C:\\dev\\stock-signals\\studies\\results\\tf-sync-green-period-test.latest.json"
+  },
+  "result": {
+    "name": "tf_sync_green_period_test",
+    "studyType": "state_period",
+    "returnInstrument": "SPY",
+    "signalInstrument": "SPGI",
+    "stateField": "tf_sync.state",
+    "entryState": "green",
+    "oppositeState": "red",
+    "neutralState": "neutral",
+    "neutralEndDays": 3,
+    "entryDelayBars": 1,
+    "exitDelayBars": 1,
+    "periods": [
+      {
+        "signal_start_date": "2026-05-07",
+        "entry_date": "2026-05-08",
+        "end_signal_date": "2026-05-13",
+        "exit_date": "2026-05-14",
+        "bars_held": 4,
+        "entry_price": 737.62,
+        "exit_price": 748.17,
+        "return_pct": 1.43,
+        "end_reason": "opposite_state"
+      }
+    ],
+    "summary": {
+      "period_count": 1,
+      "avg_return_pct": 1.43,
+      "median_return_pct": 1.43,
+      "win_rate_pct": 100,
+      "avg_bars_held": 4,
+      "median_bars_held": 4,
+      "best_return_pct": 1.43,
+      "worst_return_pct": 1.43
+    }
+  }
+}

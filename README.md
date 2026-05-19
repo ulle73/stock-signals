@@ -2,6 +2,8 @@
 
 Ett framtida marknadsbreddsbaserat signalsystem för S&P 500.
 
+Vi har nu ocksa borjat implementera Alpaca for paper trading. Tanken ar att anvanda Alpaca som exekverings- och verifieringslager nar vi testar indikatorer och strategier, utan att koppla det till livehandel.
+
 Första versionen fokuserar på datahämtning, lagring och en liten läsyta ovanpå datan:
 
 - hämta S&P 500-komponenter,
@@ -73,6 +75,11 @@ Fyll i:
 DATABASE_TARGET="default"
 DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require"
 DATABASE_URL_COCKROACH="postgresql://USER:PASSWORD@HOST.cockroachlabs.cloud:26257/DBNAME?sslmode=verify-full&sslrootcert=C:/Users/ryd/AppData/Roaming/postgresql/root.crt"
+
+# Alpaca paper trading (valfritt for strategi-/indikatortest)
+ALPACA_API_BASE_URL="https://paper-api.alpaca.markets/v2"
+ALPACA_API_KEY=""
+ALPACA_API_SECRET=""
 ```
 
 `npm run db:migrate` och `npm run fetch:daily` laddar nu samma `.env*`-filer som Next.js gör, så `.env.local` fungerar även för scriptkörningar.
