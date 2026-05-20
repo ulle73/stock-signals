@@ -2,19 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildPoolConfig, getDatabaseTarget, getDatabaseUrl } from '../lib/db.js';
 
-test('getDatabaseTarget falls back to default', () => {
-  assert.equal(getDatabaseTarget({}), 'default');
-  assert.equal(getDatabaseTarget({ DATABASE_TARGET: '   ' }), 'default');
+test('getDatabaseTarget falls back to cockroach', () => {
+  assert.equal(getDatabaseTarget({}), 'cockroach');
+  assert.equal(getDatabaseTarget({ DATABASE_TARGET: '   ' }), 'cockroach');
 });
 
-test('getDatabaseUrl uses DATABASE_URL for the default target', () => {
+test('getDatabaseUrl uses DATABASE_URL_COCKROACH for the implicit standard target', () => {
   const env = {
-    DATABASE_URL: 'postgresql://default-user:pw@default-host/defaultdb?sslmode=require',
+    DATABASE_URL_COCKROACH: 'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full',
   };
 
   assert.equal(
     getDatabaseUrl(env),
-    'postgresql://default-user:pw@default-host/defaultdb?sslmode=require'
+    'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full'
   );
 });
 
@@ -51,6 +51,7 @@ test('buildPoolConfig keeps explicit SSL parameters from the connection string u
 
 test('buildPoolConfig adds a permissive SSL fallback for remote URLs without explicit SSL settings', () => {
   const env = {
+    DATABASE_TARGET: 'default',
     DATABASE_URL: 'postgresql://default-user:pw@remote-host/defaultdb',
   };
 
@@ -62,6 +63,7 @@ test('buildPoolConfig adds a permissive SSL fallback for remote URLs without exp
 
 test('buildPoolConfig leaves localhost URLs without an injected SSL fallback', () => {
   const env = {
+    DATABASE_TARGET: 'default',
     DATABASE_URL: 'postgresql://local-user:pw@localhost:5432/localdb',
   };
 

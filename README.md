@@ -70,9 +70,9 @@ cp .env.example .env.local
 Fyll i:
 
 ```env
-# default -> DATABASE_URL
 # cockroach -> DATABASE_URL_COCKROACH
-DATABASE_TARGET="default"
+# default -> DATABASE_URL
+DATABASE_TARGET="cockroach"
 DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require"
 DATABASE_URL_COCKROACH="postgresql://USER:PASSWORD@HOST.cockroachlabs.cloud:26257/DBNAME?sslmode=verify-full&sslrootcert=C:/Users/ryd/AppData/Roaming/postgresql/root.crt"
 
@@ -93,7 +93,7 @@ $env:DATABASE_TARGET="cockroach"
 eller låter `.env.local` stå på:
 
 ```env
-DATABASE_TARGET="default"
+DATABASE_TARGET="cockroach"
 ```
 
 ### 3. Kör migration
@@ -806,11 +806,11 @@ Projektet använder alltid exakt en aktiv databas per körning, men du kan nu v�
 
 Standard:
 
-- `DATABASE_TARGET=default` -> `DATABASE_URL`
-
-Exempel för sekundär databas:
-
 - `DATABASE_TARGET=cockroach` -> `DATABASE_URL_COCKROACH`
+
+Äldre Neon-anslutning vid behov:
+
+- `DATABASE_TARGET=default` -> `DATABASE_URL`
 
 Det gör att lokal utveckling, scriptkörningar och live kan använda olika databaser utan kodändringar, så länge rätt env-variabler finns.
 
@@ -820,17 +820,19 @@ Repo:t innehåller en GitHub Actions-workflow i [`.github/workflows/fetch-daily.
 
 För att den ska fungera behöver du lägga in repository secret:
 
-- `DATABASE_URL` = din Neon connection string
+- `DATABASE_URL_COCKROACH` = din Cockroach connection string
 
-Om du senare flyttar workflowen till Cockroach kan du i stället:
+Om du tillfälligt behöver köra workflowen mot den äldre Neon-databasen får du i stället:
 
-- sätta `DATABASE_TARGET=cockroach`
-- lägga in `DATABASE_URL_COCKROACH` som repository secret
+- sätta `DATABASE_TARGET=default`
+- lägga in `DATABASE_URL` som repository secret
 
 Workflowen kör:
 
 - manuellt via `workflow_dispatch`
 - automatiskt vardagar `21:53 UTC`
+- `npm run db:migrate`
+- `npm run fetch:daily`
 - därefter `npm run calculate:daily`
 - därefter `npm run calculate:sector-breadth`
 - därefter `npm run calculate:sector-signals`

@@ -16,7 +16,8 @@ jobs:
     permissions:
       contents: read
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_TARGET: cockroach
+      DATABASE_URL_COCKROACH: ${{ secrets.DATABASE_URL_COCKROACH }}
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: '1'
     steps:
@@ -31,6 +32,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run database migrations
+        run: npm run db:migrate
 
       - name: Fetch daily market data
         run: npm run fetch:daily
