@@ -74,15 +74,22 @@ Fyll i:
 # default -> DATABASE_URL
 DATABASE_TARGET="cockroach"
 DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require"
-DATABASE_URL_COCKROACH="postgresql://USER:PASSWORD@HOST.cockroachlabs.cloud:26257/DBNAME?sslmode=verify-full&sslrootcert=C:/Users/ryd/AppData/Roaming/postgresql/root.crt"
+DATABASE_URL_COCKROACH="postgresql://USER:PASSWORD@HOST.cockroachlabs.cloud:26257/DBNAME?sslmode=verify-full"
 
 # Alpaca paper trading (valfritt för strategi-/indikatortest)
 ALPACA_API_BASE_URL="https://paper-api.alpaca.markets/v2"
 ALPACA_API_KEY=""
 ALPACA_API_SECRET=""
+ALPACA_TRADING_ENABLED="false"
+EXECUTION_ALLOWED_SYMBOLS="SPY"
+EXECUTION_MAX_ORDER_NOTIONAL_USD="100000"
+EXECUTION_MAX_POSITION_NOTIONAL_USD="100000"
+EXECUTION_MAX_SIGNAL_AGE_DAYS="5"
 ```
 
 `npm run db:migrate` och `npm run fetch:daily` laddar nu samma `.env*`-filer som Next.js gör, så `.env.local` fungerar även för scriptkörningar.
+
+Alpaca-nycklar ska bara ligga i `.env.local` eller i shell-miljön. Lägg dem aldrig i kod eller commits.
 
 Om du vill växla databas utan att ändra kod sätter du bara:
 
@@ -125,6 +132,10 @@ Det skapar:
 - `sector_signal_daily`
 - `market_signal_daily`
 - `trading_signal_daily`
+- `execution_intents`
+- `execution_decisions`
+- `execution_orders`
+- `broker_state_snapshots`
 - `position_facts_daily`
 - `position_signal_daily`
 - `swing_signal_daily`
@@ -397,6 +408,96 @@ Varje rad sparar också:
 - `reason_summary`
 
 Trading v1 är avsiktligt ett beslutslager och ännu inte en full short-backtestmotor. Själva signalerna kan alltså säga `GÅ KORT SPY`, men den befintliga backtestmotorn kör fortfarande bara long/cash-strategier.
+
+## Alpaca paper execution
+
+Det finns nu ett separat Alpaca-lager för paper trading. Systemets signaler är fortfarande hjärnan. Alpaca används bara som exekverings- och verifieringslager.
+
+Execution-flödet är:
+
+- `signal source adapter`
+- `execution_intent`
+- `risk checks`
+- `execution_decision`
+- `broker_order_request`
+- `Alpaca client`
+- `execution/audit log`
+
+V1-begränsningar:
+
+- `paper trading only`
+- `SPY only`
+- `long/cash only`
+- inga shorts
+- inga options
+- read-only som default
+- order kräver `ALPACA_TRADING_ENABLED=true`
+
+Alla beslut sparas i databasen, även blockerade. Körningarna använder dessa tabeller:
+
+- `execution_intents`
+- `execution_decisions`
+- `execution_orders`
+- `broker_state_snapshots`
+
+### Read-only kontroll
+
+För att bara verifiera konto, positioner och öppna order utan att skicka något:
+
+```powershell
+npm run alpaca:check
+```
+
+Detta läser:
+
+- account
+- positions
+- open orders
+
+och sparar snapshots i `broker_state_snapshots`.
+
+Om du vill synka broker-state igen och samtidigt uppdatera sparade open-order-resultat:
+
+```powershell
+npm run alpaca:sync
+```
+
+### Dry-run
+
+För att köra hela execution-pipelinen utan att skicka order:
+
+```powershell
+npm run alpaca:dry-run
+```
+
+Detta gör:
+
+- läser senaste `trading_signal_daily`
+- mappar signalen till `execution_intent`
+- kör riskregler
+- sparar beslut i `execution_decisions`
+- skickar ingen order
+
+### Paper execution
+
+Faktisk paper-order får bara skickas när du själv öppnar grinden:
+
+```powershell
+$env:ALPACA_TRADING_ENABLED="true"
+npm run alpaca:paper-execute
+```
+
+Guardrails i V1:
+
+- endast `SPY` är tillåten symbol
+- kortsignaler blockeras och loggas
+- options blockeras
+- stale signal blockeras
+- befintlig open order för `SPY` blockerar ny order
+- max order- och positionsstorlek kontrolleras före submit
+- paper-endpoint krävs
+
+Om `ALPACA_TRADING_ENABLED` inte är `true` blockeras skickad order även om du kör `alpaca:paper-execute`.
 
 `npm run calculate:position-facts` bygger sedan en rad per `SPY`-marknadsdag i `position_facts_daily` med as-of-mappade makrofakta för positionsystemet, bland annat:
 
@@ -803,6 +904,8 @@ Exempelkonfigar:
 ## Live-setup
 
 Projektet använder alltid exakt en aktiv databas per körning, men du kan nu växla mellan flera connection strings via `DATABASE_TARGET`.
+
+För Cockroach i GitHub Actions eller andra Linux-miljöer ska connection stringen normalt inte innehålla en maskinspecifik `sslrootcert`-sökväg. Om en sådan parameter finns men filen saknas i aktuell runtime rensar appen nu bort just den parametern innan anslutning.
 
 Standard:
 

@@ -38,13 +38,24 @@ test('getDatabaseUrl throws when the selected named target is missing', () => {
   );
 });
 
-test('buildPoolConfig keeps explicit SSL parameters from the connection string untouched', () => {
+test('buildPoolConfig strips sslrootcert when the referenced file is missing in the current runtime', () => {
   const env = {
     DATABASE_TARGET: 'cockroach',
     DATABASE_URL_COCKROACH: 'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full&sslrootcert=C:/Users/ryd/AppData/Roaming/postgresql/root.crt',
   };
 
-  assert.deepEqual(buildPoolConfig(env), {
+  assert.deepEqual(buildPoolConfig(env, { fileExists: () => false }), {
+    connectionString: 'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full',
+  });
+});
+
+test('buildPoolConfig keeps sslrootcert when the referenced file exists', () => {
+  const env = {
+    DATABASE_TARGET: 'cockroach',
+    DATABASE_URL_COCKROACH: 'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full&sslrootcert=C:/Users/ryd/AppData/Roaming/postgresql/root.crt',
+  };
+
+  assert.deepEqual(buildPoolConfig(env, { fileExists: () => true }), {
     connectionString: 'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full&sslrootcert=C:/Users/ryd/AppData/Roaming/postgresql/root.crt',
   });
 });
