@@ -24,6 +24,16 @@ function formatSignedPercent(value, digits = 2) {
   return `${sign}${formatNumber(number, digits)}%`;
 }
 
+function formatProbability(value, digits = 0) {
+  if (value === null || value === undefined) return '—';
+  return `${formatNumber(Number(value) * 100, digits)}%`;
+}
+
+function formatMarkovTotal(value, digits = 0) {
+  if (value === null || value === undefined) return '—';
+  return formatSignedPercent(Number(value) * 100, digits);
+}
+
 function sourceLabel(source) {
   if (source === 'indicator') return 'indikator';
   if (source === 'watchlist') return 'watchlist';
@@ -32,6 +42,12 @@ function sourceLabel(source) {
 
 function toneClass(tone) {
   return `tone-${tone || 'neutral'}`;
+}
+
+function tickerMarkovTone(signal, total) {
+  if (signal === 'bull' || Number(total) > 0) return 'positive';
+  if (signal === 'sell' || Number(total) < 0) return 'danger';
+  return 'neutral';
 }
 
 function formatMetricValue(value) {
@@ -61,6 +77,61 @@ function formatMetricValue(value) {
   return value;
 }
 
+function TickerMarkovRankingTable({ title, copy, rows = [], side }) {
+  if (!rows.length) {
+    return null;
+  }
+
+  return (
+    <article className="signal-board-detail-card" data-tone={side === 'sell' ? 'danger' : 'positive'}>
+      <div className="signal-board-detail-card-head">
+        <div>
+          <p className="panel-label">Ticker Markov</p>
+          <strong>{title}</strong>
+        </div>
+        <span className={`mini-pill ${toneClass(side === 'sell' ? 'danger' : 'positive')}`}>
+          {rows.length} tickers
+        </span>
+      </div>
+      <p className="footnote compact">{copy}</p>
+      <div className="table-wrap signal-board-wrap">
+        <table className="signal-board-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Ticker</th>
+              <th>State</th>
+              <th>Total</th>
+              <th>Bull</th>
+              <th>Bear</th>
+              <th>Sample</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr className="signal-board-primary-row" key={`${side}-${row.ticker}`}>
+                <td>{side === 'sell' ? row.rank_sell : row.rank_bull}</td>
+                <td className="signal-board-ticker-cell"><strong>{row.ticker}</strong></td>
+                <td>
+                  <span className={`mini-pill ${toneClass(tickerMarkovTone(row.signal, row.markov_total))}`}>
+                    {row.markov_state ?? '—'}
+                  </span>
+                </td>
+                <td className={toneClass(tickerMarkovTone(row.signal, row.markov_total))}>
+                  <strong>{formatMarkovTotal(row.markov_total)}</strong>
+                </td>
+                <td>{formatProbability(row.bull_probability)}</td>
+                <td>{formatProbability(row.bear_probability)}</td>
+                <td>{formatNumber(row.sample_size, 0)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </article>
+  );
+}
+
 export function StockSignalBoardLoadingCard({
   title = 'Stock Signal Board laddar',
   copy = 'Bygger aktietabellen med alla aktiva signalchips i bakgrunden.',
@@ -87,6 +158,8 @@ export function StockSignalBoardView({ viewModel, hasMore = false, isLoadingMore
     viewModel.summary.latestIndicatorDate &&
     viewModel.summary.latestWatchlistDate &&
     viewModel.summary.latestWatchlistDate < viewModel.summary.latestIndicatorDate;
+  const topTickerMarkovBull = viewModel.summary.topTickerMarkovBull ?? [];
+  const topTickerMarkovSell = viewModel.summary.topTickerMarkovSell ?? [];
 
   return (
     <section className="card stock-signal-board-card">
@@ -157,6 +230,16 @@ export function StockSignalBoardView({ viewModel, hasMore = false, isLoadingMore
           <p className="footnote compact">short-volymtröskel aktiv på senaste rad</p>
         </div>
         <div className="metric-tile">
+          <span>Ticker Markov bull</span>
+          <strong>{viewModel.summary.tickerMarkovBullCount ?? 0}</strong>
+          <p className="footnote compact">stark positiv bull-minus-bear total</p>
+        </div>
+        <div className="metric-tile">
+          <span>Ticker Markov sell</span>
+          <strong>{viewModel.summary.tickerMarkovSellCount ?? 0}</strong>
+          <p className="footnote compact">stark negativ bull-minus-bear total</p>
+        </div>
+        <div className="metric-tile">
           <span>Volymavvikelser</span>
           <strong>{viewModel.summary.volumeActiveCount}</strong>
           <p className="footnote compact">accumulation, distribution eller extremvolym</p>
@@ -170,6 +253,23 @@ export function StockSignalBoardView({ viewModel, hasMore = false, isLoadingMore
           </p>
         </div>
       </div>
+
+      {topTickerMarkovBull.length || topTickerMarkovSell.length ? (
+        <div className="signal-board-detail-grid">
+          <TickerMarkovRankingTable
+            title="Bäst bull-total"
+            copy="Aktier med högst P(bull) minus P(bear) på senaste Markov-körningen. Används som kandidatlista när market regime tillåter risk."
+            rows={topTickerMarkovBull}
+            side="bull"
+          />
+          <TickerMarkovRankingTable
+            title="Bäst sell-total"
+            copy="Aktier med lägst P(bull) minus P(bear). Används främst som undvik-/sälj-/short-watchlist vid risk-off eller bearish miljö."
+            rows={topTickerMarkovSell}
+            side="sell"
+          />
+        </div>
+      ) : null}
 
       <div className="table-wrap signal-board-wrap">
         <table className="signal-board-table">
