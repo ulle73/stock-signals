@@ -29,6 +29,7 @@ function createConfig(overrides = {}) {
     maxOrderNotionalUsd: 100000,
     maxPositionNotionalUsd: 100000,
     maxSignalAgeDays: 5,
+    shortingEnabled: false,
     ...overrides,
   };
 }
@@ -145,4 +146,54 @@ test('approves a paper-execute decision only when trading is enabled and all rul
 
   assert.equal(decision.decision_status, 'approved_for_send');
   assert.equal(decision.proposed_order_side, 'buy');
+});
+
+test('builds a quantity-based sell decision when a long basket position must be reduced', () => {
+  const decision = buildExecutionDecision({
+    intent: {
+      symbol: 'SPY',
+      asset_class: 'us_equity',
+      intent_status: 'active',
+      target_state: 'long',
+      target_exposure_pct: 50,
+      signal_date: '2026-05-19',
+      reference_price: 100,
+    },
+    brokerState: createBrokerState({
+      positions: [{ symbol: 'SPY', qty: 800, marketValue: 80000, side: 'long' }],
+    }),
+    config: createConfig(),
+    mode: 'dry_run',
+    now: new Date('2026-05-20T12:00:00.000Z'),
+  });
+
+  assert.equal(decision.proposed_order_side, 'sell');
+  assert.equal(decision.proposed_order_qty, 300);
+  assert.equal(decision.proposed_order_notional, null);
+});
+
+test('builds a short-entry decision when shorting is enabled and a reference price is available', () => {
+  const decision = buildExecutionDecision({
+    intent: {
+      symbol: 'SPY',
+      asset_class: 'us_equity',
+      intent_status: 'active',
+      target_state: 'short',
+      target_exposure_pct: -25,
+      action_hint: 'enter_short',
+      signal_date: '2026-05-19',
+      reference_price: 100,
+    },
+    brokerState: createBrokerState(),
+    config: createConfig({
+      shortingEnabled: true,
+    }),
+    mode: 'dry_run',
+    now: new Date('2026-05-20T12:00:00.000Z'),
+  });
+
+  assert.equal(decision.decision_status, 'dry_run');
+  assert.equal(decision.proposed_order_side, 'sell');
+  assert.equal(decision.proposed_order_qty, 250);
+  assert.equal(decision.target_position_notional, -25000);
 });

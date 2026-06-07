@@ -70,6 +70,34 @@ test('alpaca client submits market order payload without embedding credentials i
   assert.equal(JSON.parse(calls[0].options.body).notional, '1000');
 });
 
+test('alpaca client builds calendar query strings for next-session lookups', async () => {
+  const calls = [];
+  const client = createAlpacaClient(
+    {
+      apiBaseUrl: 'https://paper-api.alpaca.markets/v2',
+      apiKey: 'KEY123',
+      apiSecret: 'SECRET456',
+    },
+    {
+      fetchImpl: async (url) => {
+        calls.push(url);
+        return {
+          ok: true,
+          status: 200,
+          headers: new Map([['content-type', 'application/json']]),
+          json: async () => ([]),
+          text: async () => '[]',
+        };
+      },
+    }
+  );
+
+  const response = await client.getCalendar({ start: '2026-06-05', end: '2026-06-12' });
+
+  assert.deepEqual(response, []);
+  assert.equal(calls[0], 'https://paper-api.alpaca.markets/v2/calendar?start=2026-06-05&end=2026-06-12');
+});
+
 test('alpaca client error messages do not leak credentials', async () => {
   const client = createAlpacaClient(
     {

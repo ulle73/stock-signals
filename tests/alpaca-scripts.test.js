@@ -9,4 +9,6 @@ test('package.json exposes alpaca operational scripts', async () => {
   assert.equal(packageJson.scripts['alpaca:sync'], 'node scripts/alpaca-sync.js');
   assert.equal(packageJson.scripts['alpaca:dry-run'], 'node scripts/alpaca-dry-run.js');
   assert.equal(packageJson.scripts['alpaca:paper-execute'], 'node scripts/alpaca-paper-execute.js');
+  assert.equal(packageJson.scripts['alpaca:markov-dry-run'], 'node scripts/alpaca-markov-dry-run.js');
+  assert.equal(packageJson.scripts['alpaca:markov-paper-execute'], 'node scripts/alpaca-markov-paper-execute.js');
 });

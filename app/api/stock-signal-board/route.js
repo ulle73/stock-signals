@@ -4,6 +4,7 @@ import { getLatestTickerMarkovRows } from '../../../lib/repositories/ticker-mark
 import { buildStockSignalBoardViewModel } from '../../../lib/utils/stock-signal-board-view.js';
 
 export const dynamic = 'force-dynamic';
+const TICKER_MARKOV_RANKING_LIMIT = 20;
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -12,8 +13,8 @@ export async function GET(request) {
   const [summary, rows, topTickerMarkovBull, topTickerMarkovSell] = await Promise.all([
     getStockSignalBoardSummary(),
     getStockSignalBoardPage({ limit, offset }),
-    getLatestTickerMarkovRows({ limit: 10, side: 'bull' }),
-    getLatestTickerMarkovRows({ limit: 10, side: 'sell' }),
+    getLatestTickerMarkovRows({ limit: TICKER_MARKOV_RANKING_LIMIT, side: 'bull' }),
+    getLatestTickerMarkovRows({ limit: TICKER_MARKOV_RANKING_LIMIT, side: 'sell' }),
   ]);
   const safeLimit = Math.max(1, Math.min(Number(limit) || 20, 100));
   const safeOffset = Math.max(0, Number(offset) || 0);

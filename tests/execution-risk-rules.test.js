@@ -39,6 +39,7 @@ function createContext(overrides = {}) {
       maxOrderNotionalUsd: 100000,
       maxPositionNotionalUsd: 100000,
       maxSignalAgeDays: 5,
+      shortingEnabled: false,
       ...overrides.config,
     },
     mode: 'paper_execute',
@@ -101,9 +102,30 @@ test('blocks execution for unsupported symbols, short intents, stale signals, op
   const blockingCodes = results.filter((result) => result.status === 'block').map((result) => result.code);
 
   assert.ok(blockingCodes.includes('symbol_not_allowed'));
-  assert.ok(blockingCodes.includes('short_not_supported'));
+  assert.ok(blockingCodes.includes('short_not_enabled'));
   assert.ok(blockingCodes.includes('signal_stale'));
   assert.ok(blockingCodes.includes('open_order_exists'));
   assert.ok(blockingCodes.includes('order_size_exceeded'));
   assert.ok(blockingCodes.includes('position_size_exceeded'));
+});
+
+test('passes symbol checks when no allowlist is configured and shorting is enabled', () => {
+  const results = evaluateExecutionRiskRules(
+    createContext({
+      intent: {
+        symbol: 'NVDA',
+        target_state: 'short',
+        action_hint: 'enter_short',
+      },
+      config: {
+        allowedSymbols: [],
+        shortingEnabled: true,
+      },
+    })
+  );
+
+  const blockingCodes = results.filter((result) => result.status === 'block').map((result) => result.code);
+
+  assert.equal(blockingCodes.includes('symbol_not_allowed'), false);
+  assert.equal(blockingCodes.includes('short_not_enabled'), false);
 });

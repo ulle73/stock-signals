@@ -39,6 +39,24 @@ test('maps an approved sell-to-cash decision to a quantity-based Alpaca order re
   });
 });
 
+test('maps an approved buy-to-cover decision to a quantity-based Alpaca order request', () => {
+  const request = buildBrokerOrderRequest({
+    symbol: 'SPY',
+    decision_status: 'approved_for_send',
+    proposed_order_side: 'buy',
+    proposed_order_notional: null,
+    proposed_order_qty: 125,
+  });
+
+  assert.deepEqual(request, {
+    symbol: 'SPY',
+    side: 'buy',
+    type: 'market',
+    time_in_force: 'day',
+    qty: '125',
+  });
+});
+
 test('refuses to build a broker request for blocked or no-op decisions', () => {
   assert.throws(
     () => buildBrokerOrderRequest({ symbol: 'SPY', decision_status: 'blocked' }),

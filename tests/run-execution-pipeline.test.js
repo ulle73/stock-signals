@@ -206,3 +206,44 @@ test('runExecutionPipeline submits approved paper orders and persists broker res
   assert.equal(submitCalls[0].client_order_id, 'intent-1');
   assert.equal(result.results[0].decisionStatus, 'sent');
 });
+
+test('runExecutionPipeline propagates custom broker labels into snapshots and orders', async () => {
+  const repositories = createRepositories();
+
+  await runExecutionPipeline({
+    mode: 'paper_execute',
+    broker: 'alpaca_bull10',
+    loadIntents: async () => [({
+      source_type: 'ticker_markov_daily',
+      source_table: 'ticker_markov_daily',
+      source_row_key: 'top_10_bull_weekly:2026-05-19',
+      strategy_code: 'ticker_markov_top_10_bull_weekly',
+      symbol: 'SPY',
+      asset_class: 'us_equity',
+      intent_status: 'active',
+      target_state: 'long',
+      target_exposure_pct: 100,
+      action_hint: 'go_long',
+      signal_date: '2026-05-19',
+      signal_timestamp: '2026-05-19T00:00:00.000Z',
+      reason_summary: 'bullish',
+      adapter_metadata_json: {},
+    })],
+    brokerClient: {
+      async getAccount() { return createRawBrokerState().account; },
+      async getPositions() { return createRawBrokerState().positions; },
+      async getOpenOrders() { return createRawBrokerState().openOrders; },
+      async submitOrder() {
+        return { id: 'ord_custom', status: 'accepted' };
+      },
+    },
+    config: createConfig(true),
+    executionRepository: repositories.executionRepository,
+    brokerStateRepository: repositories.brokerStateRepository,
+    now: new Date('2026-05-20T12:00:00.000Z'),
+  });
+
+  assert.equal(repositories.calls.snapshots[0].broker, 'alpaca_bull10');
+  assert.equal(repositories.calls.decisions[0].broker, 'alpaca_bull10');
+  assert.equal(repositories.calls.orders[0].broker, 'alpaca_bull10');
+});

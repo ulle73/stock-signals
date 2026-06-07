@@ -20,6 +20,23 @@ jobs:
       DATABASE_URL_COCKROACH: ${{ secrets.DATABASE_URL_COCKROACH }}
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: '1'
+      MARKOV_PAPER_ACCOUNTS: 'bear10,bull10,bull20'
+      MARKOV_PAPER_BEAR10_STRATEGY_NAME: 'bottom_10_bear_weekly'
+      MARKOV_PAPER_BEAR10_API_BASE_URL: 'https://paper-api.alpaca.markets/v2'
+      MARKOV_PAPER_BEAR10_API_KEY: ${{ secrets.MARKOV_PAPER_BEAR10_API_KEY }}
+      MARKOV_PAPER_BEAR10_API_SECRET: ${{ secrets.MARKOV_PAPER_BEAR10_API_SECRET }}
+      MARKOV_PAPER_BEAR10_TRADING_ENABLED: ${{ secrets.MARKOV_PAPER_BEAR10_TRADING_ENABLED }}
+      MARKOV_PAPER_BEAR10_SHORTING_ENABLED: 'true'
+      MARKOV_PAPER_BULL10_STRATEGY_NAME: 'top_10_bull_weekly'
+      MARKOV_PAPER_BULL10_API_BASE_URL: 'https://paper-api.alpaca.markets/v2'
+      MARKOV_PAPER_BULL10_API_KEY: ${{ secrets.MARKOV_PAPER_BULL10_API_KEY }}
+      MARKOV_PAPER_BULL10_API_SECRET: ${{ secrets.MARKOV_PAPER_BULL10_API_SECRET }}
+      MARKOV_PAPER_BULL10_TRADING_ENABLED: ${{ secrets.MARKOV_PAPER_BULL10_TRADING_ENABLED }}
+      MARKOV_PAPER_BULL20_STRATEGY_NAME: 'top_20_bull_weekly'
+      MARKOV_PAPER_BULL20_API_BASE_URL: 'https://paper-api.alpaca.markets/v2'
+      MARKOV_PAPER_BULL20_API_KEY: ${{ secrets.MARKOV_PAPER_BULL20_API_KEY }}
+      MARKOV_PAPER_BULL20_API_SECRET: ${{ secrets.MARKOV_PAPER_BULL20_API_SECRET }}
+      MARKOV_PAPER_BULL20_TRADING_ENABLED: ${{ secrets.MARKOV_PAPER_BULL20_TRADING_ENABLED }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -57,6 +74,9 @@ jobs:
       - name: Calculate daily indicators
         run: npm run calculate:daily
 
+      - name: Calculate ticker Markov
+        run: npm run calculate:ticker-markov
+
       - name: Calculate CVOL call-volume indicator
         run: npm run calculate:cvol-call-volume
 
@@ -87,6 +107,9 @@ jobs:
       - name: Calculate trading signals
         run: npm run calculate:trading-signals
 
+      - name: Study ticker Markov strategies
+        run: npm run study:ticker-markov
+
       - name: Calculate position facts
         run: npm run calculate:position-facts
 
@@ -104,3 +127,7 @@ jobs:
 
       - name: Run daily backtests
         run: npm run backtest:daily
+
+      - name: Execute Markov paper strategies
+        if: ${{ env.MARKOV_PAPER_BEAR10_API_KEY != '' && env.MARKOV_PAPER_BULL10_API_KEY != '' && env.MARKOV_PAPER_BULL20_API_KEY != '' }}
+        run: npm run alpaca:markov-paper-execute

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getExecutionConfig } from '../lib/execution/config.js';
+import { getExecutionConfig, getMarkovPaperAccountConfigs } from '../lib/execution/config.js';
 
 test('getExecutionConfig returns safe defaults for v1 paper execution', () => {
   const config = getExecutionConfig({});
@@ -39,4 +39,31 @@ test('getExecutionConfig rejects invalid numeric env values', () => {
     () => getExecutionConfig({ EXECUTION_MAX_SIGNAL_AGE_DAYS: 'abc' }),
     /Invalid EXECUTION_MAX_SIGNAL_AGE_DAYS/
   );
+});
+
+test('getMarkovPaperAccountConfigs parses named paper accounts for strategy automation', () => {
+  const accounts = getMarkovPaperAccountConfigs({
+    MARKOV_PAPER_ACCOUNTS: 'bear10, bull10',
+    MARKOV_PAPER_BEAR10_STRATEGY_NAME: 'bottom_10_bear_weekly',
+    MARKOV_PAPER_BEAR10_API_KEY: 'key1',
+    MARKOV_PAPER_BEAR10_API_SECRET: 'secret1',
+    MARKOV_PAPER_BEAR10_TRADING_ENABLED: 'true',
+    MARKOV_PAPER_BEAR10_SHORTING_ENABLED: 'true',
+    MARKOV_PAPER_BULL10_STRATEGY_NAME: 'top_10_bull_weekly',
+    MARKOV_PAPER_BULL10_API_KEY: 'key2',
+    MARKOV_PAPER_BULL10_API_SECRET: 'secret2',
+    MARKOV_PAPER_BULL10_TRADING_ENABLED: 'false',
+    EXECUTION_MAX_SIGNAL_AGE_DAYS: '2',
+  });
+
+  assert.equal(accounts.length, 2);
+  assert.equal(accounts[0].accountId, 'bear10');
+  assert.equal(accounts[0].strategyName, 'bottom_10_bear_weekly');
+  assert.equal(accounts[0].broker, 'alpaca_bear10');
+  assert.equal(accounts[0].alpaca.tradingEnabled, true);
+  assert.equal(accounts[0].shortingEnabled, true);
+  assert.deepEqual(accounts[0].allowedSymbols, []);
+  assert.equal(accounts[1].strategyName, 'top_10_bull_weekly');
+  assert.equal(accounts[1].alpaca.tradingEnabled, false);
+  assert.equal(accounts[1].maxSignalAgeDays, 2);
 });
