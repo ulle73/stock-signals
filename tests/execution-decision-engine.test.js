@@ -197,3 +197,27 @@ test('builds a short-entry decision when shorting is enabled and a reference pri
   assert.equal(decision.proposed_order_qty, 250);
   assert.equal(decision.target_position_notional, -25000);
 });
+
+test('rounds short-entry quantity down to whole shares so Alpaca can accept the order', () => {
+  const decision = buildExecutionDecision({
+    intent: {
+      symbol: 'SPY',
+      asset_class: 'us_equity',
+      intent_status: 'active',
+      target_state: 'short',
+      target_exposure_pct: -30,
+      action_hint: 'enter_short',
+      signal_date: '2026-05-19',
+      reference_price: 110,
+    },
+    brokerState: createBrokerState(),
+    config: createConfig({
+      shortingEnabled: true,
+    }),
+    mode: 'dry_run',
+    now: new Date('2026-05-20T12:00:00.000Z'),
+  });
+
+  assert.equal(decision.proposed_order_side, 'sell');
+  assert.equal(decision.proposed_order_qty, 272);
+});
