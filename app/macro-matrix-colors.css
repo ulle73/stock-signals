@@ -26,8 +26,8 @@
 }
 
 .macro-neutral {
-  background: #f4f1ef;
-  color: #68615b;
+  background: var(--bg-strong);
+  color: var(--muted);
 }
 
 .macro-red-1 {
@@ -58,8 +58,8 @@
 }
 
 .macro-missing {
-  background: #fbfaf6;
-  color: #b2ac9f;
+  background: var(--card);
+  color: var(--muted);
 }
 
 .delta-up {
