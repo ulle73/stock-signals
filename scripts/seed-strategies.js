@@ -119,6 +119,117 @@ const STRATEGY_DEFINITIONS = [
     },
     is_active: true,
   },
+  // === Markov strategies (added for unified daily backtesting) ===
+  {
+    code: 'ticker_markov_top_10_bull_weekly',
+    name: 'Ticker Markov Top 10 Bull Weekly',
+    description: 'Long-only basket of top 10 bullish Markov-ranked tickers, weekly rebalance.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 10,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'ticker_markov_top_10_bull_weekly',
+    params_json: {
+      initial_state: 'cash',
+      top_n: 10,
+      frequency: 'weekly'
+    },
+    is_active: true,
+  },
+  {
+    code: 'ticker_markov_top_20_bull_weekly',
+    name: 'Ticker Markov Top 20 Bull Weekly',
+    description: 'Long-only basket of top 20 bullish Markov-ranked tickers, weekly rebalance.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 10,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'ticker_markov_top_20_bull_weekly',
+    params_json: {
+      initial_state: 'cash',
+      top_n: 20,
+      frequency: 'weekly'
+    },
+    is_active: true,
+  },
+  {
+    code: 'ticker_markov_bottom_10_bear_weekly',
+    name: 'Ticker Markov Bottom 10 Bear Weekly',
+    description: 'Long-only basket of bottom 10 bearish Markov-ranked tickers (mean-reversion), weekly rebalance.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 10,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'ticker_markov_bottom_10_bear_weekly',
+    params_json: {
+      initial_state: 'cash',
+      bottom_n: 10,
+      frequency: 'weekly'
+    },
+    is_active: true,
+  },
+  {
+    code: 'ticker_markov_top_10_bull_weekly_market_on',
+    name: 'Ticker Markov Top 10 Bull Weekly Market On',
+    description: 'Top 10 Bull Weekly only when market regime is favorable (Market On filter).',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 10,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'ticker_markov_top_10_bull_weekly_market_on',
+    params_json: {
+      initial_state: 'cash',
+      top_n: 10,
+      frequency: 'weekly',
+      market_on_filter: true
+    },
+    is_active: true,
+  },
+  {
+    code: 'ticker_markov_top_10_bull_weekly_no_risk_off',
+    name: 'Ticker Markov Top 10 Bull Weekly No Risk Off',
+    description: 'Top 10 Bull Weekly without hard risk-off exits.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 10,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'ticker_markov_top_10_bull_weekly_no_risk_off',
+    params_json: {
+      initial_state: 'cash',
+      top_n: 10,
+      frequency: 'weekly',
+      risk_off_disabled: true
+    },
+    is_active: true,
+  },
+  {
+    code: 'ticker_markov_top_10_bull_daily',
+    name: 'Ticker Markov Top 10 Bull Daily',
+    description: 'Long-only basket of top 10 bullish Markov-ranked tickers, daily rebalance.',
+    benchmark_symbol: 'SPY',
+    execution_model: 'next_open',
+    out_of_market_mode: 'cash',
+    transaction_cost_bps: 10,
+    universe_mode: 'current_constituents',
+    point_in_time_supported: false,
+    rule_source: 'ticker_markov_top_10_bull_daily',
+    params_json: {
+      initial_state: 'cash',
+      top_n: 10,
+      frequency: 'daily'
+    },
+    is_active: true,
+  },
 ];
 
 async function run() {
