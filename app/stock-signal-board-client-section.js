@@ -17,9 +17,7 @@ export default function StockSignalBoardClientSection() {
 
     async function loadPage({ offset = 0, append = false, attempt = 1 } = {}) {
       try {
-        const response = await fetch(`/api/stock-signal-board?limit=${INITIAL_PAGE_SIZE}&offset=${offset}`, {
-          cache: 'no-store',
-        });
+        const response = await fetch(`/api/stock-signal-board?limit=${INITIAL_PAGE_SIZE}&offset=${offset}`);
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
@@ -91,9 +89,7 @@ export default function StockSignalBoardClientSection() {
     }
 
     setLoadingMore(true);
-    await fetch(`/api/stock-signal-board?limit=${INITIAL_PAGE_SIZE}&offset=${viewModel.pagination.nextOffset}`, {
-      cache: 'no-store',
-    })
+    await fetch(`/api/stock-signal-board?limit=${INITIAL_PAGE_SIZE}&offset=${viewModel.pagination.nextOffset}`)
       .then(async (response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
