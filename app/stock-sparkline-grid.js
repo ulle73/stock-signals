@@ -15,8 +15,8 @@ export function StockSparklineGrid({ rows = [] }) {
     <section className="card" style={{ display: 'grid', gap: 14, padding: 20 }}>
       <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div>
-          <p className="section-kicker" style={{ marginBottom: 8 }}>50d trend · synliga tickers</p>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: 0 }}>Mini-charts för laddade aktier</h2>
+          <p className="section-kicker" style={{ marginBottom: 8 }}>50d trend · TF Sync + RYD OBV</p>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: 0 }}>Mini-charts för aktierna i tabellen</h2>
         </div>
         <span className="mini-pill tone-neutral">{sparklineRows.length} charts</span>
       </div>
