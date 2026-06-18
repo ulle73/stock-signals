@@ -2,18 +2,33 @@ name: Fetch Daily Market Data
 
 on:
   workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: 'Force a full run even if the refresh gate thinks data is already current'
+        required: false
+        default: 'false'
   schedule:
     - cron: '53 21 * * 1-5'
+    - cron: '23 23 * * 1-5'
+    - cron: '23 3 * * 2-6'
+    - cron: '43 12 * * 2-6'
 
 concurrency:
   group: fetch-daily
   cancel-in-progress: false
 
 env:
-  DATABASE_TARGET: cockroach
-  DATABASE_URL_COCKROACH: ${{ secrets.DATABASE_URL_COCKROACH }}
+  DATABASE_TARGET: default
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
   NODE_ENV: production
   NEXT_TELEMETRY_DISABLED: '1'
+  YAHOO_PROXY_DAILY_INITIAL_RANGE: '400d'
+  IMPLIED_VOLATILITY_PROXY_RANGE: '400d'
+  HISTORY_PRUNE_ENABLED: 'true'
+  HISTORY_PRUNE_DAILY_DAYS: '400'
+  HISTORY_PRUNE_INTRADAY_60M_DAYS: '60'
+  HISTORY_PRUNE_MACRO_PROXY_DAYS: '400'
+  HISTORY_PRUNE_IV_PROXY_DAYS: '400'
   MARKOV_PAPER_ACCOUNTS: 'bear10,bull10,bull20'
   MARKOV_PAPER_BEAR10_STRATEGY_NAME: 'bottom_10_bear_weekly'
   MARKOV_PAPER_BEAR10_API_BASE_URL: 'https://paper-api.alpaca.markets/v2'
@@ -33,7 +48,60 @@ env:
   MARKOV_PAPER_BULL20_TRADING_ENABLED: ${{ secrets.MARKOV_PAPER_BULL20_TRADING_ENABLED }}
 
 jobs:
+  check-refresh-needed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      refresh_needed: ${{ steps.check.outputs.refresh_needed }}
+      expected_latest_market_date: ${{ steps.check.outputs.expected_latest_market_date }}
+      latest_price_date: ${{ steps.check.outputs.latest_price_date }}
+      latest_benchmark_date: ${{ steps.check.outputs.latest_benchmark_date }}
+      latest_market_signal_date: ${{ steps.check.outputs.latest_market_signal_date }}
+      latest_position_signal_date: ${{ steps.check.outputs.latest_position_signal_date }}
+      reason: ${{ steps.check.outputs.reason }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check whether market data refresh is needed
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force_refresh }}" = "true" ]; then
+            echo "refresh_needed=true" >> "$GITHUB_OUTPUT"
+            echo "expected_latest_market_date=forced" >> "$GITHUB_OUTPUT"
+            echo "latest_price_date=" >> "$GITHUB_OUTPUT"
+            echo "latest_benchmark_date=" >> "$GITHUB_OUTPUT"
+            echo "latest_market_signal_date=" >> "$GITHUB_OUTPUT"
+            echo "latest_position_signal_date=" >> "$GITHUB_OUTPUT"
+            echo "reason=Manual workflow_dispatch forced a full refresh." >> "$GITHUB_OUTPUT"
+          else
+            npm run check:daily-refresh-needed
+          fi
+
+      - name: Log refresh decision
+        run: |
+          echo "refresh_needed=${{ steps.check.outputs.refresh_needed }}"
+          echo "expected_latest_market_date=${{ steps.check.outputs.expected_latest_market_date }}"
+          echo "latest_price_date=${{ steps.check.outputs.latest_price_date }}"
+          echo "latest_benchmark_date=${{ steps.check.outputs.latest_benchmark_date }}"
+          echo "latest_market_signal_date=${{ steps.check.outputs.latest_market_signal_date }}"
+          echo "latest_position_signal_date=${{ steps.check.outputs.latest_position_signal_date }}"
+          echo "reason=${{ steps.check.outputs.reason }}"
+
   fetch-and-calculate-daily:
+    needs: check-refresh-needed
+    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
@@ -76,7 +144,10 @@ jobs:
         run: npm run calculate:daily
 
   calculate-derived-signals:
-    needs: fetch-and-calculate-daily
+    needs:
+      - check-refresh-needed
+      - fetch-and-calculate-daily
+    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
@@ -149,7 +220,10 @@ jobs:
         run: npm run seed:strategies
 
   run-daily-backtests:
-    needs: calculate-derived-signals
+    needs:
+      - check-refresh-needed
+      - calculate-derived-signals
+    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -174,7 +248,10 @@ jobs:
         run: npm run backtest:daily
 
   execute-markov-paper-strategies:
-    needs: calculate-derived-signals
+    needs:
+      - check-refresh-needed
+      - calculate-derived-signals
+    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -198,3 +275,32 @@ jobs:
       - name: Execute Markov paper strategies
         if: ${{ env.MARKOV_PAPER_BEAR10_API_KEY != '' && env.MARKOV_PAPER_BULL10_API_KEY != '' && env.MARKOV_PAPER_BULL20_API_KEY != '' }}
         run: npm run alpaca:markov-paper-execute
+
+  prune-history:
+    needs:
+      - check-refresh-needed
+      - run-daily-backtests
+      - execute-markov-paper-strategies
+    if: ${{ always() && needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database migrations
+        run: npm run db:migrate
+
+      - name: Prune retained history for free-tier storage
+        run: npm run db:prune-history

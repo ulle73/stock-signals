@@ -2,19 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildPoolConfig, getDatabaseTarget, getDatabaseUrl } from '../lib/db.js';
 
-test('getDatabaseTarget falls back to cockroach', () => {
-  assert.equal(getDatabaseTarget({}), 'cockroach');
-  assert.equal(getDatabaseTarget({ DATABASE_TARGET: '   ' }), 'cockroach');
+test('getDatabaseTarget falls back to default', () => {
+  assert.equal(getDatabaseTarget({}), 'default');
+  assert.equal(getDatabaseTarget({ DATABASE_TARGET: '   ' }), 'default');
 });
 
-test('getDatabaseUrl uses DATABASE_URL_COCKROACH for the implicit standard target', () => {
+test('getDatabaseUrl uses DATABASE_URL for the implicit standard target', () => {
   const env = {
-    DATABASE_URL_COCKROACH: 'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full',
+    DATABASE_URL: 'postgresql://default-user:pw@default-host/defaultdb?sslmode=require',
   };
 
   assert.equal(
     getDatabaseUrl(env),
-    'postgresql://cockroach-user:pw@cockroach-host/stock_signals?sslmode=verify-full'
+    'postgresql://default-user:pw@default-host/defaultdb?sslmode=require'
   );
 });
 
