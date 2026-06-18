@@ -12,7 +12,7 @@ export function StockSparklineGrid({ rows = [] }) {
   }
 
   return (
-    <section className="card" style={{ display: 'grid', gap: 14, padding: 20 }}>
+    <section className="card" style={{ display: 'grid', gap: 16, padding: 20 }}>
       <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div>
           <p className="section-kicker" style={{ marginBottom: 8 }}>50d trend · TF Sync + RYD OBV</p>
@@ -20,11 +20,11 @@ export function StockSparklineGrid({ rows = [] }) {
         </div>
         <span className="mini-pill tone-neutral">{sparklineRows.length} charts</span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(164px, 1fr))', gap: 10 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 14 }}>
         {sparklineRows.map((row) => (
           <article
             key={`sparkline-${row.ticker}`}
-            style={{ background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 16, display: 'grid', gap: 8, padding: 12 }}
+            style={{ background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 18, display: 'grid', gap: 10, padding: 14 }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'baseline' }}>
               <strong>{row.ticker}</strong>
