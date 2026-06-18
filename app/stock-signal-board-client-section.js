@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { StockSignalBoardLoadingCard, StockSignalBoardView } from './stock-signal-board-view.js';
+import { StockSparklineGrid } from './stock-sparkline-grid.js';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1500;
@@ -112,11 +113,14 @@ export default function StockSignalBoardClientSection() {
   }
 
   return (
-    <StockSignalBoardView
-      viewModel={viewModel}
-      hasMore={Boolean(viewModel?.pagination?.hasMore)}
-      isLoadingMore={loadingMore}
-      onLoadMore={handleLoadMore}
-    />
+    <>
+      <StockSparklineGrid rows={viewModel.rows} />
+      <StockSignalBoardView
+        viewModel={viewModel}
+        hasMore={Boolean(viewModel?.pagination?.hasMore)}
+        isLoadingMore={loadingMore}
+        onLoadMore={handleLoadMore}
+      />
+    </>
   );
 }
