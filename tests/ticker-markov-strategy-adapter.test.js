@@ -90,3 +90,45 @@ test('rebalances into the next weekly bull basket and exits removed holdings', a
   assert.deepEqual(intents.filter((intent) => intent.target_state === 'cash').map((intent) => intent.symbol), ['OLD']);
   assert.ok(intents.every((intent) => intent.adapter_metadata_json.rebalance_mode === 'rebalance'));
 });
+
+test('exits weekly short holdings mid-week when the daily guard no longer qualifies them', async () => {
+  const intents = await getLatestTickerMarkovStrategyExecutionIntents({
+    strategyName: 'bottom_10_bear_weekly',
+    brokerState: {
+      positions: [
+        { symbol: 'KEEP', qty: -100, marketValue: -5000, side: 'short' },
+        { symbol: 'EXIT', qty: -100, marketValue: -4000, side: 'short' },
+      ],
+    },
+    brokerClient: createBrokerClient('2026-06-10'),
+    now: new Date('2026-06-09T22:00:00.000Z'),
+    repository: {
+      async getLatestTickerMarkovExecutionInputs() {
+        return {
+          signalDate: '2026-06-09',
+          markovRows: [
+            { ticker: 'KEEP', date: '2026-06-09', markov_total: '-0.9', sample_size: 60, signal: 'sell' },
+            { ticker: 'EXIT', date: '2026-06-09', markov_total: '0.3', sample_size: 60, signal: 'bull' },
+          ],
+          tradingSignalRow: { date: '2026-06-09', setup: 'neutral', historical_edge_direction: 'neutral' },
+          priceRows: [
+            { ticker: 'KEEP', adj_close: '50', close: '50' },
+            { ticker: 'EXIT', adj_close: '40', close: '40' },
+          ],
+          strategyDailyRow: {
+            strategy_name: 'bottom_10_bear_weekly',
+            date: '2026-06-09',
+            tickers: ['KEEP', 'EXIT'],
+          },
+        };
+      },
+    },
+  });
+
+  assert.equal(intents.length, 2);
+  assert.deepEqual(intents.filter((intent) => intent.target_state === 'short').map((intent) => intent.symbol), ['KEEP']);
+  assert.deepEqual(intents.filter((intent) => intent.target_state === 'cash').map((intent) => intent.symbol), ['EXIT']);
+  assert.equal(intents.find((intent) => intent.symbol === 'KEEP').target_exposure_pct, -10);
+  assert.equal(intents.find((intent) => intent.symbol === 'EXIT').adapter_metadata_json.short_daily_exit_reason, 'signal_not_sell');
+  assert.ok(intents.every((intent) => intent.adapter_metadata_json.rebalance_mode === 'daily_exit'));
+});
