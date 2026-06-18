@@ -41,6 +41,8 @@ function normalizeSparklinePayload(value) {
     minClose: toNumber(value.minClose),
     maxClose: toNumber(value.maxClose),
     markers: Array.isArray(value.markers) ? value.markers : [],
+    tfSyncMarkers: Array.isArray(value.tfSyncMarkers) ? value.tfSyncMarkers : [],
+    obvPanel: value.obvPanel ?? null,
   };
 }
 
