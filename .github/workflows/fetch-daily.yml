@@ -143,6 +143,9 @@ jobs:
       - name: Calculate daily indicators
         run: npm run calculate:daily
 
+      - name: Build ticker sparkline cache
+        run: npm run build:sparkline-cache
+
   calculate-derived-signals:
     needs:
       - check-refresh-needed
