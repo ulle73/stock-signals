@@ -54,7 +54,7 @@ jobs:
     permissions:
       contents: read
     outputs:
-      refresh_needed: ${{ steps.check.outputs.refresh_needed }}
+      refresh_skip: ${{ steps.check.outputs.refresh_skip }}
       expected_latest_market_date: ${{ steps.check.outputs.expected_latest_market_date }}
       latest_price_date: ${{ steps.check.outputs.latest_price_date }}
       latest_benchmark_date: ${{ steps.check.outputs.latest_benchmark_date }}
@@ -78,7 +78,7 @@ jobs:
         id: check
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force_refresh }}" = "true" ]; then
-            echo "refresh_needed=true" >> "$GITHUB_OUTPUT"
+            echo "refresh_skip=no" >> "$GITHUB_OUTPUT"
             echo "expected_latest_market_date=forced" >> "$GITHUB_OUTPUT"
             echo "latest_price_date=" >> "$GITHUB_OUTPUT"
             echo "latest_benchmark_date=" >> "$GITHUB_OUTPUT"
@@ -91,7 +91,7 @@ jobs:
 
       - name: Log refresh decision
         run: |
-          echo "refresh_needed=${{ steps.check.outputs.refresh_needed }}"
+          echo "refresh_skip=${{ steps.check.outputs.refresh_skip }}"
           echo "expected_latest_market_date=${{ steps.check.outputs.expected_latest_market_date }}"
           echo "latest_price_date=${{ steps.check.outputs.latest_price_date }}"
           echo "latest_benchmark_date=${{ steps.check.outputs.latest_benchmark_date }}"
@@ -101,7 +101,7 @@ jobs:
 
   fetch-and-calculate-daily:
     needs: check-refresh-needed
-    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
+    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
@@ -150,7 +150,7 @@ jobs:
     needs:
       - check-refresh-needed
       - fetch-and-calculate-daily
-    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
+    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
@@ -226,7 +226,7 @@ jobs:
     needs:
       - check-refresh-needed
       - calculate-derived-signals
-    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
+    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -254,7 +254,7 @@ jobs:
     needs:
       - check-refresh-needed
       - calculate-derived-signals
-    if: ${{ needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
+    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -284,7 +284,7 @@ jobs:
       - check-refresh-needed
       - run-daily-backtests
       - execute-markov-paper-strategies
-    if: ${{ always() && needs.check-refresh-needed.outputs.refresh_needed == 'true' }}
+    if: ${{ always() && needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

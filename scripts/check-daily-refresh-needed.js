@@ -46,7 +46,7 @@ async function run() {
     reason: decision.reason,
   }, null, 2));
 
-  writeOutput('refresh_needed', decision.refreshNeeded ? 'true' : 'false');
+  writeOutput('refresh_skip', decision.refreshNeeded ? 'no' : 'yes');
   writeOutput('expected_latest_market_date', decision.expectedLatestMarketDate);
   writeOutput('latest_price_date', snapshot.latest_price_date ?? '');
   writeOutput('latest_benchmark_date', snapshot.latest_benchmark_date ?? '');
