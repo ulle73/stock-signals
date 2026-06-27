@@ -317,7 +317,13 @@ function ConditionBuilder({ title, description, rows, fields, fieldsByKey, mode,
   );
 }
 
-export default function SignalStudyLabClient({ examples, fields, returnInstrumentOptions, signalInstrumentOptions }) {
+export default function SignalStudyLabClient({
+  examples,
+  fields,
+  returnInstrumentOptions,
+  signalInstrumentOptions,
+  storageKind = 'database',
+}) {
   const activeFields = useMemo(() => fields.filter((field) => field.isAvailable !== false), [fields]);
   const fieldsByKey = useMemo(() => new Map(fields.map((field) => [field.key, field])), [fields]);
   const initialConfig = useMemo(
@@ -333,6 +339,7 @@ export default function SignalStudyLabClient({ examples, fields, returnInstrumen
   const [resultPayload, setResultPayload] = useState(null);
   const [error, setError] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
+  const [accessToken, setAccessToken] = useState('');
   const [isPending, startTransition] = useTransition();
   const needsSignalInstrument = scopeNeedsSignalInstrument(config, fieldsByKey);
   const stateField = config.studyType === 'state_period' ? fieldsByKey.get(config.stateField) : null;
@@ -386,7 +393,14 @@ export default function SignalStudyLabClient({ examples, fields, returnInstrumen
     setError('');
     startTransition(async () => {
       try {
-        const response = await fetch('/api/signal-study/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const response = await fetch('/api/signal-study/run', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-signal-study-access-token': accessToken,
+          },
+          body: JSON.stringify(payload),
+        });
         const nextPayload = await response.json();
         if (!response.ok) throw new Error(nextPayload.error ?? `HTTP ${response.status}`);
         setResultPayload(nextPayload);
@@ -415,6 +429,7 @@ export default function SignalStudyLabClient({ examples, fields, returnInstrumen
             <label className="study-lab-field"><span>Signalinstrument</span><select value={config.signalInstrument} onChange={(event) => updateConfigField('signalInstrument', event.target.value)} disabled={!needsSignalInstrument}><option value="">{needsSignalInstrument ? 'Samma som return om möjligt' : 'Behövs ej för globala fält'}</option>{signalInstrumentOptions.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select><small>{needsSignalInstrument ? 'Tickerbaserade fält läses från detta instrument.' : 'Globala marknadsfält kräver inget signalinstrument.'}</small></label>
             <label className="study-lab-field"><span>Startdatum</span><input type="date" value={config.startDate} onChange={(event) => updateConfigField('startDate', event.target.value)} /></label>
             <label className="study-lab-field"><span>Slutdatum</span><input type="date" value={config.endDate} onChange={(event) => updateConfigField('endDate', event.target.value)} /></label>
+            <label className="study-lab-field study-lab-field-wide"><span>Access token</span><input type="password" value={accessToken} onChange={(event) => setAccessToken(event.target.value)} placeholder="SIGNAL_STUDY_ACCESS_TOKEN" /><small>Krävs för att köra studien från UI:t. Tokenen skickas bara i request-headern.</small></label>
           </div>
         </article>
 
@@ -444,9 +459,9 @@ export default function SignalStudyLabClient({ examples, fields, returnInstrumen
           <ConditionBuilder title="Filters" description="Valfria filter som appliceras vid entry eller signalstart." rows={config.filters} fields={activeFields} fieldsByKey={fieldsByKey} mode={config.filterMode} onModeChange={(value) => updateConfigField('filterMode', value)} onAdd={() => addConditionRow('filters')} onRemove={(index) => removeConditionRow('filters', index)} onUpdate={(index, fieldName, value) => updateConditionRow('filters', index, fieldName, value)} emptyCopy="Inga extra filter ännu. State study kan köras utan filters." />
         </>}
 
-        <article className="card study-lab-panel"><div className="study-lab-panel-head"><div><p className="section-kicker">Config preview</p><p className="footnote">JSON-payloaden som UI:t skickar till den säkra study-endpointen.</p></div></div><pre className="study-lab-json-preview">{JSON.stringify(payload, null, 2)}</pre><div className="study-lab-action-bar"><button type="button" className="study-lab-primary-button" onClick={handleRun} disabled={isPending}>{isPending ? 'Kör study...' : 'Kör study'}</button><button type="button" className="study-lab-secondary-button" onClick={copyConfig}>Kopiera config</button><span className="footnote">{copyStatus || <>Resultat sparas automatiskt till <code>studies/results/</code></>}</span></div>{error ? <div className="study-lab-warning">{error}</div> : null}</article>
+        <article className="card study-lab-panel"><div className="study-lab-panel-head"><div><p className="section-kicker">Config preview</p><p className="footnote">JSON-payloaden som UI:t skickar till den säkra study-endpointen.</p></div></div><pre className="study-lab-json-preview">{JSON.stringify(payload, null, 2)}</pre><div className="study-lab-action-bar"><button type="button" className="study-lab-primary-button" onClick={handleRun} disabled={isPending || !accessToken.trim()}>{isPending ? 'Kör study...' : 'Kör study'}</button><button type="button" className="study-lab-secondary-button" onClick={copyConfig}>Kopiera config</button><span className="footnote">{copyStatus || (storageKind === 'database' ? 'Resultat sparas automatiskt i databasen.' : 'Resultat sparas automatiskt till lokala resultatfiler.')}</span></div>{error ? <div className="study-lab-warning">{error}</div> : null}</article>
       </div>
-      <div className="study-lab-results"><article className="card study-lab-panel"><div className="study-lab-panel-head"><div><p className="section-kicker">Resultat</p><p className="footnote">Kör studien för att se sample counts, horizon-tabeller eller state-perioder.</p></div></div>{isPending ? <div className="study-lab-empty-state"><strong>Studien körs nu...</strong><p className="footnote">Servern bygger datasetet, evaluerar villkoren och sparar JSON-resultatet.</p></div> : resultPayload ? <><ResultMeta meta={resultPayload.meta} />{resultPayload.result.studyType === 'forward_horizon' ? <ForwardResultView payload={resultPayload} /> : <StatePeriodResultView payload={resultPayload} />}<details className="study-lab-details"><summary>Visa sparvägar och råresultat</summary><div className="study-lab-path-block"><p><strong>Senaste körning:</strong> {resultPayload.meta.savedResultPath}</p><p><strong>Latest-fil:</strong> {resultPayload.meta.savedLatestPath}</p></div><pre className="study-lab-json-preview">{JSON.stringify(resultPayload, null, 2)}</pre></details></> : <div className="study-lab-empty-state"><strong>Ingen study körd ännu.</strong><p className="footnote">Börja gärna med exemplet <code>breadth_cross_above_50_forward</code> för att se ett resultat med riktiga träffar direkt.</p></div>}</article></div>
+      <div className="study-lab-results"><article className="card study-lab-panel"><div className="study-lab-panel-head"><div><p className="section-kicker">Resultat</p><p className="footnote">Kör studien för att se sample counts, horizon-tabeller eller state-perioder.</p></div></div>{isPending ? <div className="study-lab-empty-state"><strong>Studien körs nu...</strong><p className="footnote">Servern bygger datasetet, evaluerar villkoren och sparar resultatet via {storageKind === 'database' ? 'databasen' : 'filsystemet'}.</p></div> : resultPayload ? <><ResultMeta meta={resultPayload.meta} />{resultPayload.result.studyType === 'forward_horizon' ? <ForwardResultView payload={resultPayload} /> : <StatePeriodResultView payload={resultPayload} />}<details className="study-lab-details"><summary>Visa resultatreferenser och råresultat</summary><div className="study-lab-path-block"><p><strong>Lagring:</strong> {resultPayload.meta.storageKind}</p><p><strong>Senaste körning:</strong> {resultPayload.meta.savedResultRef}</p><p><strong>Latest-ref:</strong> {resultPayload.meta.savedLatestRef}</p></div><pre className="study-lab-json-preview">{JSON.stringify(resultPayload, null, 2)}</pre></details></> : <div className="study-lab-empty-state"><strong>Ingen study körd ännu.</strong><p className="footnote">Börja gärna med exemplet <code>breadth_cross_above_50_forward</code> för att se ett resultat med riktiga träffar direkt.</p></div>}</article></div>
     </section>
   );
 }

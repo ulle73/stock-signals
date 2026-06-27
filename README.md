@@ -70,9 +70,9 @@ cp .env.example .env.local
 Fyll i:
 
 ```env
-# cockroach -> DATABASE_URL_COCKROACH
 # default -> DATABASE_URL
-DATABASE_TARGET="cockroach"
+# cockroach -> DATABASE_URL_COCKROACH
+DATABASE_TARGET="default"
 DATABASE_URL="postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require"
 DATABASE_URL_COCKROACH="postgresql://USER:PASSWORD@HOST.cockroachlabs.cloud:26257/DBNAME?sslmode=verify-full"
 
@@ -88,19 +88,24 @@ EXECUTION_MAX_SIGNAL_AGE_DAYS="5"
 ```
 
 `npm run db:migrate` och `npm run fetch:daily` laddar nu samma `.env*`-filer som Next.js gör, så `.env.local` fungerar även för scriptkörningar.
+Om du bootstrappar lokalt mot ett länkat Vercel-projekt kan du i stället köra:
+
+```bash
+vercel env pull .env.local --yes
+```
 
 Alpaca-nycklar ska bara ligga i `.env.local` eller i shell-miljön. Lägg dem aldrig i kod eller commits.
 
 Om du vill växla databas utan att ändra kod sätter du bara:
 
 ```powershell
-$env:DATABASE_TARGET="cockroach"
+$env:DATABASE_TARGET="default"
 ```
 
 eller låter `.env.local` stå på:
 
 ```env
-DATABASE_TARGET="cockroach"
+DATABASE_TARGET="default"
 ```
 
 ### 3. Kör migration
@@ -145,6 +150,7 @@ Det skapar:
 - `strategy_positions_daily`
 - `strategy_equity_daily`
 - `data_fetch_runs`
+- `signal_study_results`
 
 ### 4. Testa fetch med få tickers
 
@@ -175,10 +181,10 @@ $env:YAHOO_DAILY_RANGE="800d"
 npm run fetch:daily
 ```
 
-För cirka fem års Yahoo-historik i vald databas:
+För cirka fem års Yahoo-historik i en separat större databas:
 
 ```powershell
-$env:DATABASE_TARGET="cockroach"
+$env:DATABASE_TARGET="default"
 $env:YAHOO_DAILY_RANGE="5y"
 npm run fetch:daily
 ```
@@ -882,7 +888,16 @@ Varje körning sparar nu också två filer i `studies/results/`:
 - en tidsstämplad fil per körning
 - en `*.latest.json`-fil som alltid pekar på senaste körningen för just den studien
 
-Det gäller både terminalscriptet och UI-körningar från `/signal-study-lab`.
+Det gäller terminalscriptet. UI-körningar från `/signal-study-lab` sparar i stället resultatet i databastabellen `signal_study_results` och returnerar lagringsreferenser i API-svaret.
+
+UI-körningen kräver också att följande server-env finns:
+
+```env
+ENABLE_SIGNAL_STUDY_LAB="true"
+SIGNAL_STUDY_ACCESS_TOKEN="valfri-lång-hemlig-sträng"
+```
+
+I UI:t matar du in `SIGNAL_STUDY_ACCESS_TOKEN` manuellt innan du kör studien. Tokenen skickas bara i request-headern till `POST /api/signal-study/run`.
 
 Kärnfiler:
 
@@ -909,13 +924,24 @@ För Cockroach i GitHub Actions eller andra Linux-miljöer ska connection string
 
 Standard:
 
-- `DATABASE_TARGET=cockroach` -> `DATABASE_URL_COCKROACH`
-
-Äldre Neon-anslutning vid behov:
-
 - `DATABASE_TARGET=default` -> `DATABASE_URL`
 
+Cockroach vid behov:
+
+- `DATABASE_TARGET=cockroach` -> `DATABASE_URL_COCKROACH`
+
 Det gör att lokal utveckling, scriptkörningar och live kan använda olika databaser utan kodändringar, så länge rätt env-variabler finns.
+
+För Neon free-tier behöver databasen hållas bounded. Workflowen kör därför nu `db:prune-history` efter daily-pipelinen och använder kortare bootstrap-fönster för tunga proxytabeller.
+
+För Vercel är den tänkta ordningen:
+
+```bash
+vercel link --yes --project stock-signals --scope ryds-projects-4371adb0
+vercel env pull .env.local --yes
+```
+
+`production` ska innehålla hela den stabila serverkonfigurationen, medan `preview` bara behöver read-only-minimum som `DATABASE_TARGET`, `DATABASE_URL` och `ENABLE_SIGNAL_STUDY_LAB=false`.
 
 ## Daglig körning
 
@@ -923,12 +949,8 @@ Repo:t innehåller en GitHub Actions-workflow i [`.github/workflows/fetch-daily.
 
 För att den ska fungera behöver du lägga in repository secret:
 
-- `DATABASE_URL_COCKROACH` = din Cockroach connection string
-
-Om du tillfälligt behöver köra workflowen mot den äldre Neon-databasen får du i stället:
-
-- sätta `DATABASE_TARGET=default`
-- lägga in `DATABASE_URL` som repository secret
+- `DATABASE_URL` = din Neon connection string
+- valfritt `DATABASE_URL_COCKROACH` om du vill kunna växla tillbaka manuellt
 
 Workflowen kör:
 

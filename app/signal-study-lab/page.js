@@ -1,12 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { getActiveConstituents } from '../../lib/repositories/constituents.js';
 import {
   listSignalStudyFieldsWithAvailability,
   listSignalStudyReturnInstruments,
 } from '../../lib/repositories/signal-studies.js';
 import { listSignalStudyFields } from '../../lib/signal-registry/fields.js';
+import { isSignalStudyLabEnabled } from '../../lib/utils/signal-study-feature.js';
 import SignalStudyLabClient from './signal-study-lab-client.js';
 
 export const dynamic = 'force-dynamic';
@@ -45,6 +47,10 @@ function buildSignalInstrumentOptions(constituents) {
 }
 
 export default async function SignalStudyLabPage() {
+  if (!isSignalStudyLabEnabled()) {
+    notFound();
+  }
+
   const baseFields = listSignalStudyFields();
   const [fields, returnInstruments, constituents, examples] = await Promise.all([
     listSignalStudyFieldsWithAvailability(baseFields),
@@ -104,6 +110,7 @@ export default async function SignalStudyLabPage() {
         fields={fields}
         returnInstrumentOptions={returnInstrumentOptions}
         signalInstrumentOptions={signalInstrumentOptions}
+        storageKind="database"
       />
     </main>
   );

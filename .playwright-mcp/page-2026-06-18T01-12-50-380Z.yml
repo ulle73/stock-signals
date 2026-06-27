@@ -1,0 +1,2761 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e6]:
+      - heading "Navigation Menu" [level=2] [ref=e7]
+      - generic [ref=e9]:
+        - button "Toggle navigation" [ref=e11] [cursor=pointer]
+        - link "Homepage" [ref=e17] [cursor=pointer]:
+          - /url: /
+          - img [ref=e18]
+        - generic [ref=e20]:
+          - link "Sign in" [ref=e21] [cursor=pointer]:
+            - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Fulle73%2Fstock-signals
+          - button "Appearance settings" [ref=e24] [cursor=pointer]:
+            - img
+  - main [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e32]:
+          - img [ref=e33]
+          - link "ulle73" [ref=e36] [cursor=pointer]:
+            - /url: /ulle73
+          - generic [ref=e37]: /
+          - strong [ref=e38]:
+            - link "stock-signals" [ref=e39] [cursor=pointer]:
+              - /url: /ulle73/stock-signals
+          - generic [ref=e40]: Public
+        - generic [ref=e41]:
+          - list:
+            - listitem [ref=e42]:
+              - link "You must be signed in to change notification settings" [ref=e43] [cursor=pointer]:
+                - /url: /login?return_to=%2Fulle73%2Fstock-signals
+                - img [ref=e44]
+                - text: Notifications
+            - listitem [ref=e46]:
+              - link "Fork 0" [ref=e47] [cursor=pointer]:
+                - /url: /login?return_to=%2Fulle73%2Fstock-signals
+                - img [ref=e48]
+                - text: Fork
+                - generic "0" [ref=e50]
+            - listitem [ref=e51]:
+              - link "You must be signed in to star a repository" [ref=e53] [cursor=pointer]:
+                - /url: /login?return_to=%2Fulle73%2Fstock-signals
+                - img [ref=e54]
+                - text: Star
+                - generic "0 users starred this repository" [ref=e56]: "0"
+      - navigation "Repository" [ref=e57]:
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Code" [ref=e60] [cursor=pointer]:
+              - /url: /ulle73/stock-signals
+              - img [ref=e61]
+              - generic [ref=e63]: Code
+          - listitem [ref=e64]:
+            - link "Issues" [ref=e65] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/issues
+              - img [ref=e66]
+              - generic [ref=e69]: Issues
+          - listitem [ref=e70]:
+            - link "Pull requests" [ref=e71] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/pulls
+              - img [ref=e72]
+              - generic [ref=e74]: Pull requests
+          - listitem [ref=e75]:
+            - link "Actions" [ref=e76] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/actions
+              - img [ref=e77]
+              - generic [ref=e79]: Actions
+          - listitem [ref=e80]:
+            - link "Projects" [ref=e81] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/projects
+              - img [ref=e82]
+              - generic [ref=e84]: Projects
+          - listitem [ref=e85]:
+            - link "Security and quality" [ref=e86] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/security
+              - img [ref=e87]
+              - generic [ref=e89]: Security and quality
+          - listitem [ref=e90]:
+            - link "Insights" [ref=e91] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/pulse
+              - img [ref=e92]
+              - generic [ref=e94]: Insights
+    - generic [ref=e107]:
+      - heading "ulle73/stock-signals" [level=1] [ref=e109]
+      - generic [ref=e110]:
+        - generic [ref=e113]:
+          - generic [ref=e114]:
+            - generic [ref=e115]:
+              - button "main branch" [ref=e117] [cursor=pointer]:
+                - generic [ref=e118]:
+                  - generic [ref=e120]:
+                    - img [ref=e122]
+                    - generic [ref=e125]: main
+                  - generic:
+                    - img
+              - generic [ref=e126]:
+                - link "Go to Branches page" [ref=e127] [cursor=pointer]:
+                  - /url: /ulle73/stock-signals/branches
+                  - img [ref=e128]
+                - link "Go to Tags page" [ref=e130] [cursor=pointer]:
+                  - /url: /ulle73/stock-signals/tags
+                  - img [ref=e131]
+            - generic [ref=e133]:
+              - button "Go to file" [ref=e136] [cursor=pointer]:
+                - generic [ref=e138]: Go to file
+              - button "Code" [ref=e139] [cursor=pointer]:
+                - generic [ref=e140]:
+                  - generic:
+                    - img
+                  - generic [ref=e141]: Code
+                  - generic:
+                    - img
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - heading "Folders and files" [level=2] [ref=e144]
+              - table "Folders and files" [ref=e145]:
+                - rowgroup:
+                  - row "Name Last commit message Last commit date":
+                    - columnheader "Name"
+                    - columnheader "Last commit message":
+                      - generic "Last commit message"
+                    - columnheader "Last commit date":
+                      - generic "Last commit date"
+                - rowgroup [ref=e146]:
+                  - row "Latest commit ulle73 commits by ulle73 Switch daily pipeline to bounded Neon mode success Commit b7c62ce · Jun 18, 2026now History View commit history for this file." [ref=e147]:
+                    - cell "Latest commit ulle73 commits by ulle73 Switch daily pipeline to bounded Neon mode success Commit b7c62ce · Jun 18, 2026now History View commit history for this file." [ref=e148]:
+                      - generic [ref=e149]:
+                        - heading "Latest commit" [level=2] [ref=e150]
+                        - generic [ref=e151]:
+                          - generic [ref=e153]:
+                            - link "ulle73" [ref=e154] [cursor=pointer]:
+                              - /url: /ulle73
+                              - img "ulle73" [ref=e155]
+                            - link "commits by ulle73" [ref=e156] [cursor=pointer]:
+                              - /url: /ulle73/stock-signals/commits?author=ulle73
+                              - text: ulle73
+                          - generic [ref=e157]:
+                            - link "Switch daily pipeline to bounded Neon mode" [ref=e160] [cursor=pointer]:
+                              - /url: /ulle73/stock-signals/commit/b7c62ce0a9784108f320fefda454f6bae96674a3
+                            - button "success" [ref=e161] [cursor=pointer]:
+                              - img [ref=e162]
+                        - generic [ref=e164]:
+                          - generic [ref=e166]:
+                            - link "Commit b7c62ce" [ref=e167] [cursor=pointer]:
+                              - /url: /ulle73/stock-signals/commit/b7c62ce0a9784108f320fefda454f6bae96674a3
+                              - text: b7c62ce
+                            - text: ·
+                            - generic "Jun 18, 2026, 03:12 GMT+2" [ref=e168]: Jun 18, 2026now
+                          - generic [ref=e169]:
+                            - heading "History" [level=2] [ref=e170]
+                            - link "View commit history for this file." [ref=e172] [cursor=pointer]:
+                              - /url: /ulle73/stock-signals/commits/main/
+                              - generic [ref=e173]:
+                                - generic:
+                                  - img
+                  - row ".codegraph, (Directory) . Jun 12, 20265 days ago" [ref=e174]:
+                    - cell ".codegraph, (Directory)" [ref=e175]:
+                      - generic [ref=e176]:
+                        - img [ref=e177]
+                        - link ".codegraph, (Directory)" [ref=e182] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/.codegraph
+                          - text: .codegraph
+                    - cell "." [ref=e183]:
+                      - link "." [ref=e186] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/6a92767e662825987eea191733ba1578f563f73c
+                    - cell "Jun 12, 20265 days ago" [ref=e187]:
+                      - generic [ref=e188]: Jun 12, 20265 days ago
+                  - row ".github/workflows, (Directory) Switch daily pipeline to bounded Neon mode Jun 18, 2026now" [ref=e189]:
+                    - cell ".github/workflows, (Directory)" [ref=e190]:
+                      - generic [ref=e191]:
+                        - img [ref=e192]
+                        - link ".github/workflows, (Directory)" [ref=e197] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/.github/workflows
+                          - text: .github/workflows
+                    - cell "Switch daily pipeline to bounded Neon mode" [ref=e198]:
+                      - link "Switch daily pipeline to bounded Neon mode" [ref=e201] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b7c62ce0a9784108f320fefda454f6bae96674a3
+                    - cell "Jun 18, 2026now" [ref=e202]:
+                      - generic [ref=e203]: Jun 18, 2026now
+                  - row "app, (Directory) . Jun 12, 20265 days ago" [ref=e204]:
+                    - cell "app, (Directory)" [ref=e205]:
+                      - generic [ref=e206]:
+                        - img [ref=e207]
+                        - link "app, (Directory)" [ref=e212] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/app
+                          - text: app
+                    - cell "." [ref=e213]:
+                      - link "." [ref=e216] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/6a92767e662825987eea191733ba1578f563f73c
+                    - cell "Jun 12, 20265 days ago" [ref=e217]:
+                      - generic [ref=e218]: Jun 12, 20265 days ago
+                  - row "db/migrations, (Directory) Make historical edge migration Cockroach-safe May 21, 2026last month" [ref=e219]:
+                    - cell "db/migrations, (Directory)" [ref=e220]:
+                      - generic [ref=e221]:
+                        - img [ref=e222]
+                        - link "db/migrations, (Directory)" [ref=e227] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/db/migrations
+                          - text: db/migrations
+                    - cell "Make historical edge migration Cockroach-safe" [ref=e228]:
+                      - link "Make historical edge migration Cockroach-safe" [ref=e231] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/a993ff3fbcf5fd88798bcf06a615001fcfcaff83
+                    - cell "May 21, 2026last month" [ref=e232]:
+                      - generic [ref=e233]: May 21, 2026last month
+                  - row "docs, (Directory) alpaca May 20, 2026last month" [ref=e234]:
+                    - cell "docs, (Directory)" [ref=e235]:
+                      - generic [ref=e236]:
+                        - img [ref=e237]
+                        - link "docs, (Directory)" [ref=e242] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/docs
+                          - text: docs
+                    - cell "alpaca" [ref=e243]:
+                      - link "alpaca" [ref=e246] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/3c790a8cabf99beb2240105fa5e49ba1f16109c6
+                    - cell "May 20, 2026last month" [ref=e247]:
+                      - generic [ref=e248]: May 20, 2026last month
+                  - row "lib, (Directory) Switch daily pipeline to bounded Neon mode Jun 18, 2026now" [ref=e249]:
+                    - cell "lib, (Directory)" [ref=e250]:
+                      - generic [ref=e251]:
+                        - img [ref=e252]
+                        - link "lib, (Directory)" [ref=e257] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/lib
+                          - text: lib
+                    - cell "Switch daily pipeline to bounded Neon mode" [ref=e258]:
+                      - link "Switch daily pipeline to bounded Neon mode" [ref=e261] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b7c62ce0a9784108f320fefda454f6bae96674a3
+                    - cell "Jun 18, 2026now" [ref=e262]:
+                      - generic [ref=e263]: Jun 18, 2026now
+                  - row "scripts, (Directory) Switch daily pipeline to bounded Neon mode Jun 18, 2026now" [ref=e264]:
+                    - cell "scripts, (Directory)" [ref=e265]:
+                      - generic [ref=e266]:
+                        - img [ref=e267]
+                        - link "scripts, (Directory)" [ref=e272] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/scripts
+                          - text: scripts
+                    - cell "Switch daily pipeline to bounded Neon mode" [ref=e273]:
+                      - link "Switch daily pipeline to bounded Neon mode" [ref=e276] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b7c62ce0a9784108f320fefda454f6bae96674a3
+                    - cell "Jun 18, 2026now" [ref=e277]:
+                      - generic [ref=e278]: Jun 18, 2026now
+                  - row "studies, (Directory) update May 20, 2026last month" [ref=e279]:
+                    - cell "studies, (Directory)" [ref=e280]:
+                      - generic [ref=e281]:
+                        - img [ref=e282]
+                        - link "studies, (Directory)" [ref=e287] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/studies
+                          - text: studies
+                    - cell "update" [ref=e288]:
+                      - link "update" [ref=e291] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/f8bf1ed1d6a9844efb472a0bd38edb3ee04f6e1a
+                    - cell "May 20, 2026last month" [ref=e292]:
+                      - generic [ref=e293]: May 20, 2026last month
+                  - row "tests, (Directory) Switch daily pipeline to bounded Neon mode Jun 18, 2026now" [ref=e294]:
+                    - cell "tests, (Directory)" [ref=e295]:
+                      - generic [ref=e296]:
+                        - img [ref=e297]
+                        - link "tests, (Directory)" [ref=e302] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/tree/main/tests
+                          - text: tests
+                    - cell "Switch daily pipeline to bounded Neon mode" [ref=e303]:
+                      - link "Switch daily pipeline to bounded Neon mode" [ref=e306] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b7c62ce0a9784108f320fefda454f6bae96674a3
+                    - cell "Jun 18, 2026now" [ref=e307]:
+                      - generic [ref=e308]: Jun 18, 2026now
+                  - row ".codex-dev.log, (File) .. May 15, 2026last month" [ref=e309]:
+                    - cell ".codex-dev.log, (File)" [ref=e310]:
+                      - generic [ref=e311]:
+                        - img [ref=e312]
+                        - link ".codex-dev.log, (File)" [ref=e317] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-dev.log
+                          - text: .codex-dev.log
+                    - cell ".." [ref=e318]:
+                      - link ".." [ref=e321] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e322]:
+                      - generic [ref=e323]: May 15, 2026last month
+                  - row ".codex-ivol-rvol-expanded-15-final.png, (File) .. May 15, 2026last month" [ref=e324]:
+                    - cell ".codex-ivol-rvol-expanded-15-final.png, (File)" [ref=e325]:
+                      - generic [ref=e326]:
+                        - img [ref=e327]
+                        - link ".codex-ivol-rvol-expanded-15-final.png, (File)" [ref=e332] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-ivol-rvol-expanded-15-final.png
+                          - text: .codex-ivol-rvol-expanded-15-final.png
+                    - cell ".." [ref=e333]:
+                      - link ".." [ref=e336] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e337]:
+                      - generic [ref=e338]: May 15, 2026last month
+                  - row ".codex-ivol-rvol-expanded-15.png, (File) .. May 15, 2026last month" [ref=e339]:
+                    - cell ".codex-ivol-rvol-expanded-15.png, (File)" [ref=e340]:
+                      - generic [ref=e341]:
+                        - img [ref=e342]
+                        - link ".codex-ivol-rvol-expanded-15.png, (File)" [ref=e347] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-ivol-rvol-expanded-15.png
+                          - text: .codex-ivol-rvol-expanded-15.png
+                    - cell ".." [ref=e348]:
+                      - link ".." [ref=e351] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e352]:
+                      - generic [ref=e353]: May 15, 2026last month
+                  - row ".codex-ivol-rvol-expanded.png, (File) .. May 15, 2026last month" [ref=e354]:
+                    - cell ".codex-ivol-rvol-expanded.png, (File)" [ref=e355]:
+                      - generic [ref=e356]:
+                        - img [ref=e357]
+                        - link ".codex-ivol-rvol-expanded.png, (File)" [ref=e362] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-ivol-rvol-expanded.png
+                          - text: .codex-ivol-rvol-expanded.png
+                    - cell ".." [ref=e363]:
+                      - link ".." [ref=e366] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e367]:
+                      - generic [ref=e368]: May 15, 2026last month
+                  - row ".codex-ivol-rvol-section-styled-2.png, (File) .. May 15, 2026last month" [ref=e369]:
+                    - cell ".codex-ivol-rvol-section-styled-2.png, (File)" [ref=e370]:
+                      - generic [ref=e371]:
+                        - img [ref=e372]
+                        - link ".codex-ivol-rvol-section-styled-2.png, (File)" [ref=e377] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-ivol-rvol-section-styled-2.png
+                          - text: .codex-ivol-rvol-section-styled-2.png
+                    - cell ".." [ref=e378]:
+                      - link ".." [ref=e381] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e382]:
+                      - generic [ref=e383]: May 15, 2026last month
+                  - row ".codex-ivol-rvol-section-styled-3.png, (File) .. May 15, 2026last month" [ref=e384]:
+                    - cell ".codex-ivol-rvol-section-styled-3.png, (File)" [ref=e385]:
+                      - generic [ref=e386]:
+                        - img [ref=e387]
+                        - link ".codex-ivol-rvol-section-styled-3.png, (File)" [ref=e392] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-ivol-rvol-section-styled-3.png
+                          - text: .codex-ivol-rvol-section-styled-3.png
+                    - cell ".." [ref=e393]:
+                      - link ".." [ref=e396] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e397]:
+                      - generic [ref=e398]: May 15, 2026last month
+                  - row ".codex-ivol-rvol-section-styled.png, (File) .. May 15, 2026last month" [ref=e399]:
+                    - cell ".codex-ivol-rvol-section-styled.png, (File)" [ref=e400]:
+                      - generic [ref=e401]:
+                        - img [ref=e402]
+                        - link ".codex-ivol-rvol-section-styled.png, (File)" [ref=e407] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-ivol-rvol-section-styled.png
+                          - text: .codex-ivol-rvol-section-styled.png
+                    - cell ".." [ref=e408]:
+                      - link ".." [ref=e411] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e412]:
+                      - generic [ref=e413]: May 15, 2026last month
+                  - row ".codex-ivol-rvol-section.png, (File) .. May 15, 2026last month" [ref=e414]:
+                    - cell ".codex-ivol-rvol-section.png, (File)" [ref=e415]:
+                      - generic [ref=e416]:
+                        - img [ref=e417]
+                        - link ".codex-ivol-rvol-section.png, (File)" [ref=e422] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-ivol-rvol-section.png
+                          - text: .codex-ivol-rvol-section.png
+                    - cell ".." [ref=e423]:
+                      - link ".." [ref=e426] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e427]:
+                      - generic [ref=e428]: May 15, 2026last month
+                  - row ".codex-next-dev-fresh.err.log, (File) fix May 18, 2026last month" [ref=e429]:
+                    - cell ".codex-next-dev-fresh.err.log, (File)" [ref=e430]:
+                      - generic [ref=e431]:
+                        - img [ref=e432]
+                        - link ".codex-next-dev-fresh.err.log, (File)" [ref=e437] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-next-dev-fresh.err.log
+                          - text: .codex-next-dev-fresh.err.log
+                    - cell "fix" [ref=e438]:
+                      - link "fix" [ref=e441] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/111c36f9831ac69479710a8e01b9634ea4635d08
+                    - cell "May 18, 2026last month" [ref=e442]:
+                      - generic [ref=e443]: May 18, 2026last month
+                  - row ".codex-next-dev-fresh.log, (File) fix May 18, 2026last month" [ref=e444]:
+                    - cell ".codex-next-dev-fresh.log, (File)" [ref=e445]:
+                      - generic [ref=e446]:
+                        - img [ref=e447]
+                        - link ".codex-next-dev-fresh.log, (File)" [ref=e452] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-next-dev-fresh.log
+                          - text: .codex-next-dev-fresh.log
+                    - cell "fix" [ref=e453]:
+                      - link "fix" [ref=e456] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/111c36f9831ac69479710a8e01b9634ea4635d08
+                    - cell "May 18, 2026last month" [ref=e457]:
+                      - generic [ref=e458]: May 18, 2026last month
+                  - row ".codex-next-dev.err.log, (File) fix May 18, 2026last month" [ref=e459]:
+                    - cell ".codex-next-dev.err.log, (File)" [ref=e460]:
+                      - generic [ref=e461]:
+                        - img [ref=e462]
+                        - link ".codex-next-dev.err.log, (File)" [ref=e467] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-next-dev.err.log
+                          - text: .codex-next-dev.err.log
+                    - cell "fix" [ref=e468]:
+                      - link "fix" [ref=e471] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/111c36f9831ac69479710a8e01b9634ea4635d08
+                    - cell "May 18, 2026last month" [ref=e472]:
+                      - generic [ref=e473]: May 18, 2026last month
+                  - row ".codex-next-dev.log, (File) fix May 18, 2026last month" [ref=e474]:
+                    - cell ".codex-next-dev.log, (File)" [ref=e475]:
+                      - generic [ref=e476]:
+                        - img [ref=e477]
+                        - link ".codex-next-dev.log, (File)" [ref=e482] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-next-dev.log
+                          - text: .codex-next-dev.log
+                    - cell "fix" [ref=e483]:
+                      - link "fix" [ref=e486] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/111c36f9831ac69479710a8e01b9634ea4635d08
+                    - cell "May 18, 2026last month" [ref=e487]:
+                      - generic [ref=e488]: May 18, 2026last month
+                  - row ".codex-start-3102.log, (File) .. May 15, 2026last month" [ref=e489]:
+                    - cell ".codex-start-3102.log, (File)" [ref=e490]:
+                      - generic [ref=e491]:
+                        - img [ref=e492]
+                        - link ".codex-start-3102.log, (File)" [ref=e497] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-start-3102.log
+                          - text: .codex-start-3102.log
+                    - cell ".." [ref=e498]:
+                      - link ".." [ref=e501] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e502]:
+                      - generic [ref=e503]: May 15, 2026last month
+                  - row ".codex-start-3103.log, (File) .. May 15, 2026last month" [ref=e504]:
+                    - cell ".codex-start-3103.log, (File)" [ref=e505]:
+                      - generic [ref=e506]:
+                        - img [ref=e507]
+                        - link ".codex-start-3103.log, (File)" [ref=e512] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-start-3103.log
+                          - text: .codex-start-3103.log
+                    - cell ".." [ref=e513]:
+                      - link ".." [ref=e516] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e517]:
+                      - generic [ref=e518]: May 15, 2026last month
+                  - row ".codex-start-3104.log, (File) .. May 15, 2026last month" [ref=e519]:
+                    - cell ".codex-start-3104.log, (File)" [ref=e520]:
+                      - generic [ref=e521]:
+                        - img [ref=e522]
+                        - link ".codex-start-3104.log, (File)" [ref=e527] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-start-3104.log
+                          - text: .codex-start-3104.log
+                    - cell ".." [ref=e528]:
+                      - link ".." [ref=e531] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e532]:
+                      - generic [ref=e533]: May 15, 2026last month
+                  - row ".codex-start-3105.log, (File) .. May 15, 2026last month" [ref=e534]:
+                    - cell ".codex-start-3105.log, (File)" [ref=e535]:
+                      - generic [ref=e536]:
+                        - img [ref=e537]
+                        - link ".codex-start-3105.log, (File)" [ref=e542] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-start-3105.log
+                          - text: .codex-start-3105.log
+                    - cell ".." [ref=e543]:
+                      - link ".." [ref=e546] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e547]:
+                      - generic [ref=e548]: May 15, 2026last month
+                  - row ".codex-start.log, (File) .. May 15, 2026last month" [ref=e549]:
+                    - cell ".codex-start.log, (File)" [ref=e550]:
+                      - generic [ref=e551]:
+                        - img [ref=e552]
+                        - link ".codex-start.log, (File)" [ref=e557] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-start.log
+                          - text: .codex-start.log
+                    - cell ".." [ref=e558]:
+                      - link ".." [ref=e561] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e562]:
+                      - generic [ref=e563]: May 15, 2026last month
+                  - row ".codex-stock-signal-board.png, (File) .. May 15, 2026last month" [ref=e564]:
+                    - cell ".codex-stock-signal-board.png, (File)" [ref=e565]:
+                      - generic [ref=e566]:
+                        - img [ref=e567]
+                        - link ".codex-stock-signal-board.png, (File)" [ref=e572] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.codex-stock-signal-board.png
+                          - text: .codex-stock-signal-board.png
+                    - cell ".." [ref=e573]:
+                      - link ".." [ref=e576] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/2b3c55e0a20caf97b8db4a15c0d685aab1ba2f7c
+                    - cell "May 15, 2026last month" [ref=e577]:
+                      - generic [ref=e578]: May 15, 2026last month
+                  - row ".env.example, (File) . Jun 8, 2026last week" [ref=e579]:
+                    - cell ".env.example, (File)" [ref=e580]:
+                      - generic [ref=e581]:
+                        - img [ref=e582]
+                        - link ".env.example, (File)" [ref=e587] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.env.example
+                          - text: .env.example
+                    - cell "." [ref=e588]:
+                      - link "." [ref=e591] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/07440950c4ccc4ccc93b20e75ed0becce61695b9
+                    - cell "Jun 8, 2026last week" [ref=e592]:
+                      - generic [ref=e593]: Jun 8, 2026last week
+                  - row ".gitignore, (File) Add incremental market data fetch and daily workflow May 6, 2026last month" [ref=e594]:
+                    - cell ".gitignore, (File)" [ref=e595]:
+                      - generic [ref=e596]:
+                        - img [ref=e597]
+                        - link ".gitignore, (File)" [ref=e602] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/.gitignore
+                          - text: .gitignore
+                    - cell "Add incremental market data fetch and daily workflow" [ref=e603]:
+                      - link "Add incremental market data fetch and daily workflow" [ref=e606] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/54cbc1e78864161597debca6adc41508f0a69995
+                    - cell "May 6, 2026last month" [ref=e607]:
+                      - generic [ref=e608]: May 6, 2026last month
+                  - row "AGENTS.md, (File) -- May 9, 2026last month" [ref=e609]:
+                    - cell "AGENTS.md, (File)" [ref=e610]:
+                      - generic [ref=e611]:
+                        - img [ref=e612]
+                        - link "AGENTS.md, (File)" [ref=e617] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/AGENTS.md
+                          - text: AGENTS.md
+                    - cell "--" [ref=e618]:
+                      - link "--" [ref=e621] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b3b9638ded5a1b93181b0b5b7382c6ead518a81e
+                    - cell "May 9, 2026last month" [ref=e622]:
+                      - generic [ref=e623]: May 9, 2026last month
+                  - row "CODEX_TASK.md, (File) -- May 9, 2026last month" [ref=e624]:
+                    - cell "CODEX_TASK.md, (File)" [ref=e625]:
+                      - generic [ref=e626]:
+                        - img [ref=e627]
+                        - link "CODEX_TASK.md, (File)" [ref=e632] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/CODEX_TASK.md
+                          - text: CODEX_TASK.md
+                    - cell "--" [ref=e633]:
+                      - link "--" [ref=e636] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b3b9638ded5a1b93181b0b5b7382c6ead518a81e
+                    - cell "May 9, 2026last month" [ref=e637]:
+                      - generic [ref=e638]: May 9, 2026last month
+                  - row "DATA_FETCH_FREQUENCY.md, (File) -- May 9, 2026last month" [ref=e639]:
+                    - cell "DATA_FETCH_FREQUENCY.md, (File)" [ref=e640]:
+                      - generic [ref=e641]:
+                        - img [ref=e642]
+                        - link "DATA_FETCH_FREQUENCY.md, (File)" [ref=e647] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/DATA_FETCH_FREQUENCY.md
+                          - text: DATA_FETCH_FREQUENCY.md
+                    - cell "--" [ref=e648]:
+                      - link "--" [ref=e651] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b3b9638ded5a1b93181b0b5b7382c6ead518a81e
+                    - cell "May 9, 2026last month" [ref=e652]:
+                      - generic [ref=e653]: May 9, 2026last month
+                  - row "GOALS.md, (File) Update goals for signal engine direction May 8, 2026last month" [ref=e654]:
+                    - cell "GOALS.md, (File)" [ref=e655]:
+                      - generic [ref=e656]:
+                        - img [ref=e657]
+                        - link "GOALS.md, (File)" [ref=e662] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/GOALS.md
+                          - text: GOALS.md
+                    - cell "Update goals for signal engine direction" [ref=e663]:
+                      - link "Update goals for signal engine direction" [ref=e666] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/74243b0b2787180f3a249038fa03d7e62a1ede86
+                    - cell "May 8, 2026last month" [ref=e667]:
+                      - generic [ref=e668]: May 8, 2026last month
+                  - row "IMPLEMENTATION_PLAN.md, (File) Add implementation plan for phase 1 May 6, 2026last month" [ref=e669]:
+                    - cell "IMPLEMENTATION_PLAN.md, (File)" [ref=e670]:
+                      - generic [ref=e671]:
+                        - img [ref=e672]
+                        - link "IMPLEMENTATION_PLAN.md, (File)" [ref=e677] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/IMPLEMENTATION_PLAN.md
+                          - text: IMPLEMENTATION_PLAN.md
+                    - cell "Add implementation plan for phase 1" [ref=e678]:
+                      - link "Add implementation plan for phase 1" [ref=e681] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/36c7535959a881c2f3116f4baa69521cec3017d0
+                    - cell "May 6, 2026last month" [ref=e682]:
+                      - generic [ref=e683]: May 6, 2026last month
+                  - row "IMPLEMENTATION_PLAN_SIGNAL_ENGINE.md, (File) Add implementation plan for signal engine May 8, 2026last month" [ref=e684]:
+                    - cell "IMPLEMENTATION_PLAN_SIGNAL_ENGINE.md, (File)" [ref=e685]:
+                      - generic [ref=e686]:
+                        - img [ref=e687]
+                        - link "IMPLEMENTATION_PLAN_SIGNAL_ENGINE.md, (File)" [ref=e692] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/IMPLEMENTATION_PLAN_SIGNAL_ENGINE.md
+                          - text: IMPLEMENTATION_PLAN_SIGNAL_ENGINE.md
+                    - cell "Add implementation plan for signal engine" [ref=e693]:
+                      - link "Add implementation plan for signal engine" [ref=e696] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/45959ae352a648dbd3c993d19ebfb9bdbe4fcc5a
+                    - cell "May 8, 2026last month" [ref=e697]:
+                      - generic [ref=e698]: May 8, 2026last month
+                  - row "INDICATOR_WARMUP_POLICY.md, (File) Add indicator warmup policy May 6, 2026last month" [ref=e699]:
+                    - cell "INDICATOR_WARMUP_POLICY.md, (File)" [ref=e700]:
+                      - generic [ref=e701]:
+                        - img [ref=e702]
+                        - link "INDICATOR_WARMUP_POLICY.md, (File)" [ref=e707] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/INDICATOR_WARMUP_POLICY.md
+                          - text: INDICATOR_WARMUP_POLICY.md
+                    - cell "Add indicator warmup policy" [ref=e708]:
+                      - link "Add indicator warmup policy" [ref=e711] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/56b50c9fc19fb85322118f6ad516c2fdbf271c4b
+                    - cell "May 6, 2026last month" [ref=e712]:
+                      - generic [ref=e713]: May 6, 2026last month
+                  - row "PRD.md, (File) Add PRD for data foundation phase May 6, 2026last month" [ref=e714]:
+                    - cell "PRD.md, (File)" [ref=e715]:
+                      - generic [ref=e716]:
+                        - img [ref=e717]
+                        - link "PRD.md, (File)" [ref=e722] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/PRD.md
+                          - text: PRD.md
+                    - cell "Add PRD for data foundation phase" [ref=e723]:
+                      - link "Add PRD for data foundation phase" [ref=e726] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/60ecd5fff991308c7d614bbe032184ac9ee72805
+                    - cell "May 6, 2026last month" [ref=e727]:
+                      - generic [ref=e728]: May 6, 2026last month
+                  - row "PRD_SIGNAL_ENGINE.md, (File) Add PRD for modular signal engine May 8, 2026last month" [ref=e729]:
+                    - cell "PRD_SIGNAL_ENGINE.md, (File)" [ref=e730]:
+                      - generic [ref=e731]:
+                        - img [ref=e732]
+                        - link "PRD_SIGNAL_ENGINE.md, (File)" [ref=e737] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/PRD_SIGNAL_ENGINE.md
+                          - text: PRD_SIGNAL_ENGINE.md
+                    - cell "Add PRD for modular signal engine" [ref=e738]:
+                      - link "Add PRD for modular signal engine" [ref=e741] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/cddb8923f9f90302ba15b33e7842b68722c6e0df
+                    - cell "May 8, 2026last month" [ref=e742]:
+                      - generic [ref=e743]: May 8, 2026last month
+                  - row "PROJECT_DIRECTION.md, (File) Add current project direction for signal engine May 8, 2026last month" [ref=e744]:
+                    - cell "PROJECT_DIRECTION.md, (File)" [ref=e745]:
+                      - generic [ref=e746]:
+                        - img [ref=e747]
+                        - link "PROJECT_DIRECTION.md, (File)" [ref=e752] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/PROJECT_DIRECTION.md
+                          - text: PROJECT_DIRECTION.md
+                    - cell "Add current project direction for signal engine" [ref=e753]:
+                      - link "Add current project direction for signal engine" [ref=e756] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/f6f9fbbb174d63bb5eefebc513de86b2cbbffe10
+                    - cell "May 8, 2026last month" [ref=e757]:
+                      - generic [ref=e758]: May 8, 2026last month
+                  - row "README.md, (File) alpaca May 20, 2026last month" [ref=e759]:
+                    - cell "README.md, (File)" [ref=e760]:
+                      - generic [ref=e761]:
+                        - img [ref=e762]
+                        - link "README.md, (File)" [ref=e767] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/README.md
+                          - text: README.md
+                    - cell "alpaca" [ref=e768]:
+                      - link "alpaca" [ref=e771] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/3c790a8cabf99beb2240105fa5e49ba1f16109c6
+                    - cell "May 20, 2026last month" [ref=e772]:
+                      - generic [ref=e773]: May 20, 2026last month
+                  - row "fix-colors.cjs, (File) style Jun 10, 2026last week" [ref=e774]:
+                    - cell "fix-colors.cjs, (File)" [ref=e775]:
+                      - generic [ref=e776]:
+                        - img [ref=e777]
+                        - link "fix-colors.cjs, (File)" [ref=e782] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/fix-colors.cjs
+                          - text: fix-colors.cjs
+                    - cell "style" [ref=e783]:
+                      - link "style" [ref=e786] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/3be53f52b2efc014debf2aa313c597cd7f35a890
+                    - cell "Jun 10, 2026last week" [ref=e787]:
+                      - generic [ref=e788]: Jun 10, 2026last week
+                  - row "fix-colors.js, (File) style Jun 10, 2026last week" [ref=e789]:
+                    - cell "fix-colors.js, (File)" [ref=e790]:
+                      - generic [ref=e791]:
+                        - img [ref=e792]
+                        - link "fix-colors.js, (File)" [ref=e797] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/fix-colors.js
+                          - text: fix-colors.js
+                    - cell "style" [ref=e798]:
+                      - link "style" [ref=e801] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/3be53f52b2efc014debf2aa313c597cd7f35a890
+                    - cell "Jun 10, 2026last week" [ref=e802]:
+                      - generic [ref=e803]: Jun 10, 2026last week
+                  - row "package-lock.json, (File) -- May 9, 2026last month" [ref=e804]:
+                    - cell "package-lock.json, (File)" [ref=e805]:
+                      - generic [ref=e806]:
+                        - img [ref=e807]
+                        - link "package-lock.json, (File)" [ref=e812] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/package-lock.json
+                          - text: package-lock.json
+                    - cell "--" [ref=e813]:
+                      - link "--" [ref=e816] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b3b9638ded5a1b93181b0b5b7382c6ead518a81e
+                    - cell "May 9, 2026last month" [ref=e817]:
+                      - generic [ref=e818]: May 9, 2026last month
+                  - row "package.json, (File) Switch daily pipeline to bounded Neon mode Jun 18, 2026now" [ref=e819]:
+                    - cell "package.json, (File)" [ref=e820]:
+                      - generic [ref=e821]:
+                        - img [ref=e822]
+                        - link "package.json, (File)" [ref=e827] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/package.json
+                          - text: package.json
+                    - cell "Switch daily pipeline to bounded Neon mode" [ref=e828]:
+                      - link "Switch daily pipeline to bounded Neon mode" [ref=e831] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b7c62ce0a9784108f320fefda454f6bae96674a3
+                    - cell "Jun 18, 2026now" [ref=e832]:
+                      - generic [ref=e833]: Jun 18, 2026now
+                  - row "test.cjs, (File) -- May 9, 2026last month" [ref=e834]:
+                    - cell "test.cjs, (File)" [ref=e835]:
+                      - generic [ref=e836]:
+                        - img [ref=e837]
+                        - link "test.cjs, (File)" [ref=e842] [cursor=pointer]:
+                          - /url: /ulle73/stock-signals/blob/main/test.cjs
+                          - text: test.cjs
+                    - cell "--" [ref=e843]:
+                      - link "--" [ref=e846] [cursor=pointer]:
+                        - /url: /ulle73/stock-signals/commit/b3b9638ded5a1b93181b0b5b7382c6ead518a81e
+                    - cell "May 9, 2026last month" [ref=e847]:
+                      - generic [ref=e848]: May 9, 2026last month
+            - generic [ref=e850]:
+              - generic [ref=e851]:
+                - heading "Repository files navigation" [level=2] [ref=e852]
+                - navigation "Repository files" [ref=e853]:
+                  - list [ref=e854]:
+                    - listitem [ref=e855]:
+                      - link "README" [ref=e856] [cursor=pointer]:
+                        - /url: "#"
+                        - img [ref=e858]
+                        - generic [ref=e860]: README
+                - button "Outline" [ref=e861] [cursor=pointer]:
+                  - img [ref=e862]
+              - article [ref=e865]:
+                - generic [ref=e866]:
+                  - heading "Stock Signals" [level=1] [ref=e867]
+                  - 'link "Permalink: Stock Signals" [ref=e868] [cursor=pointer]':
+                    - /url: "#stock-signals"
+                    - img [ref=e869]
+                - paragraph [ref=e871]: Ett framtida marknadsbreddsbaserat signalsystem för S&P 500.
+                - paragraph [ref=e872]: Vi har nu också börjat implementera Alpaca för paper trading. Tanken är att använda Alpaca som exekverings- och verifieringslager när vi testar indikatorer och strategier, utan att koppla det till livehandel.
+                - paragraph [ref=e873]: "Första versionen fokuserar på datahämtning, lagring och en liten läsyta ovanpå datan:"
+                - list [ref=e874]:
+                  - listitem [ref=e875]: hämta S&P 500-komponenter,
+                  - listitem [ref=e876]: hämta daily candles från Yahoo Finance,
+                  - listitem [ref=e877]: hämta marknads- och makroserier från FRED,
+                  - listitem [ref=e878]: spara allt i Neon Postgres,
+                  - listitem [ref=e879]: visa datans status i appen,
+                  - listitem [ref=e880]: skapa en stabil grund för senare indikatorer och signaler.
+                - paragraph [ref=e881]: "Läs först:"
+                - list [ref=e882]:
+                  - listitem [ref=e883]:
+                    - link "GOALS.md" [ref=e884] [cursor=pointer]:
+                      - /url: /ulle73/stock-signals/blob/main/GOALS.md
+                      - code [ref=e885]: GOALS.md
+                  - listitem [ref=e886]:
+                    - link "PRD.md" [ref=e887] [cursor=pointer]:
+                      - /url: /ulle73/stock-signals/blob/main/PRD.md
+                      - code [ref=e888]: PRD.md
+                  - listitem [ref=e889]:
+                    - link "DATA_FETCH_FREQUENCY.md" [ref=e890] [cursor=pointer]:
+                      - /url: /ulle73/stock-signals/blob/main/DATA_FETCH_FREQUENCY.md
+                      - code [ref=e891]: DATA_FETCH_FREQUENCY.md
+                  - listitem [ref=e892]:
+                    - link "IMPLEMENTATION_PLAN.md" [ref=e893] [cursor=pointer]:
+                      - /url: /ulle73/stock-signals/blob/main/IMPLEMENTATION_PLAN.md
+                      - code [ref=e894]: IMPLEMENTATION_PLAN.md
+                  - listitem [ref=e895]:
+                    - link "CODEX_TASK.md" [ref=e896] [cursor=pointer]:
+                      - /url: /ulle73/stock-signals/blob/main/CODEX_TASK.md
+                      - code [ref=e897]: CODEX_TASK.md
+                - separator [ref=e898]
+                - generic [ref=e899]:
+                  - heading "Stack" [level=2] [ref=e900]
+                  - 'link "Permalink: Stack" [ref=e901] [cursor=pointer]':
+                    - /url: "#stack"
+                    - img [ref=e902]
+                - list [ref=e904]:
+                  - listitem [ref=e905]: JavaScript
+                  - listitem [ref=e906]: Next.js App Router
+                  - listitem [ref=e907]: Neon Postgres
+                  - listitem [ref=e908]:
+                    - code [ref=e909]: pg
+                    - text: för databasanslutning
+                  - listitem [ref=e910]: Yahoo Finance chart endpoint
+                  - listitem [ref=e911]: FRED CSV endpoints
+                  - listitem [ref=e912]: Wikipedia S&P 500-lista
+                - separator [ref=e913]
+                - generic [ref=e914]:
+                  - heading "Fas 1" [level=2] [ref=e915]
+                  - 'link "Permalink: Fas 1" [ref=e916] [cursor=pointer]':
+                    - /url: "#fas-1"
+                    - img [ref=e917]
+                - paragraph [ref=e919]: Fas 1 ska endast bygga data foundation.
+                - paragraph [ref=e920]: "Inget av detta ska byggas ännu:"
+                - list [ref=e921]:
+                  - listitem [ref=e922]: trading-signaler,
+                  - listitem [ref=e923]: Market Regime Score,
+                  - listitem [ref=e924]: intraday polling,
+                  - listitem [ref=e925]: alerts,
+                  - listitem [ref=e926]: AI-analys.
+                - paragraph [ref=e927]: En minimal read-only dashboard finns nu för att verifiera att live-datan faktiskt läses från databasen. Det är fortfarande inte en indikator- eller alertsprodukt.
+                - separator [ref=e928]
+                - generic [ref=e929]:
+                  - heading "Setup" [level=2] [ref=e930]
+                  - 'link "Permalink: Setup" [ref=e931] [cursor=pointer]':
+                    - /url: "#setup"
+                    - img [ref=e932]
+                - generic [ref=e934]:
+                  - heading "1. Installera dependencies" [level=3] [ref=e935]
+                  - 'link "Permalink: 1. Installera dependencies" [ref=e936] [cursor=pointer]':
+                    - /url: "#1-installera-dependencies"
+                    - img [ref=e937]
+                - generic [ref=e939]:
+                  - generic [ref=e940]: npm install
+                  - button "Copy code to clipboard" [ref=e942] [cursor=pointer]:
+                    - img [ref=e943]
+                - generic [ref=e946]:
+                  - heading "2. Skapa env-fil" [level=3] [ref=e947]
+                  - 'link "Permalink: 2. Skapa env-fil" [ref=e948] [cursor=pointer]':
+                    - /url: "#2-skapa-env-fil"
+                    - img [ref=e949]
+                - paragraph [ref=e951]:
+                  - text: Kopiera
+                  - code [ref=e952]: .env.example
+                  - text: till
+                  - code [ref=e953]: .env.local
+                  - text: ":"
+                - generic [ref=e954]:
+                  - generic [ref=e955]: cp .env.example .env.local
+                  - button "Copy code to clipboard" [ref=e957] [cursor=pointer]:
+                    - img [ref=e958]
+                - paragraph [ref=e961]: "Fyll i:"
+                - generic [ref=e962]:
+                  - generic [ref=e963]:
+                    - generic [ref=e964]: "# cockroach -> DATABASE_URL_COCKROACH"
+                    - generic [ref=e965]: "# default -> DATABASE_URL"
+                    - text: DATABASE_TARGET=
+                    - generic [ref=e966]: "\"cockroach\""
+                    - text: DATABASE_URL=
+                    - generic [ref=e967]: "\"postgresql://USER:PASSWORD@HOST.neon.tech/DBNAME?sslmode=require\""
+                    - text: DATABASE_URL_COCKROACH=
+                    - generic [ref=e968]: "\"postgresql://USER:PASSWORD@HOST.cockroachlabs.cloud:26257/DBNAME?sslmode=verify-full\""
+                    - generic [ref=e969]: "# Alpaca paper trading (valfritt för strategi-/indikatortest)"
+                    - text: ALPACA_API_BASE_URL=
+                    - generic [ref=e970]: "\"https://paper-api.alpaca.markets/v2\""
+                    - text: ALPACA_API_KEY=
+                    - generic [ref=e971]: "\"\""
+                    - text: ALPACA_API_SECRET=
+                    - generic [ref=e972]: "\"\""
+                    - text: ALPACA_TRADING_ENABLED=
+                    - generic [ref=e973]: "\"false\""
+                    - text: EXECUTION_ALLOWED_SYMBOLS=
+                    - generic [ref=e974]: "\"SPY\""
+                    - text: EXECUTION_MAX_ORDER_NOTIONAL_USD=
+                    - generic [ref=e975]: "\"100000\""
+                    - text: EXECUTION_MAX_POSITION_NOTIONAL_USD=
+                    - generic [ref=e976]: "\"100000\""
+                    - text: EXECUTION_MAX_SIGNAL_AGE_DAYS=
+                    - generic [ref=e977]: "\"5\""
+                  - button "Copy code to clipboard" [ref=e979] [cursor=pointer]:
+                    - img [ref=e980]
+                - paragraph [ref=e983]:
+                  - code [ref=e984]: npm run db:migrate
+                  - text: och
+                  - code [ref=e985]: npm run fetch:daily
+                  - text: laddar nu samma
+                  - code [ref=e986]: .env*
+                  - text: "-filer som Next.js gör, så"
+                  - code [ref=e987]: .env.local
+                  - text: fungerar även för scriptkörningar.
+                - paragraph [ref=e988]:
+                  - text: Alpaca-nycklar ska bara ligga i
+                  - code [ref=e989]: .env.local
+                  - text: eller i shell-miljön. Lägg dem aldrig i kod eller commits.
+                - paragraph [ref=e990]: "Om du vill växla databas utan att ändra kod sätter du bara:"
+                - generic [ref=e991]:
+                  - generic [ref=e992]:
+                    - generic [ref=e993]: $env:DATABASE_TARGET
+                    - text: =
+                    - generic [ref=e994]: "\"cockroach\""
+                  - button "Copy code to clipboard" [ref=e996] [cursor=pointer]:
+                    - img [ref=e997]
+                - paragraph [ref=e1000]:
+                  - text: eller låter
+                  - code [ref=e1001]: .env.local
+                  - text: "stå på:"
+                - generic [ref=e1002]:
+                  - generic [ref=e1003]:
+                    - text: DATABASE_TARGET=
+                    - generic [ref=e1004]: "\"cockroach\""
+                  - button "Copy code to clipboard" [ref=e1006] [cursor=pointer]:
+                    - img [ref=e1007]
+                - generic [ref=e1010]:
+                  - heading "3. Kör migration" [level=3] [ref=e1011]
+                  - 'link "Permalink: 3. Kör migration" [ref=e1012] [cursor=pointer]':
+                    - /url: "#3-kör-migration"
+                    - img [ref=e1013]
+                - generic [ref=e1015]:
+                  - generic [ref=e1016]: npm run db:migrate
+                  - button "Copy code to clipboard" [ref=e1018] [cursor=pointer]:
+                    - img [ref=e1019]
+                - paragraph [ref=e1022]: "Det skapar:"
+                - list [ref=e1023]:
+                  - listitem [ref=e1024]:
+                    - code [ref=e1025]: sp500_constituents
+                  - listitem [ref=e1026]:
+                    - code [ref=e1027]: benchmark_daily_prices
+                  - listitem [ref=e1028]:
+                    - code [ref=e1029]: stock_daily_prices
+                  - listitem [ref=e1030]:
+                    - code [ref=e1031]: stock_daily_indicators
+                  - listitem [ref=e1032]:
+                    - code [ref=e1033]: market_series_daily
+                  - listitem [ref=e1034]:
+                    - code [ref=e1035]: occ_daily_volume_totals
+                  - listitem [ref=e1036]:
+                    - code [ref=e1037]: cvol_call_volume_indicator_daily
+                  - listitem [ref=e1038]:
+                    - code [ref=e1039]: finra_daily_short_volume
+                  - listitem [ref=e1040]:
+                    - code [ref=e1041]: plce_short_volume_indicator_daily
+                  - listitem [ref=e1042]:
+                    - code [ref=e1043]: external_breadth_daily
+                  - listitem [ref=e1044]:
+                    - code [ref=e1045]: r3tw_mmtw_20dma_breadth_indicator_daily
+                  - listitem [ref=e1046]:
+                    - code [ref=e1047]: implied_volatility_proxy_source_daily
+                  - listitem [ref=e1048]:
+                    - code [ref=e1049]: macro_matrix_yahoo_proxy_daily
+                  - listitem [ref=e1050]:
+                    - code [ref=e1051]: implied_volatility_ratio_signals_daily
+                  - listitem [ref=e1052]:
+                    - code [ref=e1053]: market_breadth_ma200_forward_return_signal_daily
+                  - listitem [ref=e1054]:
+                    - code [ref=e1055]: market_breadth_ma200_forward_return_empirical_daily
+                  - listitem [ref=e1056]:
+                    - code [ref=e1057]: market_breadth_daily
+                  - listitem [ref=e1058]:
+                    - code [ref=e1059]: sector_breadth_daily
+                  - listitem [ref=e1060]:
+                    - code [ref=e1061]: sector_signal_daily
+                  - listitem [ref=e1062]:
+                    - code [ref=e1063]: market_signal_daily
+                  - listitem [ref=e1064]:
+                    - code [ref=e1065]: trading_signal_daily
+                  - listitem [ref=e1066]:
+                    - code [ref=e1067]: execution_intents
+                  - listitem [ref=e1068]:
+                    - code [ref=e1069]: execution_decisions
+                  - listitem [ref=e1070]:
+                    - code [ref=e1071]: execution_orders
+                  - listitem [ref=e1072]:
+                    - code [ref=e1073]: broker_state_snapshots
+                  - listitem [ref=e1074]:
+                    - code [ref=e1075]: position_facts_daily
+                  - listitem [ref=e1076]:
+                    - code [ref=e1077]: position_signal_daily
+                  - listitem [ref=e1078]:
+                    - code [ref=e1079]: swing_signal_daily
+                  - listitem [ref=e1080]:
+                    - code [ref=e1081]: swing_watchlist_daily
+                  - listitem [ref=e1082]:
+                    - code [ref=e1083]: strategy_definitions
+                  - listitem [ref=e1084]:
+                    - code [ref=e1085]: backtest_runs
+                  - listitem [ref=e1086]:
+                    - code [ref=e1087]: strategy_positions_daily
+                  - listitem [ref=e1088]:
+                    - code [ref=e1089]: strategy_equity_daily
+                  - listitem [ref=e1090]:
+                    - code [ref=e1091]: data_fetch_runs
+                - generic [ref=e1092]:
+                  - heading "4. Testa fetch med få tickers" [level=3] [ref=e1093]
+                  - 'link "Permalink: 4. Testa fetch med få tickers" [ref=e1094] [cursor=pointer]':
+                    - /url: "#4-testa-fetch-med-få-tickers"
+                    - img [ref=e1095]
+                - generic [ref=e1097]:
+                  - generic [ref=e1098]: FETCH_TICKER_LIMIT=10 npm run fetch:daily
+                  - button "Copy code to clipboard" [ref=e1100] [cursor=pointer]:
+                    - img [ref=e1101]
+                - paragraph [ref=e1104]: "På Windows PowerShell:"
+                - generic [ref=e1105]:
+                  - generic [ref=e1106]:
+                    - generic [ref=e1107]: $env:FETCH_TICKER_LIMIT
+                    - text: =
+                    - generic [ref=e1108]: "\"10\""
+                    - text: ; npm run fetch:daily
+                  - button "Copy code to clipboard" [ref=e1110] [cursor=pointer]:
+                    - img [ref=e1111]
+                - generic [ref=e1114]:
+                  - heading "5. Kör full fetch" [level=3] [ref=e1115]
+                  - 'link "Permalink: 5. Kör full fetch" [ref=e1116] [cursor=pointer]':
+                    - /url: "#5-kör-full-fetch"
+                    - img [ref=e1117]
+                - generic [ref=e1119]:
+                  - generic [ref=e1120]: npm run fetch:daily
+                  - button "Copy code to clipboard" [ref=e1122] [cursor=pointer]:
+                    - img [ref=e1123]
+                - paragraph [ref=e1126]: Full fetch hämtar cirka 400 daily candles för alla aktiva S&P 500-komponenter.
+                - paragraph [ref=e1127]:
+                  - text: Om du vill göra en större engångs-backfill kan du tillfälligt sätta
+                  - code [ref=e1128]: YAHOO_DAILY_RANGE
+                  - text: ". Exempel: cirka 1.5 år extra historik ovanpå nuvarande nivå:"
+                - generic [ref=e1129]:
+                  - generic [ref=e1130]:
+                    - generic [ref=e1131]: $env:NODE_ENV
+                    - text: =
+                    - generic [ref=e1132]: "\"production\""
+                    - generic [ref=e1133]: $env:YAHOO_DAILY_RANGE
+                    - text: =
+                    - generic [ref=e1134]: "\"800d\""
+                    - text: npm run fetch:daily
+                  - button "Copy code to clipboard" [ref=e1136] [cursor=pointer]:
+                    - img [ref=e1137]
+                - paragraph [ref=e1140]: "För cirka fem års Yahoo-historik i vald databas:"
+                - generic [ref=e1141]:
+                  - generic [ref=e1142]:
+                    - generic [ref=e1143]: $env:DATABASE_TARGET
+                    - text: =
+                    - generic [ref=e1144]: "\"cockroach\""
+                    - generic [ref=e1145]: $env:YAHOO_DAILY_RANGE
+                    - text: =
+                    - generic [ref=e1146]: "\"5y\""
+                    - text: npm run fetch:daily
+                  - button "Copy code to clipboard" [ref=e1148] [cursor=pointer]:
+                    - img [ref=e1149]
+                - paragraph [ref=e1152]: Det kräver ingen rensning av databasen. Scriptet upsertar befintliga datum och lägger till äldre datum som saknas.
+                - paragraph [ref=e1153]:
+                  - text: Utan
+                  - code [ref=e1154]: YAHOO_DAILY_RANGE
+                  - text: "kör scriptet inkrementellt:"
+                - list [ref=e1155]:
+                  - listitem [ref=e1156]: nya tickers får normal backfill
+                  - listitem [ref=e1157]: befintliga tickers hämtas från senaste lagrade datum med en liten overlap-buffert
+                  - listitem [ref=e1158]:
+                    - code [ref=e1159]: SPY
+                    - text: hämtas också inkrementellt till
+                    - code [ref=e1160]: benchmark_daily_prices
+                  - listitem [ref=e1161]: dagliga FRED-serier upsertas inkrementellt med liten overlap
+                  - listitem [ref=e1162]: månadsvisa FRED-serier upsertas i full längd vid varje körning för att inte missa revisioner
+                - generic [ref=e1163]:
+                  - heading "6. Hämta Yahoo 60m-candles separat" [level=3] [ref=e1164]
+                  - 'link "Permalink: 6. Hämta Yahoo 60m-candles separat" [ref=e1165] [cursor=pointer]':
+                    - /url: "#6-hämta-yahoo-60m-candles-separat"
+                    - img [ref=e1166]
+                - paragraph [ref=e1168]:
+                  - code [ref=e1169]: fetch:intraday-60m
+                  - text: är en egen pipeline och rör inte
+                  - code [ref=e1170]: stock_daily_prices
+                  - text: .
+                - paragraph [ref=e1171]: "Standard är två månader bakåt:"
+                - generic [ref=e1172]:
+                  - generic [ref=e1173]: npm run fetch:intraday-60m
+                  - button "Copy code to clipboard" [ref=e1175] [cursor=pointer]:
+                    - img [ref=e1176]
+                - paragraph [ref=e1179]: "Begränsa gärna första testet:"
+                - generic [ref=e1180]:
+                  - generic [ref=e1181]:
+                    - generic [ref=e1182]: $env:FETCH_TICKER_LIMIT
+                    - text: =
+                    - generic [ref=e1183]: "\"10\""
+                    - generic [ref=e1184]: $env:YAHOO_INTRADAY_60M_RANGE
+                    - text: =
+                    - generic [ref=e1185]: "\"2mo\""
+                    - text: npm run fetch:intraday-60m
+                  - button "Copy code to clipboard" [ref=e1187] [cursor=pointer]:
+                    - img [ref=e1188]
+                - paragraph [ref=e1191]: "Eller en enskild ticker:"
+                - generic [ref=e1192]:
+                  - generic [ref=e1193]:
+                    - generic [ref=e1194]: $env:FETCH_TICKER
+                    - text: =
+                    - generic [ref=e1195]: "\"AAPL\""
+                    - generic [ref=e1196]: $env:YAHOO_INTRADAY_60M_RANGE
+                    - text: =
+                    - generic [ref=e1197]: "\"2mo\""
+                    - text: npm run fetch:intraday-60m
+                  - button "Copy code to clipboard" [ref=e1199] [cursor=pointer]:
+                    - img [ref=e1200]
+                - generic [ref=e1203]:
+                  - heading "7. Hämta macro-matrix Yahoo-proxyer separat" [level=3] [ref=e1204]
+                  - 'link "Permalink: 7. Hämta macro-matrix Yahoo-proxyer separat" [ref=e1205] [cursor=pointer]':
+                    - /url: "#7-hämta-macro-matrix-yahoo-proxyer-separat"
+                    - img [ref=e1206]
+                - paragraph [ref=e1208]: Sektor/faktor- och equity/style-matriserna läser nu från databasen i stället för att hämta Yahoo live vid render.
+                - paragraph [ref=e1209]: "Första körningen backfillar symboler som saknas med lång historik:"
+                - generic [ref=e1210]:
+                  - generic [ref=e1211]: npm run fetch:macro-matrix-yahoo-proxy
+                  - button "Copy code to clipboard" [ref=e1213] [cursor=pointer]:
+                    - img [ref=e1214]
+                - paragraph [ref=e1217]: "Standard är:"
+                - list [ref=e1218]:
+                  - listitem [ref=e1219]:
+                    - text: "nya symboler:"
+                    - code [ref=e1220]: 10y
+                  - listitem [ref=e1221]:
+                    - text: "befintliga symboler:"
+                    - code [ref=e1222]: 400d
+                - paragraph [ref=e1223]: "Du kan skriva över detta manuellt:"
+                - generic [ref=e1224]:
+                  - generic [ref=e1225]:
+                    - generic [ref=e1226]: $env:YAHOO_PROXY_DAILY_INITIAL_RANGE
+                    - text: =
+                    - generic [ref=e1227]: "\"10y\""
+                    - generic [ref=e1228]: $env:YAHOO_PROXY_DAILY_RANGE
+                    - text: =
+                    - generic [ref=e1229]: "\"90d\""
+                    - text: npm run fetch:macro-matrix-yahoo-proxy
+                  - button "Copy code to clipboard" [ref=e1231] [cursor=pointer]:
+                    - img [ref=e1232]
+                - separator [ref=e1235]
+                - generic [ref=e1236]:
+                  - heading "Scripts" [level=2] [ref=e1237]
+                  - 'link "Permalink: Scripts" [ref=e1238] [cursor=pointer]':
+                    - /url: "#scripts"
+                    - img [ref=e1239]
+                - generic [ref=e1241]:
+                  - generic [ref=e1242]: npm run dev npm run db:migrate npm run fetch:daily npm run fetch:intraday-60m npm run fetch:macro-matrix-yahoo-proxy npm run fetch:occ-volume-totals npm run fetch:finra-short-volume npm run fetch:barchart-breadth npm run fetch:implied-volatility-proxy npm run calculate:daily npm run calculate:cvol-call-volume npm run calculate:plce-short-volume npm run calculate:r3tw-mmtw-breadth npm run calculate:implied-volatility-ratio npm run calculate:market-breadth-ma200-forward-return npm run calculate:market-breadth-ma200-forward-return-empirical npm run calculate:sector-breadth npm run calculate:sector-signals npm run calculate:signals npm run calculate:trading-signals npm run calculate:position-facts npm run calculate:position-signals npm run calculate:swing-signals npm run calculate:swing-watchlists npm run seed:strategies npm run backtest:daily npm run study:signal -- studies/examples/tf-sync-forward.json npm run validate:indicator -- AAPL
+                  - button "Copy code to clipboard" [ref=e1244] [cursor=pointer]:
+                    - img [ref=e1245]
+                - paragraph [ref=e1248]: "De fyra externa indikatorvägarna och ett separat breadth-modellager körs isolerat och lämnar den befintliga Yahoo/FRED/S&P 500-pipelinen orörd:"
+                - list [ref=e1249]:
+                  - listitem [ref=e1250]:
+                    - code [ref=e1251]: npm run fetch:occ-volume-totals
+                    - text: hämtar OCC daily volume totals till
+                    - code [ref=e1252]: occ_daily_volume_totals
+                  - listitem [ref=e1253]:
+                    - code [ref=e1254]: npm run calculate:cvol-call-volume
+                    - text: bygger
+                    - code [ref=e1255]: cvol_call_volume_indicator_daily
+                  - listitem [ref=e1256]:
+                    - code [ref=e1257]: npm run fetch:finra-short-volume
+                    - text: hämtar FINRA PLCE short volume till
+                    - code [ref=e1258]: finra_daily_short_volume
+                  - listitem [ref=e1259]:
+                    - code [ref=e1260]: npm run calculate:plce-short-volume
+                    - text: bygger
+                    - code [ref=e1261]: plce_short_volume_indicator_daily
+                  - listitem [ref=e1262]:
+                    - code [ref=e1263]: npm run fetch:barchart-breadth
+                    - text: hämtar dagens
+                    - code [ref=e1264]: $R3TW
+                    - text: och
+                    - code [ref=e1265]: $MMTW
+                    - text: från Barchart till
+                    - code [ref=e1266]: external_breadth_daily
+                  - listitem [ref=e1267]:
+                    - code [ref=e1268]: npm run calculate:r3tw-mmtw-breadth
+                    - text: bygger
+                    - code [ref=e1269]: r3tw_mmtw_20dma_breadth_indicator_daily
+                  - listitem [ref=e1270]:
+                    - code [ref=e1271]: npm run fetch:implied-volatility-proxy
+                    - text: hämtar ett separat cross-asset-universum med underliggande Yahoo-priser och Yahoo/Cboe-volatilitetsproxyserier till
+                    - code [ref=e1272]: implied_volatility_proxy_source_daily
+                  - listitem [ref=e1273]:
+                    - code [ref=e1274]: npm run fetch:macro-matrix-yahoo-proxy
+                    - text: hämtar Yahoo daily-proxyserierna för macro-matriserna till
+                    - code [ref=e1275]: macro_matrix_yahoo_proxy_daily
+                  - listitem [ref=e1276]:
+                    - code [ref=e1277]: npm run calculate:implied-volatility-ratio
+                    - text: bygger
+                    - code [ref=e1278]: implied_volatility_ratio_signals_daily
+                  - listitem [ref=e1279]:
+                    - code [ref=e1280]: npm run calculate:market-breadth-ma200-forward-return
+                    - text: bygger ett separat MA200 breadth-signalmodellager i
+                    - code [ref=e1281]: market_breadth_ma200_forward_return_signal_daily
+                  - listitem [ref=e1282]:
+                    - code [ref=e1283]: npm run calculate:market-breadth-ma200-forward-return-empirical
+                    - text: bygger ett separat empiriskt SPY-baserat priorlager i
+                    - code [ref=e1284]: market_breadth_ma200_forward_return_empirical_daily
+                - paragraph [ref=e1285]: "Miljövariabler för manuella körningar:"
+                - list [ref=e1286]:
+                  - listitem [ref=e1287]:
+                    - code [ref=e1288]: OCC_REPORT_DATE
+                    - text: eller
+                    - code [ref=e1289]: OCC_START_DATE
+                    - text: +
+                    - code [ref=e1290]: OCC_END_DATE
+                  - listitem [ref=e1291]:
+                    - code [ref=e1292]: FINRA_SHORT_VOLUME_DATE
+                    - text: eller
+                    - code [ref=e1293]: FINRA_SHORT_VOLUME_START_DATE
+                    - text: +
+                    - code [ref=e1294]: FINRA_SHORT_VOLUME_END_DATE
+                  - listitem [ref=e1295]:
+                    - code [ref=e1296]: BARCHART_BREADTH_DATE
+                  - listitem [ref=e1297]:
+                    - code [ref=e1298]: IMPLIED_VOLATILITY_PROXY_RANGE
+                    - text: (default
+                    - code [ref=e1299]: 800d
+                    - text: )
+                  - listitem [ref=e1300]:
+                    - code [ref=e1301]: YAHOO_PROXY_DAILY_INITIAL_RANGE
+                    - text: (default
+                    - code [ref=e1302]: 10y
+                    - text: för symboler som saknas i proxy-tabellen)
+                  - listitem [ref=e1303]:
+                    - code [ref=e1304]: YAHOO_PROXY_DAILY_RANGE
+                    - text: (default
+                    - code [ref=e1305]: 400d
+                    - text: för löpande uppdatering av redan backfillade proxy-symboler)
+                - paragraph [ref=e1306]:
+                  - code [ref=e1307]: npm run dev
+                  - text: "öppnar nu en server-renderad startsida som visar:"
+                - list [ref=e1308]:
+                  - listitem [ref=e1309]: senaste fetch-status,
+                  - listitem [ref=e1310]: datatäckning för aktier,
+                  - listitem [ref=e1311]: senaste SP500/VIX/HY spread,
+                  - listitem [ref=e1312]: senaste prisrader för vald ticker.
+                - paragraph [ref=e1313]:
+                  - code [ref=e1314]: npm run calculate:daily
+                  - text: "beräknar nu:"
+                - list [ref=e1315]:
+                  - listitem [ref=e1316]:
+                    - code [ref=e1317]: SMA5
+                  - listitem [ref=e1318]:
+                    - code [ref=e1319]: SMA10
+                  - listitem [ref=e1320]:
+                    - code [ref=e1321]: SMA20
+                  - listitem [ref=e1322]:
+                    - code [ref=e1323]: SMA50
+                  - listitem [ref=e1324]:
+                    - code [ref=e1325]: SMA200
+                  - listitem [ref=e1326]:
+                    - code [ref=e1327]: daily_return_pct
+                  - listitem [ref=e1328]:
+                    - code [ref=e1329]: avg_volume20
+                  - listitem [ref=e1330]:
+                    - code [ref=e1331]: relative_volume20
+                  - listitem [ref=e1332]:
+                    - code [ref=e1333]: pct_from_52w_high
+                  - listitem [ref=e1334]:
+                    - code [ref=e1335]: pct_from_52w_low
+                  - listitem [ref=e1336]:
+                    - code [ref=e1337]: ryd_obv
+                  - listitem [ref=e1338]:
+                    - code [ref=e1339]: ryd_obv_zscore_80
+                  - listitem [ref=e1340]:
+                    - code [ref=e1341]: ryd_obv_buy_signal
+                  - listitem [ref=e1342]:
+                    - code [ref=e1343]: ryd_obv_sell_signal
+                  - listitem [ref=e1344]:
+                    - code [ref=e1345]: ryd_obv_signal
+                - paragraph [ref=e1346]:
+                  - text: per ticker och datum i
+                  - code [ref=e1347]: stock_daily_indicators
+                  - text: .
+                - paragraph [ref=e1348]:
+                  - text: Samma körning bygger också dagliga breadth-rader i
+                  - code [ref=e1349]: market_breadth_daily
+                  - text: ":"
+                - list [ref=e1350]:
+                  - listitem [ref=e1351]:
+                    - code [ref=e1352]: pct_above_sma20
+                  - listitem [ref=e1353]:
+                    - code [ref=e1354]: pct_above_sma50
+                  - listitem [ref=e1355]:
+                    - code [ref=e1356]: pct_above_sma200
+                  - listitem [ref=e1357]:
+                    - code [ref=e1358]: advancers
+                  - listitem [ref=e1359]:
+                    - code [ref=e1360]: decliners
+                  - listitem [ref=e1361]:
+                    - code [ref=e1362]: unchanged
+                  - listitem [ref=e1363]:
+                    - code [ref=e1364]: new_highs_52w
+                  - listitem [ref=e1365]:
+                    - code [ref=e1366]: new_lows_52w
+                  - listitem [ref=e1367]:
+                    - code [ref=e1368]: is_valid_signal_date
+                - paragraph [ref=e1369]:
+                  - code [ref=e1370]: npm run calculate:sector-breadth
+                  - text: bygger sedan samma typ av breadth-fakta per
+                  - code [ref=e1371]: date + sector
+                  - text: i
+                  - code [ref=e1372]: sector_breadth_daily
+                  - text: ":"
+                - list [ref=e1373]:
+                  - listitem [ref=e1374]:
+                    - code [ref=e1375]: ticker_count
+                    - text: via
+                    - code [ref=e1376]: active_ticker_count
+                  - listitem [ref=e1377]:
+                    - code [ref=e1378]: pct_above_sma20
+                  - listitem [ref=e1379]:
+                    - code [ref=e1380]: pct_above_sma50
+                  - listitem [ref=e1381]:
+                    - code [ref=e1382]: pct_above_sma200
+                  - listitem [ref=e1383]:
+                    - code [ref=e1384]: advancers
+                  - listitem [ref=e1385]:
+                    - code [ref=e1386]: decliners
+                  - listitem [ref=e1387]:
+                    - code [ref=e1388]: unchanged
+                  - listitem [ref=e1389]:
+                    - code [ref=e1390]: new_highs_52w
+                  - listitem [ref=e1391]:
+                    - code [ref=e1392]: new_lows_52w
+                  - listitem [ref=e1393]:
+                    - code [ref=e1394]: is_valid_signal_date
+                - paragraph [ref=e1395]: Det gör det möjligt att följa om indexrörelsen bärs av många sektorer eller bara några få, utan att ännu låsa in logiken i en separat sektor-signalmodell.
+                - paragraph [ref=e1396]:
+                  - code [ref=e1397]: npm run calculate:sector-signals
+                  - text: bygger sedan ett rent sektorbeslutslager i
+                  - code [ref=e1398]: sector_signal_daily
+                  - text: ovanpå
+                  - code [ref=e1399]: sector_breadth_daily
+                  - text: . Varje rad per
+                  - code [ref=e1400]: date + sector
+                  - text: "sparar bland annat:"
+                - list [ref=e1401]:
+                  - listitem [ref=e1402]:
+                    - code [ref=e1403]: pct_above_sma50
+                  - listitem [ref=e1404]:
+                    - code [ref=e1405]: pct_above_sma50_14d_change
+                  - listitem [ref=e1406]:
+                    - code [ref=e1407]: pct_above_sma200
+                  - listitem [ref=e1408]:
+                    - code [ref=e1409]: pct_above_sma200_14d_change
+                  - listitem [ref=e1410]:
+                    - code [ref=e1411]: ad_net
+                  - listitem [ref=e1412]:
+                    - code [ref=e1413]: ad_net_14d_change
+                  - listitem [ref=e1414]:
+                    - code [ref=e1415]: new_highs_52w
+                  - listitem [ref=e1416]:
+                    - code [ref=e1417]: new_lows_52w
+                  - listitem [ref=e1418]:
+                    - code [ref=e1419]: sector_regime_score
+                  - listitem [ref=e1420]:
+                    - code [ref=e1421]: signal
+                    - text: (
+                    - code [ref=e1422]: leading
+                    - text: ","
+                    - code [ref=e1423]: improving
+                    - text: ","
+                    - code [ref=e1424]: weakening
+                    - text: ","
+                    - code [ref=e1425]: lagging
+                    - text: ","
+                    - code [ref=e1426]: mixed
+                    - text: )
+                  - listitem [ref=e1427]:
+                    - code [ref=e1428]: reason_summary
+                - paragraph [ref=e1429]: Det ger ett separat faktalager för sektorrotation som går att använda både för läsyta och senare swing-/watchlistlogik utan att blanda ihop det med det bredare marknadssignallagret.
+                - paragraph [ref=e1430]:
+                  - code [ref=e1431]: npm run calculate:signals
+                  - text: bygger sedan en rad per marknadsdag i
+                  - code [ref=e1432]: market_signal_daily
+                  - text: "med bland annat:"
+                - list [ref=e1433]:
+                  - listitem [ref=e1434]:
+                    - code [ref=e1435]: spx_close
+                  - listitem [ref=e1436]:
+                    - code [ref=e1437]: spx_3d_change
+                  - listitem [ref=e1438]:
+                    - code [ref=e1439]: spx_14d_change
+                  - listitem [ref=e1440]:
+                    - code [ref=e1441]: pct_above_50
+                  - listitem [ref=e1442]:
+                    - code [ref=e1443]: pct_above_50_3d_change
+                  - listitem [ref=e1444]:
+                    - code [ref=e1445]: pct_above_50_14d_change
+                  - listitem [ref=e1446]:
+                    - code [ref=e1447]: pct_above_200
+                  - listitem [ref=e1448]:
+                    - code [ref=e1449]: pct_above_200_14d_change
+                  - listitem [ref=e1450]:
+                    - code [ref=e1451]: ad_line
+                  - listitem [ref=e1452]:
+                    - code [ref=e1453]: ad_line_14d_change
+                  - listitem [ref=e1454]:
+                    - code [ref=e1455]: new_highs
+                  - listitem [ref=e1456]:
+                    - code [ref=e1457]: new_lows
+                  - listitem [ref=e1458]:
+                    - code [ref=e1459]: vix
+                  - listitem [ref=e1460]:
+                    - code [ref=e1461]: divergence_status
+                  - listitem [ref=e1462]:
+                    - code [ref=e1463]: short_divergence_status
+                - paragraph [ref=e1464]:
+                  - code [ref=e1465]: npm run calculate:trading-signals
+                  - text: bygger sedan ett explicit beslutslager i
+                  - code [ref=e1466]: trading_signal_daily
+                  - text: "för kortsiktig SPY-handel. Första versionen använder befintlig breadth-, trend- och volatilitetsdata och outputtar raka orderord:"
+                - list [ref=e1467]:
+                  - listitem [ref=e1468]:
+                    - code [ref=e1469]: KÖP SPY
+                  - listitem [ref=e1470]:
+                    - code [ref=e1471]: SÄLJ SPY
+                  - listitem [ref=e1472]:
+                    - code [ref=e1473]: GÅ KORT SPY
+                  - listitem [ref=e1474]:
+                    - code [ref=e1475]: STÄNG KORT
+                  - listitem [ref=e1476]:
+                    - code [ref=e1477]: BEHÅLL
+                  - listitem [ref=e1478]:
+                    - code [ref=e1479]: GÅ TILL CASH
+                  - listitem [ref=e1480]:
+                    - code [ref=e1481]: SITT STILL
+                - paragraph [ref=e1482]: "Varje rad sparar också:"
+                - list [ref=e1483]:
+                  - listitem [ref=e1484]:
+                    - code [ref=e1485]: setup
+                    - text: (
+                    - code [ref=e1486]: bullish
+                    - text: ","
+                    - code [ref=e1487]: bearish
+                    - text: ","
+                    - code [ref=e1488]: risk_off
+                    - text: ","
+                    - code [ref=e1489]: neutral
+                    - text: )
+                  - listitem [ref=e1490]:
+                    - code [ref=e1491]: previous_state
+                  - listitem [ref=e1492]:
+                    - code [ref=e1493]: target_state
+                  - listitem [ref=e1494]:
+                    - code [ref=e1495]: trigger_count
+                  - listitem [ref=e1496]:
+                    - code [ref=e1497]: market_regime_score
+                  - listitem [ref=e1498]:
+                    - code [ref=e1499]: reason_summary
+                - paragraph [ref=e1500]:
+                  - text: Trading v1 är avsiktligt ett beslutslager och ännu inte en full short-backtestmotor. Själva signalerna kan alltså säga
+                  - code [ref=e1501]: GÅ KORT SPY
+                  - text: ", men den befintliga backtestmotorn kör fortfarande bara long/cash-strategier."
+                - generic [ref=e1502]:
+                  - heading "Alpaca paper execution" [level=2] [ref=e1503]
+                  - 'link "Permalink: Alpaca paper execution" [ref=e1504] [cursor=pointer]':
+                    - /url: "#alpaca-paper-execution"
+                    - img [ref=e1505]
+                - paragraph [ref=e1507]: Det finns nu ett separat Alpaca-lager för paper trading. Systemets signaler är fortfarande hjärnan. Alpaca används bara som exekverings- och verifieringslager.
+                - paragraph [ref=e1508]: "Execution-flödet är:"
+                - list [ref=e1509]:
+                  - listitem [ref=e1510]:
+                    - code [ref=e1511]: signal source adapter
+                  - listitem [ref=e1512]:
+                    - code [ref=e1513]: execution_intent
+                  - listitem [ref=e1514]:
+                    - code [ref=e1515]: risk checks
+                  - listitem [ref=e1516]:
+                    - code [ref=e1517]: execution_decision
+                  - listitem [ref=e1518]:
+                    - code [ref=e1519]: broker_order_request
+                  - listitem [ref=e1520]:
+                    - code [ref=e1521]: Alpaca client
+                  - listitem [ref=e1522]:
+                    - code [ref=e1523]: execution/audit log
+                - paragraph [ref=e1524]: "V1-begränsningar:"
+                - list [ref=e1525]:
+                  - listitem [ref=e1526]:
+                    - code [ref=e1527]: paper trading only
+                  - listitem [ref=e1528]:
+                    - code [ref=e1529]: SPY only
+                  - listitem [ref=e1530]:
+                    - code [ref=e1531]: long/cash only
+                  - listitem [ref=e1532]: inga shorts
+                  - listitem [ref=e1533]: inga options
+                  - listitem [ref=e1534]: read-only som default
+                  - listitem [ref=e1535]:
+                    - text: order kräver
+                    - code [ref=e1536]: ALPACA_TRADING_ENABLED=true
+                - paragraph [ref=e1537]: "Alla beslut sparas i databasen, även blockerade. Körningarna använder dessa tabeller:"
+                - list [ref=e1538]:
+                  - listitem [ref=e1539]:
+                    - code [ref=e1540]: execution_intents
+                  - listitem [ref=e1541]:
+                    - code [ref=e1542]: execution_decisions
+                  - listitem [ref=e1543]:
+                    - code [ref=e1544]: execution_orders
+                  - listitem [ref=e1545]:
+                    - code [ref=e1546]: broker_state_snapshots
+                - generic [ref=e1547]:
+                  - heading "Read-only kontroll" [level=3] [ref=e1548]
+                  - 'link "Permalink: Read-only kontroll" [ref=e1549] [cursor=pointer]':
+                    - /url: "#read-only-kontroll"
+                    - img [ref=e1550]
+                - paragraph [ref=e1552]: "För att bara verifiera konto, positioner och öppna order utan att skicka något:"
+                - generic [ref=e1553]:
+                  - generic [ref=e1554]: npm run alpaca:check
+                  - button "Copy code to clipboard" [ref=e1556] [cursor=pointer]:
+                    - img [ref=e1557]
+                - paragraph [ref=e1560]: "Detta läser:"
+                - list [ref=e1561]:
+                  - listitem [ref=e1562]: account
+                  - listitem [ref=e1563]: positions
+                  - listitem [ref=e1564]: open orders
+                - paragraph [ref=e1565]:
+                  - text: och sparar snapshots i
+                  - code [ref=e1566]: broker_state_snapshots
+                  - text: .
+                - paragraph [ref=e1567]: "Om du vill synka broker-state igen och samtidigt uppdatera sparade open-order-resultat:"
+                - generic [ref=e1568]:
+                  - generic [ref=e1569]: npm run alpaca:sync
+                  - button "Copy code to clipboard" [ref=e1571] [cursor=pointer]:
+                    - img [ref=e1572]
+                - generic [ref=e1575]:
+                  - heading "Dry-run" [level=3] [ref=e1576]
+                  - 'link "Permalink: Dry-run" [ref=e1577] [cursor=pointer]':
+                    - /url: "#dry-run"
+                    - img [ref=e1578]
+                - paragraph [ref=e1580]: "För att köra hela execution-pipelinen utan att skicka order:"
+                - generic [ref=e1581]:
+                  - generic [ref=e1582]: npm run alpaca:dry-run
+                  - button "Copy code to clipboard" [ref=e1584] [cursor=pointer]:
+                    - img [ref=e1585]
+                - paragraph [ref=e1588]: "Detta gör:"
+                - list [ref=e1589]:
+                  - listitem [ref=e1590]:
+                    - text: läser senaste
+                    - code [ref=e1591]: trading_signal_daily
+                  - listitem [ref=e1592]:
+                    - text: mappar signalen till
+                    - code [ref=e1593]: execution_intent
+                  - listitem [ref=e1594]: kör riskregler
+                  - listitem [ref=e1595]:
+                    - text: sparar beslut i
+                    - code [ref=e1596]: execution_decisions
+                  - listitem [ref=e1597]: skickar ingen order
+                - generic [ref=e1598]:
+                  - heading "Paper execution" [level=3] [ref=e1599]
+                  - 'link "Permalink: Paper execution" [ref=e1600] [cursor=pointer]':
+                    - /url: "#paper-execution"
+                    - img [ref=e1601]
+                - paragraph [ref=e1603]: "Faktisk paper-order får bara skickas när du själv öppnar grinden:"
+                - generic [ref=e1604]:
+                  - generic [ref=e1605]:
+                    - generic [ref=e1606]: $env:ALPACA_TRADING_ENABLED
+                    - text: =
+                    - generic [ref=e1607]: "\"true\""
+                    - text: npm run alpaca:paper-execute
+                  - button "Copy code to clipboard" [ref=e1609] [cursor=pointer]:
+                    - img [ref=e1610]
+                - paragraph [ref=e1613]: "Guardrails i V1:"
+                - list [ref=e1614]:
+                  - listitem [ref=e1615]:
+                    - text: endast
+                    - code [ref=e1616]: SPY
+                    - text: är tillåten symbol
+                  - listitem [ref=e1617]: kortsignaler blockeras och loggas
+                  - listitem [ref=e1618]: options blockeras
+                  - listitem [ref=e1619]: stale signal blockeras
+                  - listitem [ref=e1620]:
+                    - text: befintlig open order för
+                    - code [ref=e1621]: SPY
+                    - text: blockerar ny order
+                  - listitem [ref=e1622]: max order- och positionsstorlek kontrolleras före submit
+                  - listitem [ref=e1623]: paper-endpoint krävs
+                - paragraph [ref=e1624]:
+                  - text: Om
+                  - code [ref=e1625]: ALPACA_TRADING_ENABLED
+                  - text: inte är
+                  - code [ref=e1626]: "true"
+                  - text: blockeras skickad order även om du kör
+                  - code [ref=e1627]: alpaca:paper-execute
+                  - text: .
+                - paragraph [ref=e1628]:
+                  - code [ref=e1629]: npm run calculate:position-facts
+                  - text: bygger sedan en rad per
+                  - code [ref=e1630]: SPY
+                  - text: "-marknadsdag i"
+                  - code [ref=e1631]: position_facts_daily
+                  - text: "med as-of-mappade makrofakta för positionsystemet, bland annat:"
+                - list [ref=e1632]:
+                  - listitem [ref=e1633]:
+                    - code [ref=e1634]: sp500
+                  - listitem [ref=e1635]:
+                    - code [ref=e1636]: sp500_200dma
+                  - listitem [ref=e1637]:
+                    - code [ref=e1638]: sp500_pct_from_200dma
+                  - listitem [ref=e1639]:
+                    - code [ref=e1640]: vix
+                  - listitem [ref=e1641]:
+                    - code [ref=e1642]: high_yield_spread
+                  - listitem [ref=e1643]:
+                    - code [ref=e1644]: yield_curve_spread
+                  - listitem [ref=e1645]:
+                    - code [ref=e1646]: fed_funds
+                  - listitem [ref=e1647]:
+                    - code [ref=e1648]: unemployment_rate
+                  - listitem [ref=e1649]:
+                    - code [ref=e1650]: cpi_yoy
+                  - listitem [ref=e1651]:
+                    - code [ref=e1652]: consumer_sentiment
+                  - listitem [ref=e1653]:
+                    - code [ref=e1654]: sp500_trend_regime
+                  - listitem [ref=e1655]:
+                    - code [ref=e1656]: vix_regime
+                  - listitem [ref=e1657]:
+                    - code [ref=e1658]: credit_regime
+                  - listitem [ref=e1659]:
+                    - code [ref=e1660]: yield_curve_regime
+                  - listitem [ref=e1661]:
+                    - code [ref=e1662]: fed_policy_trend
+                  - listitem [ref=e1663]:
+                    - code [ref=e1664]: labor_trend
+                  - listitem [ref=e1665]:
+                    - code [ref=e1666]: inflation_trend
+                  - listitem [ref=e1667]:
+                    - code [ref=e1668]: sentiment_trend
+                - paragraph [ref=e1669]: Månadsserierna forward-fillas som “senast kända observation” till varje marknadsdag, och respektive observationsdatum sparas separat så att positionlogik kan byggas utan lookahead.
+                - paragraph [ref=e1670]:
+                  - code [ref=e1671]: npm run calculate:position-signals
+                  - text: bygger sedan en rad per marknadsdag i
+                  - code [ref=e1672]: position_signal_daily
+                  - text: "med första versionens positionsbeslut och målallokering, bland annat:"
+                - list [ref=e1673]:
+                  - listitem [ref=e1674]:
+                    - code [ref=e1675]: signal
+                  - listitem [ref=e1676]:
+                    - code [ref=e1677]: decision
+                  - listitem [ref=e1678]:
+                    - code [ref=e1679]: target_equity_weight_pct
+                  - listitem [ref=e1680]:
+                    - code [ref=e1681]: target_cash_weight_pct
+                  - listitem [ref=e1682]:
+                    - code [ref=e1683]: raw_signal
+                  - listitem [ref=e1684]:
+                    - code [ref=e1685]: raw_decision
+                  - listitem [ref=e1686]:
+                    - code [ref=e1687]: raw_target_equity_weight_pct
+                  - listitem [ref=e1688]:
+                    - code [ref=e1689]: raw_target_cash_weight_pct
+                  - listitem [ref=e1690]:
+                    - code [ref=e1691]: market_signal
+                  - listitem [ref=e1692]:
+                    - code [ref=e1693]: market_regime_score
+                  - listitem [ref=e1694]:
+                    - code [ref=e1695]: caution_count
+                  - listitem [ref=e1696]:
+                    - code [ref=e1697]: hard_risk_off_count
+                  - listitem [ref=e1698]:
+                    - code [ref=e1699]: reason_summary
+                  - listitem [ref=e1700]:
+                    - code [ref=e1701]: persistence_direction
+                  - listitem [ref=e1702]:
+                    - code [ref=e1703]: persistence_streak_days
+                  - listitem [ref=e1704]:
+                    - code [ref=e1705]: persistence_required_days
+                - paragraph [ref=e1706]:
+                  - text: Första versionen väger ihop makrofakta från
+                  - code [ref=e1707]: position_facts_daily
+                  - text: med breadthkontext från
+                  - code [ref=e1708]: market_signal_daily
+                  - text: och mappar dem till
+                  - code [ref=e1709]: 0%
+                  - text: ","
+                  - code [ref=e1710]: 25%
+                  - text: ","
+                  - code [ref=e1711]: 50%
+                  - text: ","
+                  - code [ref=e1712]: 75%
+                  - text: eller
+                  - code [ref=e1713]: 100%
+                  - text: exponering.
+                - paragraph [ref=e1714]:
+                  - code [ref=e1715]: raw_*
+                  - text: "-kolumnerna visar daglig modelloutput före persistens. De applicerade"
+                  - code [ref=e1716]: target_*
+                  - text: "-kolumnerna är avsiktligt långsammare för positionssystemet:"
+                - list [ref=e1717]:
+                  - listitem [ref=e1718]:
+                    - text: mjuk nedväxling till lägre allokering kräver
+                    - code [ref=e1719]: "3"
+                    - text: dagar i rad med samma rå-allokering
+                  - listitem [ref=e1720]:
+                    - text: uppväxling tillbaka till högre allokering kräver
+                    - code [ref=e1721]: "5"
+                    - text: dagar i rad med samma rå-allokering
+                  - listitem [ref=e1722]:
+                    - text: "hårda riskkluster styrs separat och kräver både bredd och varaktighet:"
+                    - list [ref=e1723]:
+                      - listitem [ref=e1724]:
+                        - code [ref=e1725]: 3+
+                        - text: hårda flaggor i
+                        - code [ref=e1726]: "3"
+                        - text: dagar i rad kapar till högst
+                        - code [ref=e1727]: 50%
+                      - listitem [ref=e1728]:
+                        - code [ref=e1729]: 3+
+                        - text: hårda flaggor i
+                        - code [ref=e1730]: "5"
+                        - text: dagar i rad kapar till
+                        - code [ref=e1731]: 25%
+                      - listitem [ref=e1732]:
+                        - code [ref=e1733]: 4+
+                        - text: hårda flaggor i
+                        - code [ref=e1734]: "2"
+                        - text: dagar i rad skickar modellen till
+                        - code [ref=e1735]: 0%
+                - paragraph [ref=e1736]: "Nuvarande hårda flaggor är:"
+                - list [ref=e1737]:
+                  - listitem [ref=e1738]:
+                    - code [ref=e1739]: SP500
+                    - text: under
+                    - code [ref=e1740]: 200-dma
+                  - listitem [ref=e1741]:
+                    - code [ref=e1742]: VIX
+                    - text: i
+                    - code [ref=e1743]: stress
+                  - listitem [ref=e1744]:
+                    - text: high yield-spread i
+                    - code [ref=e1745]: stress
+                  - listitem [ref=e1746]:
+                    - code [ref=e1747]: market_signal_daily.signal = risk_off
+                - paragraph [ref=e1748]: Yield curve-inversion används nu som makrokontext i försiktighetslagret, inte som ensam full-exit-trigger.
+                - paragraph [ref=e1749]:
+                  - text: Det gör att positionssystemet ligger närmare
+                  - code [ref=e1750]: buy-and-hold
+                  - text: i normalläge och bara kliver av kraftigt när riskbilden är både bred och ihållande.
+                - paragraph [ref=e1751]:
+                  - code [ref=e1752]: npm run calculate:swing-signals
+                  - text: bygger sedan ett swinglager i
+                  - code [ref=e1753]: swing_signal_daily
+                  - text: som kombinerar
+                  - code [ref=e1754]: sector_signal_daily
+                  - text: med
+                  - code [ref=e1755]: market_signal_daily
+                  - text: . Första versionen fokuserar på sektorrotation och timing för
+                  - code [ref=e1756]: 1-4 veckor
+                  - text: "och outputtar raka beslut:"
+                - list [ref=e1757]:
+                  - listitem [ref=e1758]:
+                    - code [ref=e1759]: KÖP STARKA SEKTORER
+                  - listitem [ref=e1760]:
+                    - code [ref=e1761]: BEHÅLL LONGS
+                  - listitem [ref=e1762]:
+                    - code [ref=e1763]: MINSKA RISK
+                  - listitem [ref=e1764]:
+                    - code [ref=e1765]: GÅ TILL CASH
+                  - listitem [ref=e1766]:
+                    - code [ref=e1767]: LONG WATCHLIST
+                  - listitem [ref=e1768]:
+                    - code [ref=e1769]: SHORT WATCHLIST
+                  - listitem [ref=e1770]:
+                    - code [ref=e1771]: SITT STILL
+                - paragraph [ref=e1772]: "Varje rad sparar också:"
+                - list [ref=e1773]:
+                  - listitem [ref=e1774]:
+                    - code [ref=e1775]: setup
+                    - text: (
+                    - code [ref=e1776]: bullish
+                    - text: ","
+                    - code [ref=e1777]: improving
+                    - text: ","
+                    - code [ref=e1778]: weakening
+                    - text: ","
+                    - code [ref=e1779]: bearish_watch
+                    - text: ","
+                    - code [ref=e1780]: risk_off
+                    - text: ","
+                    - code [ref=e1781]: neutral
+                    - text: )
+                  - listitem [ref=e1782]:
+                    - code [ref=e1783]: previous_state
+                  - listitem [ref=e1784]:
+                    - code [ref=e1785]: target_state
+                  - listitem [ref=e1786]:
+                    - code [ref=e1787]: active_sector_count
+                  - listitem [ref=e1788]:
+                    - code [ref=e1789]: leading_sector_count
+                  - listitem [ref=e1790]:
+                    - code [ref=e1791]: improving_sector_count
+                  - listitem [ref=e1792]:
+                    - code [ref=e1793]: weakening_sector_count
+                  - listitem [ref=e1794]:
+                    - code [ref=e1795]: lagging_sector_count
+                  - listitem [ref=e1796]:
+                    - code [ref=e1797]: mixed_sector_count
+                  - listitem [ref=e1798]:
+                    - code [ref=e1799]: market_signal
+                  - listitem [ref=e1800]:
+                    - code [ref=e1801]: market_regime_score
+                  - listitem [ref=e1802]:
+                    - code [ref=e1803]: reason_summary
+                - paragraph [ref=e1804]: Swing v1 är avsiktligt ett beslutslager för sektorrörelse och watchlists, inte en egen backtestmotor eller portföljallokator ännu.
+                - paragraph [ref=e1805]:
+                  - code [ref=e1806]: npm run calculate:swing-watchlists
+                  - text: bygger sedan en rankad watchlist i
+                  - code [ref=e1807]: swing_watchlist_daily
+                  - text: ovanpå
+                  - code [ref=e1808]: stock_daily_indicators
+                  - text: ","
+                  - code [ref=e1809]: sector_signal_daily
+                  - text: och
+                  - code [ref=e1810]: swing_signal_daily
+                  - text: ". Första versionen sparar toppkandidater per dag och bias:"
+                - list [ref=e1811]:
+                  - listitem [ref=e1812]:
+                    - code [ref=e1813]: bias
+                    - text: (
+                    - code [ref=e1814]: long
+                    - text: ","
+                    - code [ref=e1815]: short
+                    - text: )
+                  - listitem [ref=e1816]:
+                    - code [ref=e1817]: rank_in_bias
+                  - listitem [ref=e1818]:
+                    - code [ref=e1819]: ticker
+                  - listitem [ref=e1820]:
+                    - code [ref=e1821]: sector
+                  - listitem [ref=e1822]:
+                    - code [ref=e1823]: sector_signal
+                  - listitem [ref=e1824]:
+                    - code [ref=e1825]: swing_setup
+                  - listitem [ref=e1826]:
+                    - code [ref=e1827]: swing_decision
+                  - listitem [ref=e1828]:
+                    - code [ref=e1829]: playbook
+                  - listitem [ref=e1830]:
+                    - code [ref=e1831]: is_actionable
+                  - listitem [ref=e1832]:
+                    - code [ref=e1833]: watchlist_score
+                  - listitem [ref=e1834]:
+                    - code [ref=e1835]: indicator_price
+                  - listitem [ref=e1836]:
+                    - code [ref=e1837]: daily_return_pct
+                  - listitem [ref=e1838]:
+                    - code [ref=e1839]: relative_volume20
+                  - listitem [ref=e1840]:
+                    - code [ref=e1841]: pct_from_52w_high
+                  - listitem [ref=e1842]:
+                    - code [ref=e1843]: pct_from_52w_low
+                  - listitem [ref=e1844]:
+                    - code [ref=e1845]: distance_from_sma50_pct
+                  - listitem [ref=e1846]:
+                    - code [ref=e1847]: distance_from_sma200_pct
+                  - listitem [ref=e1848]:
+                    - code [ref=e1849]: reason_summary
+                - paragraph [ref=e1850]:
+                  - text: Long-kandidater kommer från
+                  - code [ref=e1851]: leading
+                  - text: och
+                  - code [ref=e1852]: improving
+                  - text: sektorer. Short-kandidater kommer från
+                  - code [ref=e1853]: lagging
+                  - text: och
+                  - code [ref=e1854]: weakening
+                  - text: "sektorer. Score v1 använder bara indikatorer som redan finns i systemet:"
+                - list [ref=e1855]:
+                  - listitem [ref=e1856]:
+                    - text: pris över/under
+                    - code [ref=e1857]: SMA50
+                  - listitem [ref=e1858]:
+                    - text: pris över/under
+                    - code [ref=e1859]: SMA200
+                  - listitem [ref=e1860]:
+                    - text: närhet till
+                    - code [ref=e1861]: 52w high/low
+                  - listitem [ref=e1862]: daglig riktning
+                  - listitem [ref=e1863]: relativ volym
+                  - listitem [ref=e1864]: sektorstyrka
+                - paragraph [ref=e1865]: Själva watchlisten ersätts i full längd vid varje körning i stället för att bara upsertas. Det gör att gamla toppkandidater inte ligger kvar om rankingreglerna eller score-trösklar ändras senare.
+                - paragraph [ref=e1866]: "De nya indikator-specifika rå- och signallagren är separata från den ordinarie aktie- och marknadsbreddspipelinen:"
+                - list [ref=e1867]:
+                  - listitem [ref=e1868]:
+                    - paragraph [ref=e1869]:
+                      - code [ref=e1870]: occ_daily_volume_totals
+                      - text: sparar OCC
+                      - code [ref=e1871]: calls
+                      - text: ","
+                      - code [ref=e1872]: puts
+                      - text: ","
+                      - code [ref=e1873]: ratio
+                      - text: ","
+                      - code [ref=e1874]: volume
+                      - text: och
+                      - code [ref=e1875]: market_share
+                      - text: per
+                      - code [ref=e1876]: report_date + exchange
+                  - listitem [ref=e1877]:
+                    - paragraph [ref=e1878]:
+                      - code [ref=e1879]: cvol_call_volume_indicator_daily
+                      - text: "sparar CVOL-ersättningen från OCC med:"
+                    - list [ref=e1880]:
+                      - listitem [ref=e1881]:
+                        - code [ref=e1882]: cvol_calls
+                      - listitem [ref=e1883]:
+                        - code [ref=e1884]: cvol_puts
+                      - listitem [ref=e1885]:
+                        - code [ref=e1886]: cvol_ratio
+                      - listitem [ref=e1887]:
+                        - code [ref=e1888]: cvol_total_volume
+                      - listitem [ref=e1889]:
+                        - code [ref=e1890]: cvol_market_share
+                      - listitem [ref=e1891]:
+                        - code [ref=e1892]: cvol_zscore_20
+                      - listitem [ref=e1893]:
+                        - code [ref=e1894]: cvol_zscore_15
+                      - listitem [ref=e1895]:
+                        - code [ref=e1896]: cvol_zscore_10
+                      - listitem [ref=e1897]:
+                        - code [ref=e1898]: cvol_price_condition
+                      - listitem [ref=e1899]:
+                        - code [ref=e1900]: cvol_sell_signal_1
+                      - listitem [ref=e1901]:
+                        - code [ref=e1902]: cvol_sell_signal_2
+                      - listitem [ref=e1903]:
+                        - code [ref=e1904]: cvol_sell_signal_3
+                      - listitem [ref=e1905]:
+                        - code [ref=e1906]: cvol_signal
+                  - listitem [ref=e1907]:
+                    - paragraph [ref=e1908]:
+                      - code [ref=e1909]: finra_daily_short_volume
+                      - text: "sparar PLCE:s FINRA-rad per datum med:"
+                    - list [ref=e1910]:
+                      - listitem [ref=e1911]:
+                        - code [ref=e1912]: short_volume
+                      - listitem [ref=e1913]:
+                        - code [ref=e1914]: short_exempt_volume
+                      - listitem [ref=e1915]:
+                        - code [ref=e1916]: total_volume
+                      - listitem [ref=e1917]:
+                        - code [ref=e1918]: market
+                  - listitem [ref=e1919]:
+                    - paragraph [ref=e1920]:
+                      - code [ref=e1921]: plce_short_volume_indicator_daily
+                      - text: "sparar:"
+                    - list [ref=e1922]:
+                      - listitem [ref=e1923]:
+                        - code [ref=e1924]: plce_short_volume
+                      - listitem [ref=e1925]:
+                        - code [ref=e1926]: plce_short_exempt_volume
+                      - listitem [ref=e1927]:
+                        - code [ref=e1928]: plce_total_volume
+                      - listitem [ref=e1929]:
+                        - code [ref=e1930]: plce_short_volume_market
+                      - listitem [ref=e1931]:
+                        - code [ref=e1932]: plce_short_volume_zscore_50
+                      - listitem [ref=e1933]:
+                        - code [ref=e1934]: plce_short_volume_zscore_20
+                      - listitem [ref=e1935]:
+                        - code [ref=e1936]: plce_short_volume_price_condition
+                      - listitem [ref=e1937]:
+                        - code [ref=e1938]: plce_short_volume_buy_signal_50
+                      - listitem [ref=e1939]:
+                        - code [ref=e1940]: plce_short_volume_buy_signal_20
+                      - listitem [ref=e1941]:
+                        - code [ref=e1942]: plce_short_volume_extreme_signal
+                      - listitem [ref=e1943]:
+                        - code [ref=e1944]: plce_short_volume_signal
+                  - listitem [ref=e1945]:
+                    - paragraph [ref=e1946]:
+                      - code [ref=e1947]: external_breadth_daily
+                      - text: sparar dagliga Barchart-värden för
+                      - code [ref=e1948]: R3TW
+                      - text: och
+                      - code [ref=e1949]: MMTW
+                  - listitem [ref=e1950]:
+                    - paragraph [ref=e1951]:
+                      - code [ref=e1952]: r3tw_mmtw_20dma_breadth_indicator_daily
+                      - text: "sparar:"
+                    - list [ref=e1953]:
+                      - listitem [ref=e1954]:
+                        - code [ref=e1955]: r3tw_value
+                      - listitem [ref=e1956]:
+                        - code [ref=e1957]: mmtw_value
+                      - listitem [ref=e1958]:
+                        - code [ref=e1959]: r3tw_cross_up_20
+                      - listitem [ref=e1960]:
+                        - code [ref=e1961]: mmtw_cross_up_20
+                      - listitem [ref=e1962]:
+                        - code [ref=e1963]: r3tw_mmtw_buy_signal
+                      - listitem [ref=e1964]:
+                        - code [ref=e1965]: r3tw_mmtw_signal
+                  - listitem [ref=e1966]:
+                    - paragraph [ref=e1967]:
+                      - code [ref=e1968]: implied_volatility_proxy_source_daily
+                      - text: "sparar dagliga råinput för ett separat cross-asset-volatilitetsuniversum:"
+                    - list [ref=e1969]:
+                      - listitem [ref=e1970]:
+                        - code [ref=e1971]: asset_key
+                      - listitem [ref=e1972]:
+                        - code [ref=e1973]: source_symbol
+                      - listitem [ref=e1974]:
+                        - code [ref=e1975]: implied_volatility_symbol
+                      - listitem [ref=e1976]:
+                        - code [ref=e1977]: close
+                      - listitem [ref=e1978]:
+                        - code [ref=e1979]: adj_close
+                      - listitem [ref=e1980]:
+                        - code [ref=e1981]: volume
+                      - listitem [ref=e1982]:
+                        - code [ref=e1983]: implied_volatility
+                      - listitem [ref=e1984]:
+                        - code [ref=e1985]: source_status
+                  - listitem [ref=e1986]:
+                    - paragraph [ref=e1987]:
+                      - code [ref=e1988]: implied_volatility_ratio_signals_daily
+                      - text: "sparar IVOL/RVOL-indikatorn med bland annat:"
+                    - list [ref=e1989]:
+                      - listitem [ref=e1990]:
+                        - code [ref=e1991]: realised_volatility_30d
+                      - listitem [ref=e1992]:
+                        - code [ref=e1993]: ivol_rvol_ratio
+                      - listitem [ref=e1994]:
+                        - code [ref=e1995]: ivol_rvol_ratio_z_1y
+                      - listitem [ref=e1996]:
+                        - code [ref=e1997]: ivol_rvol_ratio_z_1w_ago
+                      - listitem [ref=e1998]:
+                        - code [ref=e1999]: ivol_rvol_ratio_z_1w_change
+                      - listitem [ref=e2000]:
+                        - code [ref=e2001]: rvol_20d
+                      - listitem [ref=e2002]:
+                        - code [ref=e2003]: trend_regime
+                      - listitem [ref=e2004]:
+                        - code [ref=e2005]: range_position_20d
+                      - listitem [ref=e2006]:
+                        - code [ref=e2007]: ivol_rvol_level
+                      - listitem [ref=e2008]:
+                        - code [ref=e2009]: signal
+                      - listitem [ref=e2010]:
+                        - code [ref=e2011]: action
+                      - listitem [ref=e2012]:
+                        - code [ref=e2013]: opportunity_score
+                      - listitem [ref=e2014]:
+                        - code [ref=e2015]: ivol_rvol_rank
+                      - listitem [ref=e2016]:
+                        - code [ref=e2017]: ivol_rvol_percentile
+                  - listitem [ref=e2018]:
+                    - paragraph [ref=e2019]:
+                      - code [ref=e2020]: market_breadth_ma200_forward_return_signal_daily
+                      - text: "sparar MA200 breadth-modellen med bland annat:"
+                    - list [ref=e2021]:
+                      - listitem [ref=e2022]:
+                        - code [ref=e2023]: ma200_breadth_pct
+                      - listitem [ref=e2024]:
+                        - code [ref=e2025]: ma200_breadth_bucket
+                      - listitem [ref=e2026]:
+                        - code [ref=e2027]: ma200_breadth_5d_change
+                      - listitem [ref=e2028]:
+                        - code [ref=e2029]: ma200_breadth_10d_change
+                      - listitem [ref=e2030]:
+                        - code [ref=e2031]: ma200_breadth_20d_change
+                      - listitem [ref=e2032]:
+                        - code [ref=e2033]: ma200_breadth_50d_change
+                      - listitem [ref=e2034]:
+                        - code [ref=e2035]: ma200_breadth_signal
+                      - listitem [ref=e2036]:
+                        - code [ref=e2037]: ma200_breadth_action
+                      - listitem [ref=e2038]:
+                        - code [ref=e2039]: ma200_breadth_confidence
+                      - listitem [ref=e2040]:
+                        - code [ref=e2041]: ma200_breadth_warning
+                      - listitem [ref=e2042]:
+                        - code [ref=e2043]: ma200_expected_return_5d
+                      - listitem [ref=e2044]:
+                        - code [ref=e2045]: ma200_expected_return_10d
+                      - listitem [ref=e2046]:
+                        - code [ref=e2047]: ma200_expected_return_1m
+                      - listitem [ref=e2048]:
+                        - code [ref=e2049]: ma200_expected_return_3m
+                      - listitem [ref=e2050]:
+                        - code [ref=e2051]: ma200_expected_return_6m
+                      - listitem [ref=e2052]:
+                        - code [ref=e2053]: ma200_expected_return_12m
+                      - listitem [ref=e2054]:
+                        - code [ref=e2055]: ma200_win_ratio_5d
+                      - listitem [ref=e2056]:
+                        - code [ref=e2057]: ma200_win_ratio_10d
+                      - listitem [ref=e2058]:
+                        - code [ref=e2059]: ma200_win_ratio_1m
+                      - listitem [ref=e2060]:
+                        - code [ref=e2061]: ma200_win_ratio_3m
+                      - listitem [ref=e2062]:
+                        - code [ref=e2063]: ma200_win_ratio_6m
+                      - listitem [ref=e2064]:
+                        - code [ref=e2065]: ma200_win_ratio_12m
+                      - listitem [ref=e2066]:
+                        - code [ref=e2067]: ma200_forward_model_version
+                  - listitem [ref=e2068]:
+                    - paragraph [ref=e2069]:
+                      - code [ref=e2070]: market_breadth_ma200_forward_return_empirical_daily
+                      - text: sparar ett separat empiriskt priorlager för aktuell breadth-bucket på varje datum, baserat på historiskt känd
+                      - code [ref=e2071]: SPY
+                      - text: "-utveckling:"
+                    - list [ref=e2072]:
+                      - listitem [ref=e2073]:
+                        - code [ref=e2074]: benchmark_symbol
+                      - listitem [ref=e2075]:
+                        - code [ref=e2076]: ma200_breadth_pct
+                      - listitem [ref=e2077]:
+                        - code [ref=e2078]: ma200_breadth_bucket
+                      - listitem [ref=e2079]:
+                        - code [ref=e2080]: ma200_empirical_sample_count_5d
+                      - listitem [ref=e2081]:
+                        - code [ref=e2082]: ma200_empirical_sample_count_10d
+                      - listitem [ref=e2083]:
+                        - code [ref=e2084]: ma200_empirical_sample_count_1m
+                      - listitem [ref=e2085]:
+                        - code [ref=e2086]: ma200_empirical_sample_count_3m
+                      - listitem [ref=e2087]:
+                        - code [ref=e2088]: ma200_empirical_sample_count_6m
+                      - listitem [ref=e2089]:
+                        - code [ref=e2090]: ma200_empirical_sample_count_12m
+                      - listitem [ref=e2091]:
+                        - code [ref=e2092]: ma200_empirical_expected_return_5d
+                      - listitem [ref=e2093]:
+                        - code [ref=e2094]: ma200_empirical_expected_return_10d
+                      - listitem [ref=e2095]:
+                        - code [ref=e2096]: ma200_empirical_expected_return_1m
+                      - listitem [ref=e2097]:
+                        - code [ref=e2098]: ma200_empirical_expected_return_3m
+                      - listitem [ref=e2099]:
+                        - code [ref=e2100]: ma200_empirical_expected_return_6m
+                      - listitem [ref=e2101]:
+                        - code [ref=e2102]: ma200_empirical_expected_return_12m
+                      - listitem [ref=e2103]:
+                        - code [ref=e2104]: ma200_empirical_win_ratio_5d
+                      - listitem [ref=e2105]:
+                        - code [ref=e2106]: ma200_empirical_win_ratio_10d
+                      - listitem [ref=e2107]:
+                        - code [ref=e2108]: ma200_empirical_win_ratio_1m
+                      - listitem [ref=e2109]:
+                        - code [ref=e2110]: ma200_empirical_win_ratio_3m
+                      - listitem [ref=e2111]:
+                        - code [ref=e2112]: ma200_empirical_win_ratio_6m
+                      - listitem [ref=e2113]:
+                        - code [ref=e2114]: ma200_empirical_win_ratio_12m
+                      - listitem [ref=e2115]:
+                        - code [ref=e2116]: ma200_forward_model_version
+                - paragraph [ref=e2117]: "Watchlisten får nu också ett litet exekveringslager så att listan går att tolka operativt:"
+                - list [ref=e2118]:
+                  - listitem [ref=e2119]:
+                    - code [ref=e2120]: playbook
+                    - text: beskriver hur raden ska användas, t.ex.
+                    - code [ref=e2121]: deploy_long
+                    - text: ","
+                    - code [ref=e2122]: defensive_watch
+                    - text: ","
+                    - code [ref=e2123]: hedge_watch
+                    - text: eller
+                    - code [ref=e2124]: standby_short
+                  - listitem [ref=e2125]:
+                    - code [ref=e2126]: is_actionable
+                    - text: markerar om raden är tänkt som faktisk kandidat att agera på i nuvarande swingläge, eller bara som observations-/beredskapsnamn
+                - paragraph [ref=e2127]:
+                  - text: Det gör att samma kandidatlista kan visas även under
+                  - code [ref=e2128]: MINSKA RISK
+                  - text: eller
+                  - code [ref=e2129]: risk_off
+                  - text: ", utan att den ser ut som en aktiv köplista när den egentligen bara är en defensiv eller informationsmässig watchlist."
+                - paragraph [ref=e2130]:
+                  - code [ref=e2131]: npm run seed:strategies
+                  - text: "upsertar sedan de första strategidefinitionerna:"
+                - list [ref=e2132]:
+                  - listitem [ref=e2133]:
+                    - code [ref=e2134]: buy_and_hold_spy
+                  - listitem [ref=e2135]:
+                    - code [ref=e2136]: market_regime_signal_v1
+                  - listitem [ref=e2137]:
+                    - code [ref=e2138]: bearish_divergence_cash_v1
+                  - listitem [ref=e2139]:
+                    - code [ref=e2140]: bullish_divergence_context_v1
+                  - listitem [ref=e2141]:
+                    - code [ref=e2142]: pct_above_50_threshold_v1
+                  - listitem [ref=e2143]:
+                    - code [ref=e2144]: position_macro_signal_v1
+                  - listitem [ref=e2145]:
+                    - code [ref=e2146]: trading_signal_v1_long_cash
+                - paragraph [ref=e2147]:
+                  - code [ref=e2148]: npm run backtest:daily
+                  - text: kör dessa strategier mot
+                  - code [ref=e2149]: SPY
+                  - text: "och fyller:"
+                - list [ref=e2150]:
+                  - listitem [ref=e2151]:
+                    - code [ref=e2152]: backtest_runs
+                  - listitem [ref=e2153]:
+                    - code [ref=e2154]: strategy_positions_daily
+                  - listitem [ref=e2155]:
+                    - code [ref=e2156]: strategy_equity_daily
+                - paragraph [ref=e2157]:
+                  - text: För
+                  - code [ref=e2158]: trading_signal_v1_long_cash
+                  - text: "tolkas tradingbesluten just nu så här i backtestet:"
+                - list [ref=e2159]:
+                  - listitem [ref=e2160]:
+                    - code [ref=e2161]: KÖP SPY
+                    - text: och
+                    - code [ref=e2162]: BEHÅLL
+                    - text: med
+                    - code [ref=e2163]: target_state = long
+                    - text: =>
+                    - code [ref=e2164]: long
+                  - listitem [ref=e2165]:
+                    - code [ref=e2166]: SÄLJ SPY
+                    - text: ","
+                    - code [ref=e2167]: GÅ TILL CASH
+                    - text: ","
+                    - code [ref=e2168]: SITT STILL
+                    - text: =>
+                    - code [ref=e2169]: cash
+                  - listitem [ref=e2170]:
+                    - code [ref=e2171]: GÅ KORT SPY
+                    - text: och
+                    - code [ref=e2172]: STÄNG KORT
+                    - text: behandlas också som
+                    - code [ref=e2173]: cash
+                - paragraph [ref=e2174]:
+                  - text: Det gör att tradinglagret går att validera direkt som en första
+                  - code [ref=e2175]: long/cash
+                  - text: "-strategi innan backtestmotorn byggs ut med riktig short-support."
+                - paragraph [ref=e2176]:
+                  - text: För att databasen inte ska växa okontrollerat behålls nu som standard bara den senaste lyckade backtest-runen per strategi. Äldre lyckade runs rensas automatiskt efter varje ny lyckad körning, och detaljraderna i
+                  - code [ref=e2177]: strategy_positions_daily
+                  - text: och
+                  - code [ref=e2178]: strategy_equity_daily
+                  - text: försvinner samtidigt via
+                  - code [ref=e2179]: on delete cascade
+                  - text: .
+                - paragraph [ref=e2180]: "Standard-retention:"
+                - list [ref=e2181]:
+                  - listitem [ref=e2182]:
+                    - code [ref=e2183]: BACKTEST_SUCCESS_RUN_RETENTION=1
+                  - listitem [ref=e2184]:
+                    - code [ref=e2185]: BACKTEST_FAILURE_RUN_RETENTION=10
+                - paragraph [ref=e2186]:
+                  - text: Om du vill behålla fler historiska runs kan du sätta dessa env-variabler högre före
+                  - code [ref=e2187]: npm run backtest:daily
+                  - text: .
+                - paragraph [ref=e2188]: "Prisbasen är konsekvent:"
+                - generic [ref=e2189]:
+                  - code [ref=e2191]: indicator_price = adj_close ?? close
+                  - button "Copy code to clipboard" [ref=e2193] [cursor=pointer]:
+                    - img [ref=e2194]
+                - paragraph [ref=e2197]: "Warmup-regler:"
+                - list [ref=e2198]:
+                  - listitem [ref=e2199]:
+                    - code [ref=e2200]: sma5 = null
+                    - text: tills 5 fulla handelsdagar finns
+                  - listitem [ref=e2201]:
+                    - code [ref=e2202]: sma10 = null
+                    - text: tills 10 fulla handelsdagar finns
+                  - listitem [ref=e2203]:
+                    - code [ref=e2204]: sma20 = null
+                    - text: tills 20 fulla handelsdagar finns
+                  - listitem [ref=e2205]:
+                    - code [ref=e2206]: sma50 = null
+                    - text: tills 50 fulla handelsdagar finns
+                  - listitem [ref=e2207]:
+                    - code [ref=e2208]: sma200 = null
+                    - text: tills 200 fulla handelsdagar finns
+                  - listitem [ref=e2209]:
+                    - code [ref=e2210]: avg_volume20 = null
+                    - text: tills 20 fulla volymrader finns
+                  - listitem [ref=e2211]:
+                    - code [ref=e2212]: pct_from_52w_high/low = null
+                    - text: tills 252 fulla handelsdagar finns
+                - paragraph [ref=e2213]: "Definitioner:"
+                - generic [ref=e2214]:
+                  - code [ref=e2216]: indicator_price = adj_close ?? close daily_return_pct = ((today / yesterday) - 1) * 100 avg_volume20 = 20-dagars snittvolym, inklusive aktuell dag relative_volume20 = volume / avg_volume20 pct_from_52w_high = ((today / rolling_252d_high) - 1) * 100 pct_from_52w_low = ((today / rolling_252d_low) - 1) * 100
+                  - button "Copy code to clipboard" [ref=e2218] [cursor=pointer]:
+                    - img [ref=e2219]
+                - paragraph [ref=e2222]: "För att verifiera en specifik rad mot råpriserna:"
+                - generic [ref=e2223]:
+                  - generic [ref=e2224]: npm run validate:indicator -- AAPL npm run validate:indicator -- AAPL 2026-05-06
+                  - button "Copy code to clipboard" [ref=e2226] [cursor=pointer]:
+                    - img [ref=e2227]
+                - paragraph [ref=e2230]: "Scriptet skriver ut:"
+                - list [ref=e2231]:
+                  - listitem [ref=e2232]: sparad indikatorrad,
+                  - listitem [ref=e2233]: omräknad indikatorrad från råpriser,
+                  - listitem [ref=e2234]: om de matchar exakt,
+                  - listitem [ref=e2235]:
+                    - text: vilka datumfönster som användes för
+                    - code [ref=e2236]: sma20/50/200
+                    - text: .
+                - paragraph [ref=e2237]:
+                  - code [ref=e2238]: validate:indicator
+                  - text: verifierar nu också
+                  - code [ref=e2239]: ryd_obv
+                  - text: ","
+                  - code [ref=e2240]: ryd_obv_zscore_80
+                  - text: ","
+                  - code [ref=e2241]: ryd_obv_buy_signal
+                  - text: ","
+                  - code [ref=e2242]: ryd_obv_sell_signal
+                  - text: och
+                  - code [ref=e2243]: ryd_obv_signal
+                  - text: mot råpriserna.
+                - separator [ref=e2244]
+                - generic [ref=e2245]:
+                  - heading "Signal study-labb" [level=2] [ref=e2246]
+                  - 'link "Permalink: Signal study-labb" [ref=e2247] [cursor=pointer]':
+                    - /url: "#signal-study-labb"
+                    - img [ref=e2248]
+                - paragraph [ref=e2250]:
+                  - text: Det dynamiska signaltest-labbet ligger separat från
+                  - code [ref=e2251]: backtest:daily
+                  - text: och använder bara befintliga datalager. V1 körs via JSON-konfigar och terminalscript.
+                - paragraph [ref=e2252]: "Det finns nu också en UI ovanpå samma registry och samma säkra study-engine:"
+                - generic [ref=e2253]:
+                  - code [ref=e2255]: /signal-study-lab
+                  - button "Copy code to clipboard" [ref=e2257] [cursor=pointer]:
+                    - img [ref=e2258]
+                - paragraph [ref=e2261]: "Starta appen och öppna sidan lokalt:"
+                - generic [ref=e2262]:
+                  - generic [ref=e2263]: npm run dev
+                  - button "Copy code to clipboard" [ref=e2265] [cursor=pointer]:
+                    - img [ref=e2266]
+                - paragraph [ref=e2269]: "Besök sedan:"
+                - generic [ref=e2270]:
+                  - code [ref=e2272]: http://localhost:3000/signal-study-lab
+                  - button "Copy code to clipboard" [ref=e2274] [cursor=pointer]:
+                    - img [ref=e2275]
+                - paragraph [ref=e2278]: UI:t låter dig välja study-typ, return-instrument, signalinstrument, conditions, filters, operators och state-logik utan att skriva fri SQL eller hårdkoda nya tester.
+                - paragraph [ref=e2279]: "Exempel på körning:"
+                - generic [ref=e2280]:
+                  - generic [ref=e2281]: npm run study:signal -- studies/examples/tf-sync-forward.json npm run study:signal -- studies/examples/tf-sync-green-period.json npm run study:signal -- studies/examples/breadth-cross-forward.json
+                  - button "Copy code to clipboard" [ref=e2283] [cursor=pointer]:
+                    - img [ref=e2284]
+                - paragraph [ref=e2287]: "Du kan också lista alla valbara registry-fält som senare kan användas av ett UI:"
+                - generic [ref=e2288]:
+                  - generic [ref=e2289]: npm run study:signal -- --list-fields
+                  - button "Copy code to clipboard" [ref=e2291] [cursor=pointer]:
+                    - img [ref=e2292]
+                - paragraph [ref=e2295]: "V1 stödjer två studietyper:"
+                - list [ref=e2296]:
+                  - listitem [ref=e2297]:
+                    - code [ref=e2298]: forward_horizon
+                  - listitem [ref=e2299]:
+                    - code [ref=e2300]: state_period
+                - paragraph [ref=e2301]:
+                  - code [ref=e2302]: signalInstrument
+                  - text: är frivilligt. Om det utelämnas används samma ticker som
+                  - code [ref=e2303]: returnInstrument
+                  - text: .
+                - paragraph [ref=e2304]: "Resultatet skrivs ut som JSON och innehåller:"
+                - list [ref=e2305]:
+                  - listitem [ref=e2306]:
+                    - code [ref=e2307]: meta
+                  - listitem [ref=e2308]:
+                    - code [ref=e2309]: result
+                - paragraph [ref=e2310]:
+                  - text: Varje körning sparar nu också två filer i
+                  - code [ref=e2311]: studies/results/
+                  - text: ":"
+                - list [ref=e2312]:
+                  - listitem [ref=e2313]: en tidsstämplad fil per körning
+                  - listitem [ref=e2314]:
+                    - text: en
+                    - code [ref=e2315]: "*.latest.json"
+                    - text: "-fil som alltid pekar på senaste körningen för just den studien"
+                - paragraph [ref=e2316]:
+                  - text: Det gäller både terminalscriptet och UI-körningar från
+                  - code [ref=e2317]: /signal-study-lab
+                  - text: .
+                - paragraph [ref=e2318]: "Kärnfiler:"
+                - list [ref=e2319]:
+                  - listitem [ref=e2320]:
+                    - code [ref=e2321]: lib/signal-registry/fields.js
+                  - listitem [ref=e2322]:
+                    - code [ref=e2323]: lib/utils/dynamic-condition-engine.js
+                  - listitem [ref=e2324]:
+                    - code [ref=e2325]: lib/utils/forward-return-study.js
+                  - listitem [ref=e2326]:
+                    - code [ref=e2327]: lib/utils/state-period-study.js
+                  - listitem [ref=e2328]:
+                    - code [ref=e2329]: lib/repositories/signal-studies.js
+                  - listitem [ref=e2330]:
+                    - code [ref=e2331]: scripts/run-signal-study.js
+                - paragraph [ref=e2332]: "Exempelkonfigar:"
+                - list [ref=e2333]:
+                  - listitem [ref=e2334]:
+                    - code [ref=e2335]: studies/examples/tf-sync-forward.json
+                  - listitem [ref=e2336]:
+                    - code [ref=e2337]: studies/examples/tf-sync-green-period.json
+                  - listitem [ref=e2338]:
+                    - code [ref=e2339]: studies/examples/breadth-cross-forward.json
+                - separator [ref=e2340]
+                - generic [ref=e2341]:
+                  - heading "Live-setup" [level=2] [ref=e2342]
+                  - 'link "Permalink: Live-setup" [ref=e2343] [cursor=pointer]':
+                    - /url: "#live-setup"
+                    - img [ref=e2344]
+                - paragraph [ref=e2346]:
+                  - text: Projektet använder alltid exakt en aktiv databas per körning, men du kan nu växla mellan flera connection strings via
+                  - code [ref=e2347]: DATABASE_TARGET
+                  - text: .
+                - paragraph [ref=e2348]:
+                  - text: För Cockroach i GitHub Actions eller andra Linux-miljöer ska connection stringen normalt inte innehålla en maskinspecifik
+                  - code [ref=e2349]: sslrootcert
+                  - text: "-sökväg. Om en sådan parameter finns men filen saknas i aktuell runtime rensar appen nu bort just den parametern innan anslutning."
+                - paragraph [ref=e2350]: "Standard:"
+                - list [ref=e2351]:
+                  - listitem [ref=e2352]:
+                    - code [ref=e2353]: DATABASE_TARGET=cockroach
+                    - text: "->"
+                    - code [ref=e2354]: DATABASE_URL_COCKROACH
+                - paragraph [ref=e2355]: "Äldre Neon-anslutning vid behov:"
+                - list [ref=e2356]:
+                  - listitem [ref=e2357]:
+                    - code [ref=e2358]: DATABASE_TARGET=default
+                    - text: "->"
+                    - code [ref=e2359]: DATABASE_URL
+                - paragraph [ref=e2360]: Det gör att lokal utveckling, scriptkörningar och live kan använda olika databaser utan kodändringar, så länge rätt env-variabler finns.
+                - generic [ref=e2361]:
+                  - heading "Daglig körning" [level=2] [ref=e2362]
+                  - 'link "Permalink: Daglig körning" [ref=e2363] [cursor=pointer]':
+                    - /url: "#daglig-körning"
+                    - img [ref=e2364]
+                - paragraph [ref=e2366]:
+                  - text: Repo:t innehåller en GitHub Actions-workflow i
+                  - link ".github/workflows/fetch-daily.yml" [ref=e2367] [cursor=pointer]:
+                    - /url: /ulle73/stock-signals/blob/main/.github/workflows/fetch-daily.yml
+                    - code [ref=e2368]: .github/workflows/fetch-daily.yml
+                  - text: .
+                - paragraph [ref=e2369]: "För att den ska fungera behöver du lägga in repository secret:"
+                - list [ref=e2370]:
+                  - listitem [ref=e2371]:
+                    - code [ref=e2372]: DATABASE_URL_COCKROACH
+                    - text: = din Cockroach connection string
+                - paragraph [ref=e2373]: "Om du tillfälligt behöver köra workflowen mot den äldre Neon-databasen får du i stället:"
+                - list [ref=e2374]:
+                  - listitem [ref=e2375]:
+                    - text: sätta
+                    - code [ref=e2376]: DATABASE_TARGET=default
+                  - listitem [ref=e2377]:
+                    - text: lägga in
+                    - code [ref=e2378]: DATABASE_URL
+                    - text: som repository secret
+                - paragraph [ref=e2379]: "Workflowen kör:"
+                - list [ref=e2380]:
+                  - listitem [ref=e2381]:
+                    - text: manuellt via
+                    - code [ref=e2382]: workflow_dispatch
+                  - listitem [ref=e2383]:
+                    - text: automatiskt vardagar
+                    - code [ref=e2384]: 21:53 UTC
+                  - listitem [ref=e2385]:
+                    - code [ref=e2386]: npm run db:migrate
+                  - listitem [ref=e2387]:
+                    - code [ref=e2388]: npm run fetch:daily
+                  - listitem [ref=e2389]:
+                    - text: därefter
+                    - code [ref=e2390]: npm run calculate:daily
+                  - listitem [ref=e2391]:
+                    - text: därefter
+                    - code [ref=e2392]: npm run calculate:sector-breadth
+                  - listitem [ref=e2393]:
+                    - text: därefter
+                    - code [ref=e2394]: npm run calculate:sector-signals
+                  - listitem [ref=e2395]:
+                    - text: därefter
+                    - code [ref=e2396]: npm run calculate:signals
+                  - listitem [ref=e2397]:
+                    - text: därefter
+                    - code [ref=e2398]: npm run calculate:trading-signals
+                  - listitem [ref=e2399]:
+                    - text: därefter
+                    - code [ref=e2400]: npm run calculate:position-facts
+                  - listitem [ref=e2401]:
+                    - text: därefter
+                    - code [ref=e2402]: npm run calculate:position-signals
+                  - listitem [ref=e2403]:
+                    - text: därefter
+                    - code [ref=e2404]: npm run calculate:swing-signals
+                  - listitem [ref=e2405]:
+                    - text: därefter
+                    - code [ref=e2406]: npm run calculate:swing-watchlists
+                  - listitem [ref=e2407]:
+                    - text: därefter
+                    - code [ref=e2408]: npm run seed:strategies
+                  - listitem [ref=e2409]:
+                    - text: därefter
+                    - code [ref=e2410]: npm run backtest:daily
+                - paragraph [ref=e2411]: "Workflowen kör nu också de externa daily-källorna som separata steg i samma pipeline:"
+                - list [ref=e2412]:
+                  - listitem [ref=e2413]:
+                    - code [ref=e2414]: npm run fetch:occ-volume-totals
+                  - listitem [ref=e2415]:
+                    - code [ref=e2416]: npm run fetch:finra-short-volume
+                  - listitem [ref=e2417]:
+                    - code [ref=e2418]: npm run fetch:barchart-breadth
+                  - listitem [ref=e2419]:
+                    - code [ref=e2420]: npm run fetch:implied-volatility-proxy
+                  - listitem [ref=e2421]:
+                    - code [ref=e2422]: npm run calculate:cvol-call-volume
+                  - listitem [ref=e2423]:
+                    - code [ref=e2424]: npm run calculate:plce-short-volume
+                  - listitem [ref=e2425]:
+                    - code [ref=e2426]: npm run calculate:r3tw-mmtw-breadth
+                  - listitem [ref=e2427]:
+                    - code [ref=e2428]: npm run calculate:implied-volatility-ratio
+                  - listitem [ref=e2429]:
+                    - code [ref=e2430]: npm run calculate:market-breadth-ma200-forward-return
+                  - listitem [ref=e2431]:
+                    - code [ref=e2432]: npm run calculate:market-breadth-ma200-forward-return-empirical
+                - paragraph [ref=e2433]: "Principen framåt är:"
+                - list [ref=e2434]:
+                  - listitem [ref=e2435]:
+                    - text: behåll
+                    - code [ref=e2436]: fetch:daily
+                    - text: för Yahoo/FRED/S&P 500-kärnan
+                  - listitem [ref=e2437]: lägg nya externa daily-indikatorer som egna fetch/calculate-scripts
+                  - listitem [ref=e2438]: kör dem i samma dagliga workflow som separata steg
+                - paragraph [ref=e2439]: "Det motsvarar normalt ungefär:"
+                - list [ref=e2440]:
+                  - listitem [ref=e2441]:
+                    - code [ref=e2442]: 22:53
+                    - text: svensk vintertid (
+                    - code [ref=e2443]: CET
+                    - text: )
+                  - listitem [ref=e2444]:
+                    - code [ref=e2445]: 23:53
+                    - text: svensk sommartid (
+                    - code [ref=e2446]: CEST
+                    - text: )
+                - paragraph [ref=e2447]: "Schemat ligger medvetet:"
+                - list [ref=e2448]:
+                  - listitem [ref=e2449]: efter USA-stängning så att daily-källor hinner uppdateras,
+                  - listitem [ref=e2450]:
+                    - text: före
+                    - code [ref=e2451]: 00:00 UTC
+                    - text: så att Barchart-snapshots för
+                    - code [ref=e2452]: $R3TW
+                    - text: och
+                    - code [ref=e2453]: $MMTW
+                    - text: lagras på rätt USA-marknadsdatum,
+                  - listitem [ref=e2454]: och inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
+                - separator [ref=e2455]
+                - generic [ref=e2456]:
+                  - heading "Vad fetch:daily gör" [level=2] [ref=e2457]:
+                    - text: Vad
+                    - code [ref=e2458]: fetch:daily
+                    - text: gör
+                  - 'link "Permalink: Vad fetch:daily gör" [ref=e2459] [cursor=pointer]':
+                    - /url: "#vad-fetchdaily-gör"
+                    - img [ref=e2460]
+                - list [ref=e2462]:
+                  - listitem [ref=e2463]: Hämtar S&P 500-komponenter från Wikipedia.
+                  - listitem [ref=e2464]:
+                    - text: Normaliserar Yahoo-tickers, t.ex.
+                    - code [ref=e2465]: BRK.B -> BRK-B
+                    - text: .
+                  - listitem [ref=e2466]:
+                    - text: Upsertar komponenter till
+                    - code [ref=e2467]: sp500_constituents
+                    - text: .
+                  - listitem [ref=e2468]: Hämtar 400 dagar daily candles från Yahoo för varje aktiv ticker.
+                  - listitem [ref=e2469]:
+                    - text: Upsertar candles till
+                    - code [ref=e2470]: stock_daily_prices
+                    - text: .
+                  - listitem [ref=e2471]:
+                    - text: Hämtar daily OHLCV för
+                    - code [ref=e2472]: SPY
+                    - text: från Yahoo och upsertar till
+                    - code [ref=e2473]: benchmark_daily_prices
+                    - text: .
+                  - listitem [ref=e2474]:
+                    - text: Hämtar
+                    - code [ref=e2475]: SP500
+                    - text: ","
+                    - code [ref=e2476]: VIXCLS
+                    - text: ","
+                    - code [ref=e2477]: BAMLH0A0HYM2
+                    - text: ","
+                    - code [ref=e2478]: T10Y2Y
+                    - text: ","
+                    - code [ref=e2479]: FEDFUNDS
+                    - text: ","
+                    - code [ref=e2480]: UNRATE
+                    - text: ","
+                    - code [ref=e2481]: CPIAUCSL
+                    - text: och
+                    - code [ref=e2482]: UMCSENT
+                    - text: från FRED.
+                  - listitem [ref=e2483]:
+                    - text: Upsertar FRED-data till
+                    - code [ref=e2484]: market_series_daily
+                    - text: .
+                  - listitem [ref=e2485]:
+                    - text: Loggar körningen i
+                    - code [ref=e2486]: data_fetch_runs
+                    - text: ", inklusive benchmark-resultatet i"
+                    - code [ref=e2487]: metadata.benchmark
+                    - text: .
+                - separator [ref=e2488]
+                - generic [ref=e2489]:
+                  - heading "Förväntat fas 1-resultat" [level=2] [ref=e2490]
+                  - 'link "Permalink: Förväntat fas 1-resultat" [ref=e2491] [cursor=pointer]':
+                    - /url: "#förväntat-fas-1-resultat"
+                    - img [ref=e2492]
+                - paragraph [ref=e2494]:
+                  - text: Efter
+                  - code [ref=e2495]: npm run fetch:daily
+                  - text: "ska databasen innehålla:"
+                - list [ref=e2496]:
+                  - listitem [ref=e2497]:
+                    - text: aktiva S&P 500-komponenter i
+                    - code [ref=e2498]: sp500_constituents
+                    - text: ","
+                  - listitem [ref=e2499]:
+                    - text: daily candles i
+                    - code [ref=e2500]: stock_daily_prices
+                    - text: ","
+                  - listitem [ref=e2501]:
+                    - text: dagliga indikatorvärden i
+                    - code [ref=e2502]: stock_daily_indicators
+                    - text: ","
+                  - listitem [ref=e2503]:
+                    - text: SP500/VIX/HY spread i
+                    - code [ref=e2504]: market_series_daily
+                    - text: ","
+                  - listitem [ref=e2505]:
+                    - text: dagliga breadth-sammanställningar i
+                    - code [ref=e2506]: market_breadth_daily
+                    - text: ","
+                  - listitem [ref=e2507]:
+                    - text: dagliga sektorbreadth-rader i
+                    - code [ref=e2508]: sector_breadth_daily
+                    - text: ","
+                  - listitem [ref=e2509]:
+                    - text: dagliga sektorsignaler i
+                    - code [ref=e2510]: sector_signal_daily
+                    - text: ","
+                  - listitem [ref=e2511]:
+                    - text: dagliga positionsfakta i
+                    - code [ref=e2512]: position_facts_daily
+                    - text: ","
+                  - listitem [ref=e2513]:
+                    - text: dagliga swing-signaler i
+                    - code [ref=e2514]: swing_signal_daily
+                    - text: ","
+                  - listitem [ref=e2515]:
+                    - text: dagliga swing-watchlists i
+                    - code [ref=e2516]: swing_watchlist_daily
+                    - text: ","
+                  - listitem [ref=e2517]:
+                    - text: dagliga positionssignaler i
+                    - code [ref=e2518]: position_signal_daily
+                    - text: ","
+                  - listitem [ref=e2519]:
+                    - text: körlogg i
+                    - code [ref=e2520]: data_fetch_runs
+                    - text: .
+                - paragraph [ref=e2521]: "Scriptet är byggt för att vara idempotent: att köra det flera gånger ska inte skapa dubbletter."
+                - paragraph [ref=e2522]: "FRED-serier som hämtas nu:"
+                - list [ref=e2523]:
+                  - listitem [ref=e2524]:
+                    - code [ref=e2525]: SP500
+                  - listitem [ref=e2526]:
+                    - code [ref=e2527]: VIXCLS
+                  - listitem [ref=e2528]:
+                    - code [ref=e2529]: BAMLH0A0HYM2
+                  - listitem [ref=e2530]:
+                    - code [ref=e2531]: T10Y2Y
+                  - listitem [ref=e2532]:
+                    - code [ref=e2533]: FEDFUNDS
+                  - listitem [ref=e2534]:
+                    - code [ref=e2535]: UNRATE
+                  - listitem [ref=e2536]:
+                    - code [ref=e2537]: CPIAUCSL
+                  - listitem [ref=e2538]:
+                    - code [ref=e2539]: UMCSENT
+                - separator [ref=e2540]
+                - generic [ref=e2541]:
+                  - heading "Nästa fas senare" [level=2] [ref=e2542]
+                  - 'link "Permalink: Nästa fas senare" [ref=e2543] [cursor=pointer]':
+                    - /url: "#nästa-fas-senare"
+                    - img [ref=e2544]
+                - paragraph [ref=e2546]: "När datahämtningen är verifierad kan nästa fas lägga till:"
+                - list [ref=e2547]:
+                  - listitem [ref=e2548]: breadth summaries,
+                  - listitem [ref=e2549]: advancers/decliners,
+                  - listitem [ref=e2550]: new highs/lows,
+                  - listitem [ref=e2551]: Market Regime Score,
+                  - listitem [ref=e2552]: dashboard,
+                  - listitem [ref=e2553]: intraday pulse och alerts.
+        - generic [ref=e2557]:
+          - generic [ref=e2560]:
+            - heading "About" [level=2] [ref=e2561]
+            - generic [ref=e2562]:
+              - img [ref=e2563]
+              - link "stock-signals-three.vercel.app" [ref=e2566] [cursor=pointer]:
+                - /url: https://stock-signals-three.vercel.app
+            - heading "Resources" [level=3] [ref=e2567]
+            - link "Readme" [ref=e2569] [cursor=pointer]:
+              - /url: "#readme-ov-file"
+              - img [ref=e2570]
+              - text: Readme
+            - link "Activity" [ref=e2573] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/activity
+              - img [ref=e2574]
+              - text: Activity
+            - heading "Stars" [level=3] [ref=e2576]
+            - link "0 stars" [ref=e2578] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/stargazers
+              - img [ref=e2579]
+              - strong [ref=e2581]: "0"
+              - text: stars
+            - heading "Watchers" [level=3] [ref=e2582]
+            - link "0 watching" [ref=e2584] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/watchers
+              - img [ref=e2585]
+              - strong [ref=e2587]: "0"
+              - text: watching
+            - heading "Forks" [level=3] [ref=e2588]
+            - link "0 forks" [ref=e2590] [cursor=pointer]:
+              - /url: /ulle73/stock-signals/forks
+              - img [ref=e2591]
+              - strong [ref=e2593]: "0"
+              - text: forks
+            - link "Report repository" [ref=e2595] [cursor=pointer]:
+              - /url: /contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fulle73%2Fstock-signals&report=ulle73+%28user%29
+          - generic [ref=e2597]:
+            - heading "Releases" [level=2] [ref=e2598]:
+              - link "Releases" [ref=e2599] [cursor=pointer]:
+                - /url: /ulle73/stock-signals/releases
+            - generic [ref=e2600]: No releases published
+          - generic [ref=e2602]:
+            - heading "Packages" [level=2] [ref=e2603]:
+              - link "Packages" [ref=e2604] [cursor=pointer]:
+                - /url: /users/ulle73/packages?repo_name=stock-signals
+            - generic [ref=e2605]: No packages published
+          - generic [ref=e2607]:
+            - heading "Contributors 1" [level=2] [ref=e2608]:
+              - link "Contributors 1" [ref=e2609] [cursor=pointer]:
+                - /url: /ulle73/stock-signals/graphs/contributors
+                - text: Contributors
+                - generic "1" [ref=e2610]
+            - list [ref=e2611]:
+              - listitem [ref=e2612]:
+                - link "@ulle73" [ref=e2613] [cursor=pointer]:
+                  - /url: https://github.com/ulle73
+                  - img "@ulle73" [ref=e2614]
+                - link "ulle73" [ref=e2616] [cursor=pointer]:
+                  - /url: https://github.com/ulle73
+                  - strong [ref=e2617]: ulle73
+          - generic [ref=e2619]:
+            - heading "Languages" [level=2] [ref=e2620]
+            - list [ref=e2625]:
+              - listitem [ref=e2626]:
+                - link "JavaScript 96.9%" [ref=e2627] [cursor=pointer]:
+                  - /url: /ulle73/stock-signals/search?l=javascript
+                  - img [ref=e2628]
+                  - generic [ref=e2630]: JavaScript
+                  - generic [ref=e2631]: 96.9%
+              - listitem [ref=e2632]:
+                - link "CSS 3.1%" [ref=e2633] [cursor=pointer]:
+                  - /url: /ulle73/stock-signals/search?l=css
+                  - img [ref=e2634]
+                  - generic [ref=e2636]: CSS
+                  - generic [ref=e2637]: 3.1%
+  - contentinfo [ref=e2639]:
+    - heading "Footer" [level=2] [ref=e2640]
+    - generic [ref=e2641]:
+      - generic [ref=e2642]:
+        - link "GitHub Homepage" [ref=e2643] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e2644]
+        - generic [ref=e2646]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e2647]:
+        - heading "Footer navigation" [level=3] [ref=e2648]
+        - list "Footer navigation" [ref=e2649]:
+          - listitem [ref=e2650]:
+            - link "Terms" [ref=e2651] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e2652]:
+            - link "Privacy" [ref=e2653] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e2654]:
+            - link "Security" [ref=e2655] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e2656]:
+            - link "Status" [ref=e2657] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e2658]:
+            - link "Community" [ref=e2659] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e2660]:
+            - link "Docs" [ref=e2661] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e2662]:
+            - link "Contact" [ref=e2663] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e2664]:
+            - button "Manage cookies" [ref=e2666] [cursor=pointer]
+          - listitem [ref=e2667]:
+            - button "Do not share my personal information" [ref=e2669] [cursor=pointer]

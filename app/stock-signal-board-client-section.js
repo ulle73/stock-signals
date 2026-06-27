@@ -79,7 +79,7 @@ export default function StockSignalBoardClientSection() {
     return (
       <StockSignalBoardLoadingCard
         title="Stock Signal Board kunde inte laddas nu"
-        copy="Ladda om sidan om en stund. Cockroach-svaret för första tabellblocket kom inte tillbaka i tid."
+        copy="Ladda om sidan om en stund. Databassvaret för första tabellblocket kom inte tillbaka i tid."
       />
     );
   }
