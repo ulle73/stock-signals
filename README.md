@@ -136,6 +136,10 @@ Det skapar:
 - `sector_breadth_daily`
 - `sector_signal_daily`
 - `market_signal_daily`
+- `stock_relative_strength_daily`
+- `regime_gated_breakout_daily`
+- `signal_events`
+- `signal_data_quality_daily`
 - `trading_signal_daily`
 - `execution_intents`
 - `execution_decisions`
@@ -272,6 +276,10 @@ npm run calculate:market-breadth-ma200-forward-return-empirical
 npm run calculate:sector-breadth
 npm run calculate:sector-signals
 npm run calculate:signals
+npm run calculate:relative-strength
+npm run calculate:data-quality-gates
+npm run calculate:regime-gated-breakout
+npm run build:signal-events
 npm run calculate:trading-signals
 npm run calculate:position-facts
 npm run calculate:position-signals
@@ -305,6 +313,7 @@ Miljövariabler för manuella körningar:
 - `IMPLIED_VOLATILITY_PROXY_RANGE` (default `800d`)
 - `YAHOO_PROXY_DAILY_INITIAL_RANGE` (default `10y` för symboler som saknas i proxy-tabellen)
 - `YAHOO_PROXY_DAILY_RANGE` (default `400d` för löpande uppdatering av redan backfillade proxy-symboler)
+- `DATA_QUALITY_DATE` (optional override för `npm run calculate:data-quality-gates`; måste vara ett USA-börsdatum)
 
 `npm run dev` öppnar nu en server-renderad startsida som visar:
 
@@ -391,8 +400,92 @@ Det ger ett separat faktalager för sektorrotation som går att använda både f
 - `new_highs`
 - `new_lows`
 - `vix`
+- `signal` (`risk_on`, `neutral`, `risk_off`)
 - `divergence_status`
 - `short_divergence_status`
+
+`npm run calculate:relative-strength` bygger sedan ett separat cross-sectional RS-lager i `stock_relative_strength_daily` mot `SPY`, med bland annat:
+
+- `rs_21d_vs_spy`
+- `rs_63d_vs_spy`
+- `rs_126d_vs_spy`
+- `rs_rank_21d`
+- `rs_rank_63d`
+- `rs_rank_126d`
+- `rs_percentile_21d`
+- `rs_percentile_63d`
+- `rs_percentile_126d`
+
+RS v1 rankar över dagens aktiva S&P 500-universum. Det gör historiska ranker survivorship-biased tills historiskt indexmedlemskap finns som eget lager.
+
+`npm run calculate:data-quality-gates` bygger sedan ett separat systemlager i `signal_data_quality_daily` med en rad per `date + gate_key`. V1 snapshotar endast lager som redan finns i repot och klassar dem som `pass`, `warn` eller `block`, bland annat för:
+
+- `stock_daily_prices` freshness
+- `benchmark_daily_prices` (`SPY`) freshness
+- `market_signal_daily` freshness
+- `stock_relative_strength_daily` freshness
+- daily price coverage över aktivt S&P 500-universum
+- relative strength coverage över aktivt S&P 500-universum
+- `stock_intraday_prices_60m` coverage
+- `occ_daily_volume_totals` freshness
+- `finra_daily_short_volume` freshness
+- `implied_volatility_ratio_signals_daily` freshness
+- `IVOL/RVOL` source-status
+
+`npm run fetch:earnings-calendar` bygger ett separat snapshotlager i `stock_earnings_calendar_daily` med en rad per `date + ticker`. Primärkälla är EarningsWhispers HTML per ticker, med Yahoo quote-sidans inbäddade `calendarEvents` som fallback när det behövs. Fetchern är isolerad i ett eget lager så att resten av datapipelinen inte behöver ändras om en källa blir sämre. Varje rad lagrar minst:
+
+- `earnings_date`
+- `confirmed`
+- `source_status`
+- `source_url`
+
+Earnings freshness-gates är fortfarande inte inkopplade i `signal_data_quality_daily` v1. Lägg till dem först när earnings-lagret har hunnit samla riktig historik.
+
+I GitHub Actions daily workflow bör earnings-steget köras som ett separat best-effort-fetchsteg före breakout-beräkningen, inte som en ny hård kärndependens för hela prispipen. Skälet är enkelt: earnings-källorna är mer sköra än OHLCV-källorna.
+
+`npm run calculate:regime-gated-breakout` bygger sedan ett sparse breakout-beslutslager i `regime_gated_breakout_daily` ovanpå råa `breakout_20d_buy_signal`-rader. V1 sparar en rad per breakout-datum och ticker, med bland annat:
+
+- `market_signal`
+- `sector_signal`
+- `breakout_20d_high`
+- `indicator_price`
+- `relative_volume20`
+- `rs_63d_vs_spy`
+- `rs_rank_63d`
+- `rs_percentile_63d`
+- `data_quality_status`
+- `regime_confirmed`
+- `sector_confirmed`
+- `volume_confirmed`
+- `rs_confirmed`
+- `qualifies`
+- `decision` (`trigger` eller `blocked`)
+- `setup_score`
+- `reason_summary`
+
+Breakout v1 är avsiktligt konservativ för att minska spam:
+
+- bara long breakout
+- kräver att `market_signal_daily.signal` inte är `risk_off`
+- kräver `sector_signal_daily.signal` i `leading` eller `improving`
+- kräver `relative_volume20 >= 1.5`
+- kräver `rs_percentile_63d >= 80`
+- tillåter `signal_data_quality_daily = warn` men blockerar på relevanta `block`-gates
+- blockerar buy-signaler inom `5` börsdagar före och `1` börsdag efter earnings när `stock_earnings_calendar_daily` finns för signaldatumet
+
+Breakout-lagret sparar nu också earnings-metadata i `row_values`, bland annat:
+
+- `earnings_filter_status`
+- `earnings_reason`
+- `earnings_date`
+- `days_to_earnings`
+
+Historiska breakout-rader före första earnings-snapshot får `earnings_filter_status = not_available`. Det är avsiktligt: v1 prioriterar live-filtrering framåt, inte perfekt historisk rekonstruktion bakåt.
+
+`npm run build:signal-events` bygger sedan en generisk eventkö i `signal_events`. Den skapar nu event från:
+
+- marknadsregim-skiften i `market_signal_daily`
+- `trigger`-rader i `regime_gated_breakout_daily`
 
 `npm run calculate:trading-signals` bygger sedan ett explicit beslutslager i `trading_signal_daily` för kortsiktig SPY-handel. Första versionen använder befintlig breadth-, trend- och volatilitetsdata och outputtar raka orderord:
 

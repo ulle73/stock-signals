@@ -215,6 +215,11 @@ export function StockSignalBoardView({ viewModel, hasMore = false, isLoadingMore
           <p className="footnote compact">trendstatus via volatilitet-normaliserad MACD</p>
         </div>
         <div className="metric-tile">
+          <span>Regime breakout</span>
+          <strong>{viewModel.summary.regimeBreakoutCount ?? 0}</strong>
+          <p className="footnote compact">färdiga breakout-trigger på senaste raden</p>
+        </div>
+        <div className="metric-tile">
           <span>20d breakout</span>
           <strong>{viewModel.summary.breakoutActiveCount}</strong>
           <p className="footnote compact">utbrott över 20-dagarsintervall</p>
@@ -355,7 +360,7 @@ export function StockSignalBoardView({ viewModel, hasMore = false, isLoadingMore
                                   <strong>{item.signalLabel}</strong>
                                 </div>
                                 <span className={`mini-pill ${toneClass(item.tone)}`}>
-                                  {item.isActive ? 'Aktiv' : 'Neutral'}
+                                  {item.statusLabel ?? (item.isActive ? 'Aktiv' : 'Neutral')}
                                 </span>
                               </div>
 

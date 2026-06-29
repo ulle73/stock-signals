@@ -69,7 +69,7 @@ test('signal study runner saves database-backed results with stable refs', async
       stateField: 'market.signal',
       entryState: 'risk_on',
       oppositeState: 'risk_off',
-      neutralState: 'warning',
+      neutralState: 'neutral',
     },
     now: new Date('2026-06-15T22:50:00.000Z'),
     resultStorage: 'database',

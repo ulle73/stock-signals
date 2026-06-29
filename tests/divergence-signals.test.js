@@ -99,7 +99,7 @@ test('calculateMarketRegimeScore and classifyMarketSignal map the combined state
   assert.equal(classifyMarketSignal(riskOnScore), 'risk_on');
   assert.equal(riskOffScore, -8.5);
   assert.equal(classifyMarketSignal(riskOffScore), 'risk_off');
-  assert.equal(classifyMarketSignal(1.5), 'warning');
+  assert.equal(classifyMarketSignal(1.5), 'neutral');
 });
 
 test('buildMarketSignalRows computes rolling changes, AD line, and divergence statuses', () => {
@@ -125,7 +125,7 @@ test('buildMarketSignalRows computes rolling changes, AD line, and divergence st
   assert.equal(latest.divergence_status, 'bearish_warning_strong');
   assert.equal(latest.short_divergence_status, 'short_negative');
   assert.equal(latest.market_regime_score, 0.5);
-  assert.equal(latest.signal, 'warning');
+  assert.equal(latest.signal, 'neutral');
   assert.equal(latest.spx_14d_change, 14);
   assert.equal(latest.spx_3d_change, 2.702703);
   assert.equal(latest.pct_above_50_14d_change, -14);

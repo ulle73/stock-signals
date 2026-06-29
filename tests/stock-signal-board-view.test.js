@@ -106,11 +106,13 @@ test('buildStockSignalBoardViewModel prioritizes active signals and summarizes b
     priceZscoreActiveCount: 0,
     ibsRsiActiveCount: 0,
     macdVActiveCount: 0,
+    regimeBreakoutCount: 0,
     breakoutActiveCount: 0,
     tfSyncActiveCount: 0,
     plceActiveCount: 0,
     watchlistCount: 1,
     latestIndicatorDate: '2026-05-13',
+    latestRegimeBreakoutDate: null,
     latestWatchlistDate: '2026-05-12',
   });
 
@@ -132,7 +134,7 @@ test('buildStockSignalBoardViewModel prioritizes active signals and summarizes b
     tone: 'positive',
     source: 'indicator',
   });
-  assert.equal(viewModel.rows[0].indicatorDetails.length, 9);
+  assert.equal(viewModel.rows[0].indicatorDetails.length, 10);
   assert.equal(viewModel.rows[0].indicatorDetails[0].key, 'ryd_obv');
 
   assert.equal(viewModel.rows[2].ticker, 'NVDA');
@@ -285,6 +287,7 @@ test('buildStockSignalBoardViewModel exposes all stock indicators for compact ch
       'price_zscore',
       'ibs_rsi',
       'macd_v',
+      'regime_breakout',
       'breakout_20d',
       'tf_sync',
       'plce_threshold',
@@ -328,7 +331,7 @@ test('buildStockSignalBoardViewModel exposes all stock indicators for compact ch
     ],
   });
 
-  assert.deepEqual(viewModel.rows[0].indicatorDetails[6], {
+  assert.deepEqual(viewModel.rows[0].indicatorDetails[7], {
     key: 'tf_sync',
     label: 'TF Sync',
     signalLabel: 'Buy active',
@@ -344,7 +347,7 @@ test('buildStockSignalBoardViewModel exposes all stock indicators for compact ch
     ],
   });
 
-  assert.deepEqual(viewModel.rows[0].indicatorDetails[7], {
+  assert.deepEqual(viewModel.rows[0].indicatorDetails[8], {
     key: 'plce_threshold',
     label: 'PLCE threshold',
     signalLabel: 'Buy',
@@ -416,11 +419,13 @@ test('buildStockSignalBoardViewModel supports summary override and pagination me
     priceZscoreActiveCount: 16,
     ibsRsiActiveCount: 20,
     macdVActiveCount: 175,
+    regimeBreakoutCount: 12,
     breakoutActiveCount: 80,
     tfSyncActiveCount: 503,
     plceActiveCount: 0,
     watchlistCount: 16,
     latestIndicatorDate: '2026-05-15',
+    latestRegimeBreakoutDate: '2026-05-14',
     latestWatchlistDate: '2026-05-15',
   };
 
@@ -446,4 +451,121 @@ test('buildStockSignalBoardViewModel supports summary override and pagination me
     nextOffset: 20,
   });
   assert.deepEqual(viewModel.rows.map((row) => row.ticker), ['ACN', 'AAPL']);
+});
+
+test('buildStockSignalBoardViewModel exposes regime breakout trigger and blocked detail states', () => {
+  const viewModel = buildStockSignalBoardViewModel([
+    {
+      ticker: 'NVDA',
+      company_name: 'NVIDIA',
+      sector: 'Information Technology',
+      current_date: '2026-06-24',
+      indicator_price: '154',
+      daily_return_pct: '2.15',
+      relative_volume20: '1.8',
+      breakout_20d_high: '150',
+      breakout_20d_signal: 'buy',
+      regime_breakout_decision: 'trigger',
+      regime_breakout_data_quality_status: 'warn',
+      regime_breakout_market_signal: 'neutral',
+      regime_breakout_sector_signal: 'improving',
+      regime_breakout_relative_volume20: '1.8',
+      regime_breakout_rs_percentile_63d: '95.2',
+      regime_breakout_setup_score: 4,
+      regime_breakout_reason_summary: 'quality_warn:stock_daily_price_coverage|market_neutral|sector_improving|volume_confirmed|rs_confirmed',
+      latest_active_indicator_date: '2026-06-24',
+      latest_active_breakout_20d_signal: 'buy',
+      latest_active_regime_breakout_date: '2026-06-24',
+      latest_active_regime_breakout_reason_summary: 'quality_warn:stock_daily_price_coverage|market_neutral|sector_improving|volume_confirmed|rs_confirmed',
+      latest_watchlist_date: null,
+      latest_watchlist_bias: null,
+      latest_watchlist_setup: null,
+      latest_watchlist_decision: null,
+      latest_watchlist_score: null,
+      latest_watchlist_is_actionable: null,
+      board_watchlist_date: '2026-06-24',
+    },
+    {
+      ticker: 'AAPL',
+      company_name: 'Apple',
+      sector: 'Information Technology',
+      current_date: '2026-06-24',
+      indicator_price: '209',
+      daily_return_pct: '1.01',
+      relative_volume20: '2.1',
+      breakout_20d_high: '205',
+      breakout_20d_signal: 'buy',
+      regime_breakout_decision: 'blocked',
+      regime_breakout_data_quality_status: 'block',
+      regime_breakout_market_signal: 'risk_off',
+      regime_breakout_sector_signal: 'leading',
+      regime_breakout_relative_volume20: '2.1',
+      regime_breakout_rs_percentile_63d: '88',
+      regime_breakout_setup_score: 3,
+      regime_breakout_reason_summary: 'quality_block:stock_daily_prices_freshness|market_risk_off|sector_leading|volume_confirmed|rs_confirmed',
+      latest_active_indicator_date: '2026-06-24',
+      latest_active_breakout_20d_signal: 'buy',
+      latest_active_regime_breakout_date: null,
+      latest_active_regime_breakout_reason_summary: null,
+      latest_watchlist_date: null,
+      latest_watchlist_bias: null,
+      latest_watchlist_setup: null,
+      latest_watchlist_decision: null,
+      latest_watchlist_score: null,
+      latest_watchlist_is_actionable: null,
+      board_watchlist_date: '2026-06-24',
+    },
+  ]);
+
+  assert.equal(viewModel.summary.regimeBreakoutCount, 1);
+  assert.equal(viewModel.summary.latestRegimeBreakoutDate, '2026-06-24');
+  assert.deepEqual(
+    viewModel.rows[0].currentSignals.map((signal) => signal.key),
+    ['regime_breakout_long', 'breakout_20d_buy']
+  );
+  assert.deepEqual(viewModel.rows[0].latestSignal, {
+    date: '2026-06-24',
+    label: 'Regime breakout long',
+    tone: 'positive',
+    source: 'indicator',
+  });
+
+  const triggerDetail = viewModel.rows[0].indicatorDetails.find((item) => item.key === 'regime_breakout');
+  assert.deepEqual(triggerDetail, {
+    key: 'regime_breakout',
+    label: 'Regime breakout',
+    signalLabel: 'Triggered',
+    tone: 'positive',
+    isActive: true,
+    statusLabel: 'Aktiv',
+    metrics: [
+      { label: 'Marknad', value: 'neutral' },
+      { label: 'Sektor', value: 'improving' },
+      { label: 'RVOL20', value: 1.8 },
+      { label: 'RS 63d %ile', value: 95.2 },
+      { label: 'Quality', value: 'warn' },
+      { label: 'Score', value: 4 },
+      { label: 'Senast trigger', value: '2026-06-24' },
+      { label: 'Skal', value: 'quality_warn:stock_daily_price_coverage|market_neutral|sector_improving|volume_confirmed|rs_confirmed' },
+    ],
+  });
+
+  const blockedDetail = viewModel.rows[1].indicatorDetails.find((item) => item.key === 'regime_breakout');
+  assert.deepEqual(blockedDetail, {
+    key: 'regime_breakout',
+    label: 'Regime breakout',
+    signalLabel: 'Blocked',
+    tone: 'danger',
+    isActive: false,
+    statusLabel: 'Blocked',
+    metrics: [
+      { label: 'Marknad', value: 'risk_off' },
+      { label: 'Sektor', value: 'leading' },
+      { label: 'RVOL20', value: 2.1 },
+      { label: 'RS 63d %ile', value: 88 },
+      { label: 'Quality', value: 'block' },
+      { label: 'Score', value: 3 },
+      { label: 'Skal', value: 'quality_block:stock_daily_prices_freshness|market_risk_off|sector_leading|volume_confirmed|rs_confirmed' },
+    ],
+  });
 });

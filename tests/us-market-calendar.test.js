@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  countUsEquityMarketDaysBetween,
   getExpectedLatestUsEquityMarketDate,
   getPreviousUsEquityMarketDate,
   getUsEquityMarketHolidays,
@@ -31,6 +32,12 @@ test('US equity market date detection excludes weekends and holidays', () => {
 test('US equity market previous date walks back across weekends and holidays', () => {
   assert.equal(getPreviousUsEquityMarketDate('2026-06-22'), '2026-06-18');
   assert.equal(getPreviousUsEquityMarketDate('2026-09-08'), '2026-09-04');
+});
+
+test('US equity market day counting ignores weekends and holidays', () => {
+  assert.equal(countUsEquityMarketDaysBetween('2026-06-18', '2026-06-22'), 1);
+  assert.equal(countUsEquityMarketDaysBetween('2026-06-22', '2026-06-24'), 2);
+  assert.equal(countUsEquityMarketDaysBetween('2026-06-24', '2026-06-22'), -2);
 });
 
 test('expected latest market date uses New York close cutoff on open days', () => {

@@ -74,7 +74,7 @@ test('buildPositionSignalRowsFromSources requires a 2-day 4-flag hard-risk clust
     {
       date: '2026-04-02',
       market_regime_score: 0,
-      signal: 'warning',
+      signal: 'neutral',
     },
     {
       date: '2026-04-03',
@@ -142,7 +142,7 @@ test('buildPositionSignalRowsFromSources requires a 2-day 4-flag hard-risk clust
       raw_decision: 'DELVIS INVESTERAD (50%)',
       raw_target_equity_weight_pct: 50,
       raw_target_cash_weight_pct: 50,
-      market_signal: 'warning',
+      market_signal: 'neutral',
       market_regime_score: 0,
       caution_count: 5,
       hard_risk_off_count: 0,
@@ -208,11 +208,11 @@ test('buildPositionSignalRowsFromSources scales down after sustained 3+ hard fla
   ];
   const marketSignalRows = [
     { date: '2026-05-01', market_regime_score: 4, signal: 'risk_on' },
-    { date: '2026-05-02', market_regime_score: 1, signal: 'warning' },
-    { date: '2026-05-03', market_regime_score: 1, signal: 'warning' },
-    { date: '2026-05-04', market_regime_score: 1, signal: 'warning' },
-    { date: '2026-05-05', market_regime_score: 1, signal: 'warning' },
-    { date: '2026-05-06', market_regime_score: 1, signal: 'warning' },
+    { date: '2026-05-02', market_regime_score: 1, signal: 'neutral' },
+    { date: '2026-05-03', market_regime_score: 1, signal: 'neutral' },
+    { date: '2026-05-04', market_regime_score: 1, signal: 'neutral' },
+    { date: '2026-05-05', market_regime_score: 1, signal: 'neutral' },
+    { date: '2026-05-06', market_regime_score: 1, signal: 'neutral' },
     { date: '2026-05-07', market_regime_score: 4, signal: 'risk_on' },
     { date: '2026-05-08', market_regime_score: 4, signal: 'risk_on' },
     { date: '2026-05-09', market_regime_score: 4, signal: 'risk_on' },

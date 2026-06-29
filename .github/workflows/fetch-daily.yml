@@ -24,6 +24,8 @@ env:
   NEXT_TELEMETRY_DISABLED: '1'
   YAHOO_PROXY_DAILY_INITIAL_RANGE: '400d'
   IMPLIED_VOLATILITY_PROXY_RANGE: '400d'
+  EARNINGS_FETCH_CONCURRENCY: '2'
+  EARNINGS_FETCH_DELAY_MS: '1'
   HISTORY_PRUNE_ENABLED: 'true'
   HISTORY_PRUNE_DAILY_DAYS: '400'
   HISTORY_PRUNE_INTRADAY_60M_DAYS: '60'
@@ -140,6 +142,15 @@ jobs:
       - name: Fetch macro-matrix Yahoo proxy inputs
         run: npm run fetch:macro-matrix-yahoo-proxy
 
+      - name: Fetch earnings calendar snapshots
+        id: fetch_earnings_calendar
+        continue-on-error: true
+        run: npm run fetch:earnings-calendar
+
+      - name: Log earnings snapshot fetch outcome
+        if: always()
+        run: echo "earnings_fetch_outcome=${{ steps.fetch_earnings_calendar.outcome }}"
+
       - name: Calculate daily indicators
         run: npm run calculate:daily
 
@@ -194,6 +205,18 @@ jobs:
 
       - name: Calculate market signals
         run: npm run calculate:signals
+
+      - name: Calculate relative strength
+        run: npm run calculate:relative-strength
+
+      - name: Calculate signal data quality gates
+        run: npm run calculate:data-quality-gates
+
+      - name: Calculate regime-gated breakout
+        run: npm run calculate:regime-gated-breakout
+
+      - name: Build signal events
+        run: npm run build:signal-events
 
       - name: Calculate MA200 breadth forward-return model
         run: npm run calculate:market-breadth-ma200-forward-return
