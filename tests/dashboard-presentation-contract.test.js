@@ -52,3 +52,37 @@ test('premium dashboard styles include responsive navigation, hero, sector matri
   assert.match(css, /@media \(max-width: 1100px\)/);
   assert.match(css, /@media \(max-width: 640px\)/);
 });
+
+test('watchlist icon uses a valid closed eye path', async () => {
+  const source = await readSource('app/dashboard-icons.js');
+
+  assert.match(source, /eye: 'M2 12C4\.8 7\.8 7\.8 6 12 6s7\.2 1\.8 10 6c-2\.8 4\.2-5\.8 6-10 6S4\.8 16\.2 2 12Zm13 0a3 3 0 1 1-6 0a3 3 0 0 1 6 0'/);
+});
+
+test('sector matrix keeps horizontal overflow inside its own panel', async () => {
+  const css = await readSource('app/restyle.css');
+
+  assert.match(css, /\.primary-sector-section\s*\{[^}]*min-width:\s*0;/s);
+  assert.match(css, /\.primary-sector-matrix\s*\{[^}]*min-width:\s*0;/s);
+  assert.match(css, /\.primary-sector-matrix \.regime-stat-scroll\s*\{[^}]*max-width:\s*100%;/s);
+});
+
+test('primary sector matrix keeps its heading and status badge in the dense dark presentation', async () => {
+  const css = await readSource('app/restyle.css');
+
+  assert.match(css, /\.primary-sector-matrix h2\s*\{[^}]*font-size:\s*clamp\(1\.65rem, 3vw, 2\.65rem\);/s);
+  assert.match(css, /\.primary-sector-matrix \.macro-slide-badge\s*\{[^}]*background:\s*rgba\(1, 7, 9, 0\.72\);/s);
+});
+
+test('primary sector matrix overrides the inherited light table header', async () => {
+  const css = await readSource('app/restyle.css');
+
+  assert.match(css, /\.primary-sector-matrix \.macro-slide-table thead th\s*\{[^}]*background:\s*#0c171c !important;/s);
+  assert.match(css, /\.primary-sector-matrix \.macro-slide-table tbody th\s*\{[^}]*background:\s*#0c171c;/s);
+});
+
+test('change cards use a compact desktop minimum width', async () => {
+  const css = await readSource('app/restyle.css');
+
+  assert.match(css, /\.metric-strip\s*\{[^}]*grid-template-columns:\s*repeat\(auto-fit, minmax\(150px, 1fr\)\);/s);
+});

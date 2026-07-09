@@ -779,6 +779,7 @@ body {
 
 .dashboard-overview {
   gap: 18px;
+  min-width: 0;
 }
 
 .market-hero {
@@ -909,7 +910,7 @@ body {
 }
 
 .metric-strip {
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .reason-tile {
@@ -928,23 +929,88 @@ body {
 
 .primary-sector-section {
   margin-top: 6px;
+  min-width: 0;
 }
 
 .primary-sector-matrix {
   background: var(--market-surface-raised);
   border: 1px solid var(--market-border);
   box-shadow: 0 22px 46px rgba(0, 0, 0, 0.22);
+  min-width: 0;
+}
+
+.primary-sector-matrix.macro-slide-card,
+.primary-sector-matrix .macro-slide-table {
+  background: var(--market-surface-raised);
+  color: var(--text);
+}
+
+.primary-sector-matrix .macro-slide-card h2,
+.primary-sector-matrix h2 {
+  color: var(--text);
+  font-size: clamp(1.65rem, 3vw, 2.65rem);
+  line-height: 1;
+}
+
+.primary-sector-matrix .macro-slide-subtitle,
+.primary-sector-matrix .macro-slide-caption,
+.primary-sector-matrix .macro-slide-caption strong {
+  color: var(--muted);
+}
+
+.primary-sector-matrix .macro-slide-subtitle {
+  font-size: 1rem;
+  line-height: 1.45;
+  margin-bottom: 20px;
 }
 
 .primary-sector-matrix .macro-slide-header {
   border-bottom: 1px solid var(--market-border);
+  margin-bottom: 16px;
   padding-bottom: 18px;
+}
+
+.primary-sector-matrix .macro-slide-badge {
+  background: rgba(1, 7, 9, 0.72);
+  border: 1px solid var(--market-border);
+  box-shadow: none;
+  color: var(--text);
+  min-width: 178px;
+}
+
+.primary-sector-matrix .macro-slide-badge strong,
+.primary-sector-matrix .macro-slide-badge span {
+  color: inherit;
 }
 
 .primary-sector-matrix .regime-stat-scroll {
   border: 1px solid rgba(136, 167, 160, 0.12);
   border-radius: 14px;
+  max-width: 100%;
   margin-top: 18px;
+  overflow-x: auto;
+}
+
+.primary-sector-matrix .regime-stat-table thead th,
+.primary-sector-matrix .regime-stat-table tbody th {
+  background: #0c171c;
+  color: var(--text);
+}
+
+.primary-sector-matrix .macro-slide-table thead th {
+  background: #0c171c !important;
+  border-color: rgba(136, 167, 160, 0.2);
+  color: #b9ccc7;
+}
+
+.primary-sector-matrix .macro-slide-table tbody th {
+  background: #0c171c;
+  border-color: rgba(136, 167, 160, 0.16);
+  color: var(--text);
+}
+
+.primary-sector-matrix .macro-slide-table tbody td {
+  border-color: rgba(136, 167, 160, 0.16);
 }
 
 .primary-sector-matrix .regime-stat-table tbody th,
