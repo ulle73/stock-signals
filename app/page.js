@@ -5,6 +5,7 @@ import { interpretMarketSignal } from '../lib/utils/signal-interpretation.js';
 import { getVolumeEventLabel } from '../lib/utils/volume-events.js';
 import DashboardIcon from './dashboard-icons.js';
 import DashboardTopNav from './dashboard-top-nav.js';
+import EquitySectorStyleRegimePerformanceSection from './equity-sector-style-regime-performance-section.js';
 import MarketBreadthMa200ForwardReturnComparisonSection from './market-breadth-ma200-forward-return-comparison-section.js';
 import StockSignalBoardClientSection from './stock-signal-board-client-section.js';
 import {
@@ -295,6 +296,17 @@ export default async function Home({ searchParams }) {
           <div className="metric-strip">
             {interpretation.heatmap.map((item) => <ReasonTile item={item} key={item.key} />)}
           </div>
+        </section>
+
+        <section className="primary-sector-section" id="sektorer">
+          <SectionIntro
+            eyebrow="Sektorer"
+            title="Sektorer – regim och förändring"
+            copy="Jämför alla tillgängliga sektorer samtidigt. Värden och trendmått kommer direkt från befintlig sektormatris."
+          />
+          <Suspense fallback={<SectionLoadingCard title="Sektormatris" copy="Läser in befintlig sektordata." />}>
+            <EquitySectorStyleRegimePerformanceSection />
+          </Suspense>
         </section>
 
         {positionCurrent ? (

@@ -19,9 +19,9 @@ export default async function EquitySectorStyleRegimePerformanceSection() {
 
   return (
     <MacroMatrixSlide
-      className="regime-stat-card macro-slide-equity-regime-performance"
-      title="Vilka sektorer och faktorstilar fungerar?"
-      subtitle="Inget facit på hur vi agerar, men bra vägledning på vad som brukar fungerar i de olika marknadsregimerna. Alla cykler är annorlunda och det gäller att lyssna på marknadens budskap."
+      className="regime-stat-card macro-slide-equity-regime-performance primary-sector-matrix"
+      title="Sektorer – regimperformance och styrka"
+      subtitle="Jämför hela det befintliga sektorunderlaget. Färg och cellformat visar endast redan levererade värden."
       footnote={`Equity-tabellen visar samma sju block som referensen: average/median returns, volatility, Sharpe, win ratio, beta med OMXS30 och observationer. Aktuell regim är ${formatRegimeStatus(matrix.currentRegime)} per ${formatMatrixMonth(matrix.asOfDate)}.`}
     >
       <RegimePerformanceMatrix

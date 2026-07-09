@@ -29,3 +29,15 @@ test('overview keeps current recommendation dominant and renders existing dashbo
   assert.match(source, /interpretation\.heatmap\.map/);
   assert.match(source, /dashboard-status-rail/);
 });
+
+test('full existing sector matrix follows change cards without a top-bottom subset', async () => {
+  const [page, matrixRenderer] = await Promise.all([
+    readSource('app/page.js'),
+    readSource('app/macro-matrix-renderers.js'),
+  ]);
+
+  assert.match(page, /import EquitySectorStyleRegimePerformanceSection/);
+  assert.ok(page.indexOf('change-summary') < page.indexOf('id="sektorer"'));
+  assert.match(page, /<EquitySectorStyleRegimePerformanceSection\s*\/>/);
+  assert.match(matrixRenderer, /matrix\.rows\.map\(\(row, index\)/);
+});
