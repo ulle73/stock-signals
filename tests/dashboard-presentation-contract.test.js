@@ -18,3 +18,14 @@ test('dashboard uses a prop-driven top navigation instead of a sidebar shell', a
   assert.match(topNav, /href: '#sektorer'/);
   assert.match(topNav, /<ThemeToggle\s*\/>/);
 });
+
+test('overview keeps current recommendation dominant and renders existing dashboard values', async () => {
+  const source = await readSource('app/page.js');
+
+  assert.match(source, /<DashboardTopNav updatedLabel=\{formatTimestamp\(latestRun\?\.finished_at\)\}/);
+  assert.match(source, /<h1>\{interpretation\.headlineLabel\}<\/h1>/);
+  assert.match(source, /Beslutsstyrka/);
+  assert.match(source, /Rekommenderad exponering/);
+  assert.match(source, /interpretation\.heatmap\.map/);
+  assert.match(source, /dashboard-status-rail/);
+});

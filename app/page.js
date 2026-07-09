@@ -3,6 +3,8 @@ import { getDashboardSnapshot } from '../lib/repositories/dashboard.js';
 import { getActiveConstituents } from '../lib/repositories/constituents.js';
 import { interpretMarketSignal } from '../lib/utils/signal-interpretation.js';
 import { getVolumeEventLabel } from '../lib/utils/volume-events.js';
+import DashboardIcon from './dashboard-icons.js';
+import DashboardTopNav from './dashboard-top-nav.js';
 import MarketBreadthMa200ForwardReturnComparisonSection from './market-breadth-ma200-forward-return-comparison-section.js';
 import StockSignalBoardClientSection from './stock-signal-board-client-section.js';
 import {
@@ -203,10 +205,10 @@ function KpiCard({ label, value, copy, tone = 'neutral' }) {
 function ReasonTile({ item }) {
   return (
     <div className={`reason-tile ${toneClass(item.tone)}`}>
+      <DashboardIcon name="signal" size={18} />
       <span>{item.label}</span>
       <strong>{item.value}</strong>
       <small>{item.detail ?? '—'}</small>
-      <div className="reason-spark" aria-hidden="true" />
     </div>
   );
 }
@@ -256,70 +258,40 @@ export default async function Home({ searchParams }) {
 
   return (
     <main className="page-shell restyle-page">
-      <section className="category-section" id="oversikt">
-        <SectionIntro
-          eyebrow="Översikt"
-          title="Börsläge just nu"
-          copy="Första skärmen ska svara på två saker: är börsen riskvänlig eller farlig, och hur mycket exponering ska modellen ha?"
-        />
-
+      <DashboardTopNav updatedLabel={formatTimestamp(latestRun?.finished_at)} />
+      <section className="category-section dashboard-overview" id="oversikt">
         <div className={`market-hero ${toneClass(interpretation.tone)}`}>
-          <div className="market-hero-main">
-            <div className="regime-orb" aria-hidden="true" />
-            <div>
-              <p className="eyebrow">Dagens marknadsläge · {formatDate(latestSignal?.date)}</p>
-              <h1>{interpretation.headlineLabel}</h1>
-              <p className="hero-subline">{interpretation.actionBias}</p>
-            </div>
+          <div className="market-hero-copy">
+            <p className="hero-label"><DashboardIcon name="target" size={15} /> Rekommendation</p>
+            <p className="eyebrow">Dagens marknadsläge · {formatDate(latestSignal?.date)}</p>
+            <h1>{interpretation.headlineLabel}</h1>
+            <p className="hero-subline">{interpretation.actionBias}</p>
           </div>
 
-          <div className="hero-number-row">
-            <div className="hero-number-card">
-              <p className="panel-label">Marknadslägescore</p>
-              <strong>{interpretation.displayScore ?? '—'}<span>/100</span></strong>
-              <p className="footnote compact">Raw score {formatNumber(interpretation.rawScore, { maximumFractionDigits: 2 })}</p>
-            </div>
-            <div className="hero-number-card">
-              <p className="panel-label">Rekommenderad exponering</p>
+          <div className="market-hero-kpis">
+            <article className="hero-kpi-card">
+              <span><DashboardIcon name="shield" size={16} /> Beslutsstyrka</span>
+              <strong>{interpretation.displayScore ?? '—'}<small>/100</small></strong>
+              <div className="hero-progress" aria-label={`Score ${scorePct} av 100`}><i style={{ width: `${scorePct}%` }} /></div>
+            </article>
+            <article className="hero-kpi-card">
+              <span><DashboardIcon name="gauge" size={16} /> Risknivå</span>
+              <strong>{positionCurrent?.signalLabel ?? 'Ingen positionsrad'}</strong>
+              <small>{positionCurrent ? `${positionCurrent.hardRiskOffCount} hårda / ${positionCurrent.cautionCount} caution` : 'Ingen riskstatus'}</small>
+            </article>
+            <article className="hero-kpi-card">
+              <span><DashboardIcon name="grid" size={16} /> Rekommenderad exponering</span>
               <strong>{positionCurrent ? formatPercent(positionCurrent.appliedEquityPct, 0) : '—'}</strong>
-              <p className="footnote compact">{positionCurrent ? positionCurrent.signalLabel : 'Ingen positionsrad'}</p>
-            </div>
-          </div>
-
-          <div className="risk-scale-card">
-            <p className="panel-label">Risktermometer</p>
-            <div className="risk-scale-track" aria-label={`Score ${scorePct} av 100`}>
-              <span className="risk-scale-thumb" style={{ left: `${scorePct}%` }} />
-            </div>
-            <div className="risk-scale-points"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
-            <div className="risk-scale-labels"><span>Risk-Off</span><span>Neutral</span><span>Risk-On</span></div>
+              <div className="hero-progress" aria-label={`${exposurePct}% investerat`}><i style={{ width: `${exposurePct}%` }} /></div>
+            </article>
           </div>
         </div>
 
-        <section className="horizon-grid restyle-horizons">
-          {[
-            ['↗', 'Kort sikt', '1–3 dagar', interpretation.shortTerm],
-            ['⌁', 'Swing', '1–4 veckor', interpretation.swingTerm],
-            ['◎', 'Position', '1–6 månader', interpretation.positionTerm],
-          ].map(([icon, title, subtitle, item]) => (
-            <article className={`horizon-card ${toneClass(item.tone)}`} key={title}>
-              <span className="horizon-icon" aria-hidden="true">{icon}</span>
-              <div>
-                <p className="section-kicker">{subtitle}</p>
-                <h2>{title}: {item.label}</h2>
-                <p className="footnote compact">{item.detail}</p>
-              </div>
-              <span aria-hidden="true">›</span>
-            </article>
-          ))}
-        </section>
-
-        <section className="category-section">
-          <SectionIntro
-            eyebrow="Modellens bevis"
-            title="Varför modellen lutar så här"
-            copy="Rådata är kvar, men visas som snabba beslutskort så man ser drivarna utan att läsa hela databasen."
-          />
+        <section className="change-summary" aria-labelledby="change-summary-heading">
+          <div className="compact-section-heading">
+            <p className="section-kicker">Vad har förändrats?</p>
+            <h2 id="change-summary-heading">Viktigaste förändringarna</h2>
+          </div>
           <div className="metric-strip">
             {interpretation.heatmap.map((item) => <ReasonTile item={item} key={item.key} />)}
           </div>
@@ -619,6 +591,12 @@ export default async function Home({ searchParams }) {
         />
         <StockSignalBoardClientSection />
       </section>
+
+      <footer className="dashboard-status-rail" aria-label="Datastatus">
+        <span><DashboardIcon name="database" size={14} /> Fetch: {formatStatus(latestRun?.status)}</span>
+        <span>Senaste prisdatum: {formatDate(coverage.latest_price_date)}</span>
+        <span>Täckning: {formatNumber(coverage.priced_ticker_count)} / {formatNumber(coverage.active_ticker_count)}</span>
+      </footer>
     </main>
   );
 }
