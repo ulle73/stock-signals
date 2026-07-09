@@ -41,3 +41,14 @@ test('full existing sector matrix follows change cards without a top-bottom subs
   assert.match(page, /<EquitySectorStyleRegimePerformanceSection\s*\/>/);
   assert.match(matrixRenderer, /matrix\.rows\.map\(\(row, index\)/);
 });
+
+test('premium dashboard styles include responsive navigation, hero, sector matrix, and status rail rules', async () => {
+  const css = await readSource('app/restyle.css');
+
+  assert.match(css, /\.market-topbar\s*\{/);
+  assert.match(css, /\.market-hero-kpis\s*\{/);
+  assert.match(css, /\.primary-sector-matrix\s*\{/);
+  assert.match(css, /\.dashboard-status-rail\s*\{/);
+  assert.match(css, /@media \(max-width: 1100px\)/);
+  assert.match(css, /@media \(max-width: 640px\)/);
+});
