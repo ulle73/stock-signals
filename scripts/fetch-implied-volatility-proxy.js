@@ -8,6 +8,7 @@ import {
 } from '../lib/repositories/implied-volatility-proxy-source.js';
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
 import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
+import { createYahooFetchCircuit, isYahooRateLimitError } from '../lib/utils/yahoo-fetch-circuit.js';
 
 ensureEnvLoaded();
 
@@ -32,10 +33,11 @@ async function run() {
 
   const failedAssets = [];
   const assetSummaries = [];
+  const circuit = createYahooFetchCircuit();
   let insertedRows = 0;
 
   try {
-    for (const definition of IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS) {
+    for (const [assetIndex, definition] of IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS.entries()) {
       console.log(`Fetching IV proxy source rows for ${definition.assetKey} (${definition.sourceSymbol} / ${definition.impliedVolatilitySymbol})`);
 
       try {
@@ -46,6 +48,7 @@ async function run() {
         try {
           impliedVolatilityRows = await fetchYahooDailyCandles(definition.impliedVolatilitySymbol, YAHOO_REQUEST);
         } catch (error) {
+          if (isYahooRateLimitError(error)) throw error;
           ivFetchError = error.message;
           console.warn(`IV proxy fetch missing for ${definition.assetKey}: ${error.message}`);
         }
@@ -70,7 +73,17 @@ async function run() {
           assetKey: definition.assetKey,
           error: error.message,
         });
+
+        if (isYahooRateLimitError(error)) {
+          circuit.open(error);
+          circuit.recordSuppressed(IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS.length - assetIndex - 1);
+          break;
+        }
       }
+    }
+
+    if (circuit.isOpen()) {
+      throw circuit.error;
     }
 
     const successfulAssets = assetSummaries.length;
@@ -84,7 +97,7 @@ async function run() {
     await fetchRunGuard.finish(status, {
       totalItems: IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS.length,
       successfulItems: successfulAssets,
-      failedItems,
+      failedItems: failedItems + circuit.suppressedCount,
       metadata: {
         insertedRows,
         yahooRequest: YAHOO_REQUEST,
@@ -100,12 +113,18 @@ async function run() {
     console.log(`Fetched ${insertedRows} implied-volatility proxy source rows.`);
   } catch (error) {
     await fetchRunGuard.finish('failure', {
+      totalItems: IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS.length,
+      successfulItems: assetSummaries.length,
+      failedItems: failedAssets.length + circuit.suppressedCount,
       errorMessage: error.message,
       metadata: {
         insertedRows,
         yahooRequest: YAHOO_REQUEST,
         assetSummaries,
         failedAssets,
+        suppressedAssets: circuit.suppressedCount,
+        rateLimited: circuit.isOpen(),
+        retryAfter: circuit.error?.retryAfter ?? null,
         stack: error.stack,
       },
     });

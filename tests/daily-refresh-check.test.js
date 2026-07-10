@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildDailyRefreshDecision } from '../lib/utils/daily-refresh-check.js';
+import {
+  DAILY_REFRESH_EXECUTION_MODES,
+  buildDailyRefreshDecision,
+} from '../lib/utils/daily-refresh-check.js';
 
 const afterCloseNow = new Date('2026-06-16T22:00:00.000Z');
 
@@ -54,6 +57,54 @@ test('daily refresh check requests rerun when downstream signals are stale', () 
     decision.staleTargets.map((target) => target.label),
     ['market_signal_daily']
   );
+});
+
+test('daily refresh check fetches when expected-date ticker coverage is incomplete', () => {
+  const decision = buildDailyRefreshDecision({
+    latestPriceDate: '2026-06-16',
+    latestBenchmarkDate: '2026-06-16',
+    latestMarketSignalDate: '2026-06-16',
+    latestPositionSignalDate: '2026-06-16',
+    priceTickerCountForExpectedDate: 506,
+    activeTickerCount: 507,
+    now: afterCloseNow,
+  });
+
+  assert.equal(decision.executionMode, DAILY_REFRESH_EXECUTION_MODES.FETCH_AND_CALCULATE);
+  assert.equal(decision.rawDataNeeded, true);
+  assert.equal(decision.derivedCalculationNeeded, true);
+});
+
+test('daily refresh check calculates only when source data is current and signals are stale', () => {
+  const decision = buildDailyRefreshDecision({
+    latestPriceDate: '2026-06-16',
+    latestBenchmarkDate: '2026-06-16',
+    latestMarketSignalDate: '2026-06-15',
+    latestPositionSignalDate: '2026-06-16',
+    priceTickerCountForExpectedDate: 507,
+    activeTickerCount: 507,
+    now: afterCloseNow,
+  });
+
+  assert.equal(decision.executionMode, DAILY_REFRESH_EXECUTION_MODES.CALCULATE_ONLY);
+  assert.equal(decision.rawDataNeeded, false);
+  assert.equal(decision.derivedCalculationNeeded, true);
+});
+
+test('daily refresh check defers source recovery while an earlier source fetch is running', () => {
+  const decision = buildDailyRefreshDecision({
+    latestPriceDate: '2026-06-15',
+    latestBenchmarkDate: '2026-06-15',
+    latestMarketSignalDate: '2026-06-15',
+    latestPositionSignalDate: '2026-06-15',
+    priceTickerCountForExpectedDate: 0,
+    activeTickerCount: 507,
+    runningFetchRunCount: 1,
+    now: afterCloseNow,
+  });
+
+  assert.equal(decision.executionMode, DAILY_REFRESH_EXECUTION_MODES.DEFER);
+  assert.equal(decision.refreshNeeded, false);
 });
 
 test('daily refresh check does not trigger duplicate work while fetch is already running', () => {

@@ -56,12 +56,15 @@ jobs:
     permissions:
       contents: read
     outputs:
+      execution_mode: ${{ steps.check.outputs.execution_mode }}
       refresh_skip: ${{ steps.check.outputs.refresh_skip }}
       expected_latest_market_date: ${{ steps.check.outputs.expected_latest_market_date }}
       latest_price_date: ${{ steps.check.outputs.latest_price_date }}
       latest_benchmark_date: ${{ steps.check.outputs.latest_benchmark_date }}
       latest_market_signal_date: ${{ steps.check.outputs.latest_market_signal_date }}
       latest_position_signal_date: ${{ steps.check.outputs.latest_position_signal_date }}
+      price_ticker_count: ${{ steps.check.outputs.price_ticker_count }}
+      active_ticker_count: ${{ steps.check.outputs.active_ticker_count }}
       reason: ${{ steps.check.outputs.reason }}
     steps:
       - name: Check out repository
@@ -80,12 +83,15 @@ jobs:
         id: check
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force_refresh }}" = "true" ]; then
+            echo "execution_mode=fetch_and_calculate" >> "$GITHUB_OUTPUT"
             echo "refresh_skip=no" >> "$GITHUB_OUTPUT"
             echo "expected_latest_market_date=forced" >> "$GITHUB_OUTPUT"
             echo "latest_price_date=" >> "$GITHUB_OUTPUT"
             echo "latest_benchmark_date=" >> "$GITHUB_OUTPUT"
             echo "latest_market_signal_date=" >> "$GITHUB_OUTPUT"
             echo "latest_position_signal_date=" >> "$GITHUB_OUTPUT"
+            echo "price_ticker_count=" >> "$GITHUB_OUTPUT"
+            echo "active_ticker_count=" >> "$GITHUB_OUTPUT"
             echo "reason=Manual workflow_dispatch forced a full refresh." >> "$GITHUB_OUTPUT"
           else
             npm run check:daily-refresh-needed
@@ -93,17 +99,27 @@ jobs:
 
       - name: Log refresh decision
         run: |
+          echo "execution_mode=${{ steps.check.outputs.execution_mode }}"
           echo "refresh_skip=${{ steps.check.outputs.refresh_skip }}"
           echo "expected_latest_market_date=${{ steps.check.outputs.expected_latest_market_date }}"
           echo "latest_price_date=${{ steps.check.outputs.latest_price_date }}"
           echo "latest_benchmark_date=${{ steps.check.outputs.latest_benchmark_date }}"
           echo "latest_market_signal_date=${{ steps.check.outputs.latest_market_signal_date }}"
           echo "latest_position_signal_date=${{ steps.check.outputs.latest_position_signal_date }}"
+          echo "price_ticker_count=${{ steps.check.outputs.price_ticker_count }}"
+          echo "active_ticker_count=${{ steps.check.outputs.active_ticker_count }}"
           echo "reason=${{ steps.check.outputs.reason }}"
+          {
+            echo "### Daily refresh decision"
+            echo "- Mode: \`${{ steps.check.outputs.execution_mode }}\`"
+            echo "- Expected market date: \`${{ steps.check.outputs.expected_latest_market_date }}\`"
+            echo "- Price coverage: \`${{ steps.check.outputs.price_ticker_count }}/${{ steps.check.outputs.active_ticker_count }}\`"
+            echo "- Reason: ${{ steps.check.outputs.reason }}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   fetch-and-calculate-daily:
     needs: check-refresh-needed
-    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
+    if: ${{ needs.check-refresh-needed.outputs.execution_mode == 'fetch_and_calculate' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
@@ -161,7 +177,11 @@ jobs:
     needs:
       - check-refresh-needed
       - fetch-and-calculate-daily
-    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
+    if: >-
+      ${{ always() && (
+        needs.check-refresh-needed.outputs.execution_mode == 'calculate_only' ||
+        (needs.check-refresh-needed.outputs.execution_mode == 'fetch_and_calculate' && needs.fetch-and-calculate-daily.result == 'success')
+      ) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
@@ -249,7 +269,11 @@ jobs:
     needs:
       - check-refresh-needed
       - calculate-derived-signals
-    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
+    if: >-
+      ${{ always() && needs.calculate-derived-signals.result == 'success' && (
+        needs.check-refresh-needed.outputs.execution_mode == 'fetch_and_calculate' ||
+        needs.check-refresh-needed.outputs.execution_mode == 'calculate_only'
+      ) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -277,7 +301,11 @@ jobs:
     needs:
       - check-refresh-needed
       - calculate-derived-signals
-    if: ${{ needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
+    if: >-
+      ${{ always() && needs.calculate-derived-signals.result == 'success' && (
+        needs.check-refresh-needed.outputs.execution_mode == 'fetch_and_calculate' ||
+        needs.check-refresh-needed.outputs.execution_mode == 'calculate_only'
+      ) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -305,9 +333,14 @@ jobs:
   prune-history:
     needs:
       - check-refresh-needed
+      - calculate-derived-signals
       - run-daily-backtests
       - execute-markov-paper-strategies
-    if: ${{ always() && needs.check-refresh-needed.outputs.refresh_skip != 'yes' }}
+    if: >-
+      ${{ always() && needs.calculate-derived-signals.result == 'success' && (
+        needs.check-refresh-needed.outputs.execution_mode == 'fetch_and_calculate' ||
+        needs.check-refresh-needed.outputs.execution_mode == 'calculate_only'
+      ) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:

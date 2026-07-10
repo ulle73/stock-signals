@@ -1048,7 +1048,8 @@ För att den ska fungera behöver du lägga in repository secret:
 Workflowen kör:
 
 - manuellt via `workflow_dispatch`
-- automatiskt vardagar `21:53 UTC`
+- automatiskt med en primärkörning vardagar `21:53 UTC`
+- automatiska recovery-kontroller `23:23 UTC`, `03:23 UTC` och `12:43 UTC`
 - `npm run db:migrate`
 - `npm run fetch:daily`
 - därefter `npm run calculate:daily`
@@ -1092,6 +1093,17 @@ Schemat ligger medvetet:
 - efter USA-stängning så att daily-källor hinner uppdateras,
 - före `00:00 UTC` så att Barchart-snapshots för `$R3TW` och `$MMTW` lagras på rätt USA-marknadsdatum,
 - och inte på exakt hel timme, eftersom GitHubs schemalagda workflows kan fördröjas vid hög last runt timskiften.
+
+### Automatisk recovery
+
+Alla fyra schematider syns som körningar i GitHub Actions, eftersom GitHub Actions-scheman alltid startar en kort kontroll. Det betyder inte att varje körning hämtar Yahoo-data.
+
+- Primärfönstret efter USA-stängning hämtar rådata och kör hela beräkningskedjan när dagens data saknas.
+- Ett senare recovery-fönster hämtar samma rådata igen endast om prisdatum, `SPY` eller täckningen för aktiva S&P 500-tickers fortfarande är ofullständig.
+- Om råpriserna är kompletta men `market_signal_daily` eller `position_signal_daily` saknas för dagen kör workflowen bara beräkningskedjan. Den gör då inga Yahoo-, FRED-, OCC-, FINRA- eller Barchart-anrop.
+- En Yahoo-429 öppnar en rate-limit-brytare: återstående tickeranrop stoppas, fetch-raden markeras som `failure` och nästa recovery-fönster försöker igen från en ny GitHub-runner i stället för att fortsätta belasta samma spärrade anslutning.
+
+Detta ger automatisk återhämtning, men ingen olicensierad extern datakälla kan lova absolut tillgänglighet. För en faktisk datagaranti krävs en tillåten reservdatakälla med definierad SLA.
 
 ---
 
