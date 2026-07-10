@@ -1,9 +1,14 @@
 import { Suspense } from 'react';
 import { getDashboardSnapshot } from '../lib/repositories/dashboard.js';
 import { getActiveConstituents } from '../lib/repositories/constituents.js';
+import { getSectorOverviewSnapshot } from '../lib/repositories/sector-overview.js';
 import { interpretMarketSignal } from '../lib/utils/signal-interpretation.js';
+import { buildOverviewAction, buildReferenceMarketMetrics } from '../lib/utils/dashboard-reference-view.js';
 import { getVolumeEventLabel } from '../lib/utils/volume-events.js';
+import DashboardIcon from './dashboard-icons.js';
+import DashboardTopNav from './dashboard-top-nav.js';
 import MarketBreadthMa200ForwardReturnComparisonSection from './market-breadth-ma200-forward-return-comparison-section.js';
+import SectorOverviewMatrix from './sector-overview-matrix.js';
 import StockSignalBoardClientSection from './stock-signal-board-client-section.js';
 import {
   buildMarketSeriesCards,
@@ -74,9 +79,9 @@ function numericToneClass(value) {
   return number > 0 ? 'tone-positive' : 'tone-danger';
 }
 
-function renderBacktestRow(row) {
+function renderBacktestRow(row, index) {
   return (
-    <tr key={row.code}>
+    <tr key={`${row.code}-${index}`}>
       <td>{row.name}</td>
       <td className={numericToneClass(row.cagr)}>{formatPercent(row.cagr)}</td>
       <td className={numericToneClass(row.max_drawdown)}>{formatPercent(row.max_drawdown)}</td>
@@ -203,11 +208,80 @@ function KpiCard({ label, value, copy, tone = 'neutral' }) {
 function ReasonTile({ item }) {
   return (
     <div className={`reason-tile ${toneClass(item.tone)}`}>
+      <DashboardIcon name="signal" size={18} />
       <span>{item.label}</span>
       <strong>{item.value}</strong>
       <small>{item.detail ?? '—'}</small>
-      <div className="reason-spark" aria-hidden="true" />
     </div>
+  );
+}
+
+function formatReferenceMetricValue(metric) {
+  if (metric.value === null || metric.value === undefined) return '—';
+  if (metric.valueType === 'percent') return formatPercent(metric.value, 0);
+  if (metric.valueType === 'decimal') return formatNumber(metric.value, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  if (metric.valueType === 'regime') return String(metric.value).replaceAll('_', '-').toUpperCase();
+  return formatNumber(metric.value, { maximumFractionDigits: 0 });
+}
+
+function formatReferenceChange(value, type) {
+  if (value === null || value === undefined) return '—';
+  const parsed = Number(value);
+  const sign = parsed > 0 ? '+' : '';
+
+  if (type === 'points') return formatPoints(parsed, 1);
+  if (type === 'decimal') return `${sign}${parsed.toFixed(1)}`;
+  return `${sign}${formatNumber(parsed, { maximumFractionDigits: 0 })}`;
+}
+
+function referenceSparklinePath(series) {
+  const values = (series ?? []).map(Number).filter(Number.isFinite);
+  if (values.length < 2) return '';
+
+  const minimum = Math.min(...values);
+  const maximum = Math.max(...values);
+  const range = maximum - minimum || 1;
+
+  return values.map((value, index) => {
+    const x = (index / (values.length - 1)) * 100;
+    const y = 22 - ((value - minimum) / range) * 18;
+    return `${index === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`;
+  }).join(' ');
+}
+
+function ReferenceMetricCard({ metric }) {
+  const path = referenceSparklinePath(metric.series);
+  const strengthWidth = metric.key === 'strength' && Number.isFinite(Number(metric.value))
+    ? `${Math.max(0, Math.min(100, Number(metric.value)))}%`
+    : '0%';
+
+  return (
+    <article className={`reference-metric-card tone-${metric.tone}`}>
+      <div className="reference-metric-title">
+        <span className="reference-metric-icon"><DashboardIcon name={metric.icon} size={18} /></span>
+        <span>{metric.label}</span>
+      </div>
+      <strong>{formatReferenceMetricValue(metric)}</strong>
+      {metric.key === 'regime' ? (
+        <div className="reference-regime-dots" aria-label={`Marknadsregim ${formatReferenceMetricValue(metric)}`}>
+          {Array.from({ length: 8 }, (_, index) => <i className={metric.tone === 'positive' || index < 2 ? 'is-active' : undefined} key={index} />)}
+        </div>
+      ) : (
+        <>
+          <div className="reference-metric-deltas">
+            <span>1D <b className={metric.oneDayChange === null ? 'is-neutral' : metric.oneDayChange >= 0 ? 'is-positive' : 'is-negative'}>{formatReferenceChange(metric.oneDayChange, metric.changeType)}</b></span>
+            <span>1W <b className={metric.oneWeekChange === null ? 'is-neutral' : metric.oneWeekChange >= 0 ? 'is-positive' : 'is-negative'}>{formatReferenceChange(metric.oneWeekChange, metric.changeType)}</b></span>
+          </div>
+          {path ? (
+            <svg className="reference-metric-sparkline" viewBox="0 0 100 24" role="img" aria-label={`${metric.label} senaste handelsdagar`}>
+              <path d={path} fill="none" pathLength="1" />
+            </svg>
+          ) : (
+            <span className="reference-strength-meter" aria-label={metric.value === null ? 'Värde saknas' : `${metric.label} ${formatReferenceMetricValue(metric)}`}><i style={{ width: strengthWidth }} /></span>
+          )}
+        </>
+      )}
+    </article>
   );
 }
 
@@ -223,7 +297,10 @@ function SectionLoadingCard({ title, copy }) {
 
 export default async function Home({ searchParams }) {
   const resolvedSearchParams = await searchParams;
-  const activeConstituents = await getActiveConstituents();
+  const [activeConstituents, sectorOverview] = await Promise.all([
+    getActiveConstituents(),
+    getSectorOverviewSnapshot(),
+  ]);
   const selectedTicker = resolveSelectedTicker(resolvedSearchParams?.ticker, activeConstituents);
   const snapshot = await getDashboardSnapshot(selectedTicker);
   const marketCards = buildMarketSeriesCards(snapshot.marketSeries);
@@ -233,6 +310,12 @@ export default async function Home({ searchParams }) {
   const coverage = snapshot.coverage;
   const latestSignal = snapshot.latestSignal;
   const interpretation = interpretMarketSignal(latestSignal);
+  const overviewAction = buildOverviewAction(interpretation.headlineLabel);
+  const referenceMarketMetrics = buildReferenceMarketMetrics({
+    latestSignal,
+    recentSignals: snapshot.recentSignals,
+    sectorRows: sectorOverview.rows,
+  });
   const backtests = snapshot.backtests;
   const recentSignals = snapshot.recentSignals ?? [];
   const positionStatus = buildPositionStatusViewModel({
@@ -256,73 +339,39 @@ export default async function Home({ searchParams }) {
 
   return (
     <main className="page-shell restyle-page">
-      <section className="category-section" id="oversikt">
-        <SectionIntro
-          eyebrow="Översikt"
-          title="Börsläge just nu"
-          copy="Första skärmen ska svara på två saker: är börsen riskvänlig eller farlig, och hur mycket exponering ska modellen ha?"
-        />
-
-        <div className={`market-hero ${toneClass(interpretation.tone)}`}>
-          <div className="market-hero-main">
-            <div className="regime-orb" aria-hidden="true" />
-            <div>
-              <p className="eyebrow">Dagens marknadsläge · {formatDate(latestSignal?.date)}</p>
-              <h1>{interpretation.headlineLabel}</h1>
-              <p className="hero-subline">{interpretation.actionBias}</p>
-            </div>
+      <DashboardTopNav updatedLabel={formatTimestamp(latestRun?.finished_at)} />
+      <section className="category-section dashboard-overview" id="oversikt">
+        <section className={`reference-hero ${toneClass(interpretation.tone)}`} aria-label="Dagens marknadsrekommendation">
+          <div className="reference-target-mark"><DashboardIcon name="target" size={68} /></div>
+          <div className="reference-hero-copy">
+            <p className="reference-hero-question">Vad ska du göra nu?</p>
+            <h1>{overviewAction}</h1>
+            <p>{interpretation.actionBias}</p>
           </div>
-
-          <div className="hero-number-row">
-            <div className="hero-number-card">
-              <p className="panel-label">Marknadslägescore</p>
-              <strong>{interpretation.displayScore ?? '—'}<span>/100</span></strong>
-              <p className="footnote compact">Raw score {formatNumber(interpretation.rawScore, { maximumFractionDigits: 2 })}</p>
-            </div>
-            <div className="hero-number-card">
-              <p className="panel-label">Rekommenderad exponering</p>
-              <strong>{positionCurrent ? formatPercent(positionCurrent.appliedEquityPct, 0) : '—'}</strong>
-              <p className="footnote compact">{positionCurrent ? positionCurrent.signalLabel : 'Ingen positionsrad'}</p>
-            </div>
-          </div>
-
-          <div className="risk-scale-card">
-            <p className="panel-label">Risktermometer</p>
-            <div className="risk-scale-track" aria-label={`Score ${scorePct} av 100`}>
-              <span className="risk-scale-thumb" style={{ left: `${scorePct}%` }} />
-            </div>
-            <div className="risk-scale-points"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
-            <div className="risk-scale-labels"><span>Risk-Off</span><span>Neutral</span><span>Risk-On</span></div>
-          </div>
-        </div>
-
-        <section className="horizon-grid restyle-horizons">
-          {[
-            ['↗', 'Kort sikt', '1–3 dagar', interpretation.shortTerm],
-            ['⌁', 'Swing', '1–4 veckor', interpretation.swingTerm],
-            ['◎', 'Position', '1–6 månader', interpretation.positionTerm],
-          ].map(([icon, title, subtitle, item]) => (
-            <article className={`horizon-card ${toneClass(item.tone)}`} key={title}>
-              <span className="horizon-icon" aria-hidden="true">{icon}</span>
-              <div>
-                <p className="section-kicker">{subtitle}</p>
-                <h2>{title}: {item.label}</h2>
-                <p className="footnote compact">{item.detail}</p>
-              </div>
-              <span aria-hidden="true">›</span>
-            </article>
-          ))}
+          <aside className="reference-recommendation">
+            <p>Rekommendation</p>
+            <strong>{interpretation.headlineLabel.toUpperCase()} <span>↗</span></strong>
+            <small>{positionCurrent?.decision ?? 'Ingen ytterligare positionsrad finns ännu.'}</small>
+            <dl>
+              <div><dt>Styrka</dt><dd>{interpretation.displayScore ?? '—'}<small>/100</small></dd></div>
+              <div><dt>Risk</dt><dd>{positionCurrent?.signalLabel ?? '—'}</dd></div>
+              <div><dt>Exponering</dt><dd>{positionCurrent ? formatPercent(positionCurrent.appliedEquityPct, 0) : '—'}</dd></div>
+            </dl>
+          </aside>
         </section>
 
-        <section className="category-section">
-          <SectionIntro
-            eyebrow="Modellens bevis"
-            title="Varför modellen lutar så här"
-            copy="Rådata är kvar, men visas som snabba beslutskort så man ser drivarna utan att läsa hela databasen."
-          />
-          <div className="metric-strip">
-            {interpretation.heatmap.map((item) => <ReasonTile item={item} key={item.key} />)}
+        <section className="reference-market-summary" aria-label="Vad har förändrats på marknaden">
+          <div className="reference-section-heading">
+            <p>Vad har förändrats?</p>
+            <strong>Viktigaste förändringarna</strong>
           </div>
+          <div className="reference-metric-grid">
+            {referenceMarketMetrics.map((metric) => <ReferenceMetricCard key={metric.key} metric={metric} />)}
+          </div>
+        </section>
+
+        <section className="sector-overview-section" id="sektorer">
+          <SectorOverviewMatrix snapshot={sectorOverview} />
         </section>
 
         {positionCurrent ? (
@@ -512,7 +561,7 @@ export default async function Home({ searchParams }) {
                   <tr><th>Strategi</th><th>CAGR</th><th>Max DD</th><th>Time in market</th><th>Färdig</th></tr>
                 </thead>
                 <tbody>
-                  {backtests.length ? backtests.map(renderBacktestRow) : <tr><td colSpan="5">No backtest runs available yet.</td></tr>}
+                  {backtests.length ? backtests.map((row, index) => renderBacktestRow(row, index)) : <tr><td colSpan="5">No backtest runs available yet.</td></tr>}
                 </tbody>
               </table>
             </div>
@@ -619,6 +668,12 @@ export default async function Home({ searchParams }) {
         />
         <StockSignalBoardClientSection />
       </section>
+
+      <footer className="dashboard-status-rail" aria-label="Datastatus">
+        <span><DashboardIcon name="database" size={14} /> Fetch: {formatStatus(latestRun?.status)}</span>
+        <span>Senaste prisdatum: {formatDate(coverage.latest_price_date)}</span>
+        <span>Täckning: {formatNumber(coverage.priced_ticker_count)} / {formatNumber(coverage.active_ticker_count)}</span>
+      </footer>
     </main>
   );
 }
