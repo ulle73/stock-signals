@@ -11,6 +11,10 @@ import { fetchYahooDailyCandles } from '../lib/sources/yahoo.js';
 import { chunkArray } from '../lib/utils/chunk.js';
 import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
 import {
+  createYahooFetchCircuit,
+  runWithYahooFetchCircuit,
+} from '../lib/utils/yahoo-fetch-circuit.js';
+import {
   getYahooProxyDailyInitialRange,
   getYahooProxyDailyRange,
 } from '../lib/utils/fetch-settings.js';
@@ -57,6 +61,7 @@ async function run() {
   const latestDatesBySymbol = await getLatestMacroMatrixYahooProxyDates();
   const successfulSymbols = [];
   const failedSymbols = [];
+  const circuit = createYahooFetchCircuit();
   let insertedRows = 0;
 
   try {
@@ -65,11 +70,15 @@ async function run() {
     for (const [batchIndex, batch] of batches.entries()) {
       console.log(`Fetching macro-matrix Yahoo proxies batch ${batchIndex + 1}/${batches.length}: ${batch.join(', ')}`);
 
-      const results = await Promise.allSettled(
-        batch.map((symbol) => fetchSymbol(symbol, latestDatesBySymbol))
-      );
+      const { results } = await runWithYahooFetchCircuit(batch, {
+        concurrency: BATCH_SIZE,
+        circuit,
+        worker: (symbol) => fetchSymbol(symbol, latestDatesBySymbol),
+      });
 
       for (const [resultIndex, result] of results.entries()) {
+        if (!result) continue;
+
         if (result.status === 'fulfilled') {
           successfulSymbols.push(result.value);
           insertedRows += result.value.insertedRows;
@@ -78,9 +87,22 @@ async function run() {
 
         failedSymbols.push({
           symbol: batch[resultIndex],
-          error: result.reason?.message ?? String(result.reason),
+          error: result.reason.message,
         });
       }
+
+      if (circuit.isOpen()) break;
+    }
+
+    if (circuit.isOpen()) {
+      const remainingSuppressedSymbols = symbols.length
+        - successfulSymbols.length
+        - failedSymbols.length
+        - circuit.suppressedCount;
+      if (remainingSuppressedSymbols > 0) {
+        circuit.recordSuppressed(remainingSuppressedSymbols);
+      }
+      throw circuit.error;
     }
 
     const status = successfulSymbols.length === 0
@@ -92,7 +114,7 @@ async function run() {
     await fetchRunGuard.finish(status, {
       totalItems: symbols.length,
       successfulItems: successfulSymbols.length,
-      failedItems: failedSymbols.length,
+      failedItems: failedSymbols.length + circuit.suppressedCount,
       metadata: {
         insertedRows,
         updateRequest: UPDATE_REQUEST,
@@ -109,6 +131,9 @@ async function run() {
     console.log(`Fetched ${insertedRows} macro-matrix Yahoo proxy rows across ${successfulSymbols.length}/${symbols.length} symbols.`);
   } catch (error) {
     await fetchRunGuard.finish('failure', {
+      totalItems: symbols.length,
+      successfulItems: successfulSymbols.length,
+      failedItems: failedSymbols.length + circuit.suppressedCount,
       errorMessage: error.message,
       metadata: {
         insertedRows,
@@ -116,6 +141,9 @@ async function run() {
         initialRequest: INITIAL_REQUEST,
         successfulSymbols,
         failedSymbols,
+        suppressedSymbols: circuit.suppressedCount,
+        rateLimited: circuit.isOpen(),
+        retryAfter: circuit.error?.retryAfter ?? null,
         stack: error.stack,
       },
     });
