@@ -266,11 +266,13 @@ npm run fetch:occ-volume-totals
 npm run fetch:finra-short-volume
 npm run fetch:barchart-breadth
 npm run fetch:implied-volatility-proxy
+npm run fetch:gex-dex
 npm run calculate:daily
 npm run calculate:cvol-call-volume
 npm run calculate:plce-short-volume
 npm run calculate:r3tw-mmtw-breadth
 npm run calculate:implied-volatility-ratio
+npm run calculate:gex-dex-signals
 npm run calculate:market-breadth-ma200-forward-return
 npm run calculate:market-breadth-ma200-forward-return-empirical
 npm run calculate:sector-breadth
@@ -291,7 +293,7 @@ npm run study:signal -- studies/examples/tf-sync-forward.json
 npm run validate:indicator -- AAPL
 ```
 
-De fyra externa indikatorvägarna och ett separat breadth-modellager körs isolerat och lämnar den befintliga Yahoo/FRED/S&P 500-pipelinen orörd:
+De externa indikatorvägarna och ett separat breadth-modellager körs isolerat och lämnar den befintliga Yahoo/FRED/S&P 500-pipelinen orörd:
 
 - `npm run fetch:occ-volume-totals` hämtar OCC daily volume totals till `occ_daily_volume_totals`
 - `npm run calculate:cvol-call-volume` bygger `cvol_call_volume_indicator_daily`
@@ -300,6 +302,8 @@ De fyra externa indikatorvägarna och ett separat breadth-modellager körs isole
 - `npm run fetch:barchart-breadth` hämtar dagens `$R3TW` och `$MMTW` från Barchart till `external_breadth_daily`
 - `npm run calculate:r3tw-mmtw-breadth` bygger `r3tw_mmtw_20dma_breadth_indicator_daily`
 - `npm run fetch:implied-volatility-proxy` hämtar ett separat cross-asset-universum med underliggande Yahoo-priser och Yahoo/Cboe-volatilitetsproxyserier till `implied_volatility_proxy_source_daily`
+- `npm run fetch:gex-dex` hämtar GammaLens GEX/DEX-snapshots för `SPY,QQQ` som standard till `gex_dex_source_snapshots` och `gex_dex_strike_snapshots`
+- `npm run calculate:gex-dex-signals` bygger det separata kontextlagret `gex_dex_signal_snapshots` med `range`, `flip_risk`, `expansion`, `neutral` eller `unknown`
 - `npm run fetch:macro-matrix-yahoo-proxy` hämtar Yahoo daily-proxyserierna för macro-matriserna till `macro_matrix_yahoo_proxy_daily`
 - `npm run calculate:implied-volatility-ratio` bygger `implied_volatility_ratio_signals_daily`
 - `npm run calculate:market-breadth-ma200-forward-return` bygger ett separat MA200 breadth-signalmodellager i `market_breadth_ma200_forward_return_signal_daily`
@@ -314,6 +318,7 @@ Miljövariabler för manuella körningar:
 - `YAHOO_PROXY_DAILY_INITIAL_RANGE` (default `10y` för symboler som saknas i proxy-tabellen)
 - `YAHOO_PROXY_DAILY_RANGE` (default `400d` för löpande uppdatering av redan backfillade proxy-symboler)
 - `DATA_QUALITY_DATE` (optional override för `npm run calculate:data-quality-gates`; måste vara ett USA-börsdatum)
+- `GEX_DEX_TICKERS` (komma-separerad GammaLens-watchlist; default `SPY,QQQ`)
 
 `npm run dev` öppnar nu en server-renderad startsida som visar:
 

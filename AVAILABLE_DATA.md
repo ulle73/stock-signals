@@ -512,6 +512,27 @@ Det finns även ett beräknat IVOL/RVOL-signal-lager:
 - ivol_rvol_rank
 - ivol_rvol_percentile
 
+### GEX/DEX Options Positioning Beta
+
+Det finns ett separat GammaLens-baserat snapshotlager för en konfigurerbar watchlist (default `SPY,QQQ`). Det lagrar leverantörens färdigberäknade data, inte en egen optionskedja:
+
+- source timestamp, source URL och rått JSON-svar
+- provider status (`active`/`stale`), cache-flagga och provider quality label
+- spot price, call wall, put wall, gamma flip, net GEX och net DEX
+- DEX support/resistance, provider ATR och per-strike GEX/DEX-fördelning
+
+Ett separat beräkningslager sparar endast kontextuella råsignaler:
+
+- `gamma_regime`
+- `spot_to_gamma_flip_atr`
+- `inside_walls`
+- `near_gamma_flip`
+- `above_call_wall` / `below_put_wall`
+- `gex_dex_confluence`
+- `gex_dex_signal` (`range`, `flip_risk`, `expansion`, `neutral`, `unknown`)
+
+Detta är inte köp-/säljsignaler och inte ett bevis på faktisk dealer-positionering. Historik byggs upp genom sparade snapshots.
+
 ---
 
 ## 8. Markov-/state-data per ticker
@@ -613,6 +634,7 @@ Dessa är mer tolkade beslutslager ovanpå pris, breadth och indikatorer. De kan
 - Barchart/external breadth snapshots
 - Trading Economics HTML-scrape för global manufacturing PMI
 - Europe growth indicator scrape/source layer
+- GammaLens GEX/DEX snapshots (SPY/QQQ beta)
 
 ---
 
@@ -627,6 +649,7 @@ Tillgängliga tidsramar i data/indikatorer:
 - Daily sektorbreadth
 - Daily indikatorer per aktie
 - 60m intraday candles
+- Intraday GammaLens GEX/DEX-snapshots för konfigurerad watchlist
 - Weekly-derived state via TF Sync
 - Monthly makrodata för global PMI och europeiska growth-indikatorer
 
@@ -642,8 +665,8 @@ Det här finns inte som stabilt lagrat datalager just nu:
 - Earnings/calendar-data
 - Nyhetsdata
 - Insiderköp/insiderförsäljning
-- Direkt lagrad GEX/DEX-data
-- Options chain per aktie
+- Full, rå options chain per aktie
+- Oberoende verifierad dealer-positionering eller GEX/DEX-formel
 - Realtidskurser från betald feed
 
 Det går att bygga ovanpå nuvarande system, men just nu är basen främst:
