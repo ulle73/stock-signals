@@ -171,6 +171,7 @@ async function run() {
 
   let activeConstituents = [];
   let yahooResult = null;
+  let benchmarkResult = null;
 
   try {
     console.log('Fetching S&P 500 constituents...');
@@ -198,7 +199,7 @@ async function run() {
       throw yahooResult.rateLimitError;
     }
 
-    const benchmarkResult = await fetchBenchmarkData({
+    benchmarkResult = await fetchBenchmarkData({
       benchmarkTickers: BENCHMARK_TICKERS,
       latestBenchmarkDatesByTicker,
       fallbackRange: yahooDailyRange,
@@ -250,8 +251,12 @@ async function run() {
   } catch (error) {
     await fetchRunGuard.finish('failure', {
       totalItems: activeConstituents.length + BENCHMARK_TICKERS.length,
-      successfulItems: yahooResult?.successfulTickers ?? 0,
-      failedItems: (yahooResult?.failedTickers.length ?? 0) + (yahooResult?.suppressedTickers ?? 0),
+      successfulItems: (yahooResult?.successfulTickers ?? 0) + (benchmarkResult?.successfulBenchmarks ?? 0),
+      failedItems:
+        (yahooResult?.failedTickers.length ?? 0)
+        + (yahooResult?.suppressedTickers ?? 0)
+        + (benchmarkResult?.failedBenchmarks.length ?? 0)
+        + (yahooResult?.rateLimitError ? BENCHMARK_TICKERS.length : 0),
       errorMessage: error.message,
       metadata: {
         stack: error.stack,
@@ -261,7 +266,9 @@ async function run() {
           suppressedTickers: yahooResult.suppressedTickers,
           rateLimited: Boolean(yahooResult.rateLimitError),
           retryAfter: yahooResult.rateLimitError?.retryAfter ?? null,
+          skippedBenchmarks: yahooResult.rateLimitError ? BENCHMARK_TICKERS : [],
         } : null,
+        benchmark: benchmarkResult ?? null,
       },
     });
     throw error;

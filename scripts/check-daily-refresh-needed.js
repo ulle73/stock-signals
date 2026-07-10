@@ -19,10 +19,9 @@ async function loadRefreshSnapshot(expectedLatestMarketDate) {
        (select max(date)::text from benchmark_daily_prices where ticker = 'SPY') as latest_benchmark_date,
        (select max(date)::text from market_signal_daily) as latest_market_signal_date,
        (select max(date)::text from position_signal_daily) as latest_position_signal_date,
-       (select count(*)::int from stock_daily_prices where date = $1::date) as price_ticker_count_for_expected_date,
+       (select count(distinct ticker)::int from stock_daily_prices where date = $1::date) as price_ticker_count_for_expected_date,
        (select count(*)::int from sp500_constituents where is_active = true) as active_ticker_count,
-       (select count(*)::int from data_fetch_runs where job_name = 'fetch_daily' and status = 'running') as running_fetch_run_count`
-    ,
+       (select count(*)::int from data_fetch_runs where job_name = 'fetch_daily' and status = 'running') as running_fetch_run_count`,
     [expectedLatestMarketDate]
   );
 
