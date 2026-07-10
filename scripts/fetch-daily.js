@@ -18,6 +18,10 @@ import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repo
 import { fetchAndStoreEuropeGrowthIndicators } from '../lib/repositories/europe-growth-indicators.js';
 import { fetchAndStoreGlobalManufacturingPmi } from '../lib/repositories/global-manufacturing-pmi.js';
 import { buildFetchRunCompletionDetails, fetchBenchmarkData } from '../lib/utils/fetch-benchmark.js';
+import {
+  createYahooFetchCircuit,
+  runWithYahooFetchCircuit,
+} from '../lib/utils/yahoo-fetch-circuit.js';
 
 const BENCHMARK_TICKERS = ['SPY'];
 const DEFAULT_CONCURRENCY = 5;
@@ -41,36 +45,18 @@ function getTickerLimit() {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
-async function runWithConcurrency(items, concurrency, worker) {
-  const results = [];
-  let index = 0;
-
-  async function next() {
-    const currentIndex = index;
-    index += 1;
-
-    if (currentIndex >= items.length) return;
-
-    const item = items[currentIndex];
-    results[currentIndex] = await worker(item, currentIndex);
-    await next();
-  }
-
-  const workers = Array.from({ length: Math.min(concurrency, items.length) }, () => next());
-  await Promise.all(workers);
-
-  return results;
-}
-
 async function fetchYahooForConstituents(constituents, latestPriceDatesByTicker) {
   const failedTickers = [];
   let successfulTickers = 0;
   let totalCandles = 0;
   const yahooDailyRange = getYahooDailyRange();
   const rangeOverrideEnabled = hasYahooDailyRangeOverride();
+  const circuit = createYahooFetchCircuit();
 
-  await runWithConcurrency(constituents, DEFAULT_CONCURRENCY, async (item, index) => {
-    try {
+  const { results, suppressedCount } = await runWithYahooFetchCircuit(constituents, {
+    concurrency: DEFAULT_CONCURRENCY,
+    circuit,
+    worker: async (item, index) => {
       console.log(`[${index + 1}/${constituents.length}] Fetching ${item.ticker} (${item.yahoo_ticker})`);
       const request = buildYahooFetchRequest({
         latestDate: latestPriceDatesByTicker[item.ticker] || null,
@@ -79,17 +65,35 @@ async function fetchYahooForConstituents(constituents, latestPriceDatesByTicker)
       });
       const candles = await fetchYahooDailyCandles(item.yahoo_ticker, request);
       const inserted = await upsertStockDailyPrices(item.ticker, candles);
-      successfulTickers += 1;
-      totalCandles += inserted;
-      return { ticker: item.ticker, ok: true, candles: inserted };
-    } catch (error) {
-      console.warn(`Failed ${item.ticker}: ${error.message}`);
-      failedTickers.push({ ticker: item.ticker, yahoo_ticker: item.yahoo_ticker, error: error.message });
-      return { ticker: item.ticker, ok: false, error: error.message };
-    }
+      return { ticker: item.ticker, candles: inserted };
+    },
   });
 
-  return { failedTickers, successfulTickers, totalCandles };
+  for (const [index, result] of results.entries()) {
+    if (!result) continue;
+
+    if (result.status === 'fulfilled') {
+      successfulTickers += 1;
+      totalCandles += result.value.candles;
+      continue;
+    }
+
+    const item = constituents[index];
+    console.warn(`Failed ${item.ticker}: ${result.reason.message}`);
+    failedTickers.push({
+      ticker: item.ticker,
+      yahoo_ticker: item.yahoo_ticker,
+      error: result.reason.message,
+    });
+  }
+
+  return {
+    failedTickers,
+    successfulTickers,
+    totalCandles,
+    suppressedTickers: suppressedCount,
+    rateLimitError: circuit.error,
+  };
 }
 
 async function fetchFredData(latestMarketSeriesDates) {
@@ -165,6 +169,9 @@ async function run() {
   const fetchRunId = await startFetchRun('fetch_daily');
   fetchRunGuard.setRunId(fetchRunId);
 
+  let activeConstituents = [];
+  let yahooResult = null;
+
   try {
     console.log('Fetching S&P 500 constituents...');
     const constituents = await fetchSp500Constituents();
@@ -174,7 +181,7 @@ async function run() {
     const latestBenchmarkDatesByTicker = await getLatestBenchmarkDates();
     const latestMarketSeriesDates = await getLatestMarketSeriesDates();
 
-    let activeConstituents = await getActiveConstituents();
+    activeConstituents = await getActiveConstituents();
     const tickerLimit = getTickerLimit();
 
     if (yahooDailyRange !== DEFAULT_YAHOO_DAILY_RANGE) {
@@ -186,7 +193,11 @@ async function run() {
       activeConstituents = activeConstituents.slice(0, tickerLimit);
     }
 
-    const yahooResult = await fetchYahooForConstituents(activeConstituents, latestPriceDatesByTicker);
+    yahooResult = await fetchYahooForConstituents(activeConstituents, latestPriceDatesByTicker);
+    if (yahooResult.rateLimitError) {
+      throw yahooResult.rateLimitError;
+    }
+
     const benchmarkResult = await fetchBenchmarkData({
       benchmarkTickers: BENCHMARK_TICKERS,
       latestBenchmarkDatesByTicker,
@@ -195,6 +206,13 @@ async function run() {
       fetchYahooDailyCandlesFn: fetchYahooDailyCandles,
       upsertBenchmarkDailyPricesFn: upsertBenchmarkDailyPrices,
     });
+
+    if (yahooResult.failedTickers.length > 0 || benchmarkResult.failedBenchmarks.length > 0) {
+      throw new Error(
+        `Core Yahoo daily data is incomplete: ${yahooResult.failedTickers.length} ticker fetches and ${benchmarkResult.failedBenchmarks.length} benchmark fetches failed.`
+      );
+    }
+
     const fredResult = await fetchFredData(latestMarketSeriesDates);
     const globalPmiResult = await fetchGlobalPmiData();
     const europeGrowthResult = await fetchEuropeGrowthData();
@@ -231,8 +249,20 @@ async function run() {
     console.log(`Europe Growth Indicators: ${europeGrowthResult.successfulRows} rows updated.`);
   } catch (error) {
     await fetchRunGuard.finish('failure', {
+      totalItems: activeConstituents.length + BENCHMARK_TICKERS.length,
+      successfulItems: yahooResult?.successfulTickers ?? 0,
+      failedItems: (yahooResult?.failedTickers.length ?? 0) + (yahooResult?.suppressedTickers ?? 0),
       errorMessage: error.message,
-      metadata: { stack: error.stack },
+      metadata: {
+        stack: error.stack,
+        yahoo: yahooResult ? {
+          successfulTickers: yahooResult.successfulTickers,
+          failedTickers: yahooResult.failedTickers,
+          suppressedTickers: yahooResult.suppressedTickers,
+          rateLimited: Boolean(yahooResult.rateLimitError),
+          retryAfter: yahooResult.rateLimitError?.retryAfter ?? null,
+        } : null,
+      },
     });
     throw error;
   }
