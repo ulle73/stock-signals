@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - codex/professional-chart-v1
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -36,6 +39,7 @@ jobs:
         run: npm install --package-lock-only --ignore-scripts
 
       - name: Commit generated lockfile when needed
+        if: github.event_name == 'push'
         run: |
           if git diff --quiet -- package-lock.json; then
             echo "package-lock.json already synchronized"
