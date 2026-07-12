@@ -55,7 +55,23 @@ jobs:
         run: npm ci
 
       - name: Run complete test suite
-        run: node --test tests/*.test.js
+        id: complete-tests
+        continue-on-error: true
+        run: node --test --test-reporter=spec tests/*.test.js > full-test-output.txt 2>&1
+
+      - name: Upload full test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: professional-chart-test-output
+          path: full-test-output.txt
+          retention-days: 1
+
+      - name: Fail when complete suite failed
+        if: steps.complete-tests.outcome == 'failure'
+        run: |
+          tail -n 120 full-test-output.txt
+          exit 1
 
       - name: Build production application
         run: npm run build
