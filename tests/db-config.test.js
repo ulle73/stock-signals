@@ -18,6 +18,13 @@ test('getDatabaseUrl uses DATABASE_URL for the implicit standard target', () => 
   );
 });
 
+test('getDatabaseUrl removes matching wrapper quotes from deployment environment values', () => {
+  const databaseUrl = 'postgresql://default-user:pw@default-host/defaultdb?sslmode=require';
+
+  assert.equal(getDatabaseUrl({ DATABASE_URL: `"${databaseUrl}"` }), databaseUrl);
+  assert.equal(getDatabaseUrl({ DATABASE_URL: `'${databaseUrl}'` }), databaseUrl);
+});
+
 test('getDatabaseUrl uses a named database target when configured', () => {
   const env = {
     DATABASE_TARGET: 'cockroach',
