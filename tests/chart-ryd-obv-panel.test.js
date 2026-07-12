@@ -55,14 +55,12 @@ test('RYD OBV markers use stored signals only when the Z-score point exists', ()
       position: 'belowBar',
       color: '#34ff56',
       shape: 'arrowUp',
-      text: 'BUY',
     },
     {
       time: '2026-07-03',
       position: 'aboveBar',
       color: '#ff3e3e',
       shape: 'arrowDown',
-      text: 'SELL',
     },
   ]);
 });
