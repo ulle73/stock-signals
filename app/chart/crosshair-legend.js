@@ -18,6 +18,20 @@ function formatCompact(value) {
   }).format(Number(value));
 }
 
+function formatZscore(value) {
+  if (!Number.isFinite(Number(value))) return '—';
+  return Number(value).toLocaleString('sv-SE', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function formatSignal(signal) {
+  if (signal === 'buy') return 'Upp över −2,70';
+  if (signal === 'sell') return 'Ned under +2,70';
+  return 'Ingen';
+}
+
 function formatDate(value) {
   if (!value) return '—';
   return new Intl.DateTimeFormat('sv-SE', {
@@ -26,8 +40,17 @@ function formatDate(value) {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
-export default function CrosshairLegend({ currency = 'USD', point, visibleOverlays }) {
+export default function CrosshairLegend({
+  currency = 'USD',
+  point,
+  visibleIndicators = [],
+  visibleOverlays,
+}) {
   const overlays = visibleOverlays.filter((key) => Number.isFinite(Number(point?.[key])));
+  const showZscore = visibleIndicators.includes('rydObvZscore')
+    && Number.isFinite(Number(point?.ryd_obv_zscore_80));
+  const showRawObv = visibleIndicators.includes('rydObvRaw')
+    && Number.isFinite(Number(point?.ryd_obv));
 
   return (
     <div className="chart-crosshair-legend" aria-live="polite">
@@ -50,6 +73,24 @@ export default function CrosshairLegend({ currency = 'USD', point, visibleOverla
             <dd>{formatPrice(point[key], currency)}</dd>
           </div>
         ))}
+        {showZscore ? (
+          <div>
+            <dt><i aria-hidden="true" style={{ background: '#fffb00' }} />RYD Z</dt>
+            <dd>{formatZscore(point.ryd_obv_zscore_80)}</dd>
+          </div>
+        ) : null}
+        {showRawObv ? (
+          <div>
+            <dt><i aria-hidden="true" style={{ background: CHART_SERIES.rydObvRaw.color }} />RYD OBV</dt>
+            <dd>{formatCompact(point.ryd_obv)}</dd>
+          </div>
+        ) : null}
+        {showZscore ? (
+          <div>
+            <dt>RYD-korsning</dt>
+            <dd>{formatSignal(point?.ryd_obv_signal)}</dd>
+          </div>
+        ) : null}
       </dl>
     </div>
   );
