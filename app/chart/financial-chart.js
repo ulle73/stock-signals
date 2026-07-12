@@ -26,6 +26,7 @@ import {
   RYD_OBV_LEVELS,
   buildRawObvLineData,
   buildRydObvHistogramData,
+  buildRydObvMarkerAnchorData,
   buildRydObvMarkers,
 } from '../../lib/chart/ryd-obv-series.js';
 import CrosshairLegend from './crosshair-legend.js';
@@ -139,8 +140,10 @@ export default function FinancialChart({
     const currentTheme = themeName();
     const chartTheme = getChartTheme(currentTheme);
     const rydZscoreData = buildRydObvHistogramData(bars);
+    const rydMarkerAnchorData = buildRydObvMarkerAnchorData(bars);
     const rawObvData = buildRawObvLineData(bars);
     const rawObvVisible = visibleIndicators.includes('rydObvRaw') && rawObvData.length > 0;
+    const zscoreVisible = visibleIndicators.includes('rydObvZscore');
 
     const chart = createChart(container, {
       ...chartTheme,
@@ -185,7 +188,7 @@ export default function FinancialChart({
         HistogramSeries,
         {
           ...getRydObvZscoreSeriesOptions(),
-          visible: visibleIndicators.includes('rydObvZscore'),
+          visible: zscoreVisible,
           title: definition.label,
         },
         definition.pane
@@ -198,8 +201,25 @@ export default function FinancialChart({
       for (const level of RYD_OBV_LEVELS) {
         zscoreSeries.createPriceLine(rydLevelOptions(level, currentTheme));
       }
-      createSeriesMarkers(zscoreSeries, buildRydObvMarkers(bars));
       series.rydObvZscore = zscoreSeries;
+
+      if (rydMarkerAnchorData.length) {
+        const markerAnchorSeries = chart.addSeries(
+          LineSeries,
+          {
+            color: 'rgba(0, 0, 0, 0)',
+            lineWidth: 1,
+            priceLineVisible: false,
+            lastValueVisible: false,
+            crosshairMarkerVisible: false,
+            visible: zscoreVisible,
+          },
+          definition.pane
+        );
+        markerAnchorSeries.setData(rydMarkerAnchorData);
+        createSeriesMarkers(markerAnchorSeries, buildRydObvMarkers(bars));
+        series.rydObvMarkerAnchor = markerAnchorSeries;
+      }
     }
 
     if (rawObvData.length) {
@@ -302,6 +322,7 @@ export default function FinancialChart({
     const zscoreVisible = visibleIndicators.includes('rydObvZscore');
     const rawVisible = visibleIndicators.includes('rydObvRaw') && Boolean(overlaySeriesRef.current.rydObvRaw);
     overlaySeriesRef.current.rydObvZscore?.applyOptions({ visible: zscoreVisible });
+    overlaySeriesRef.current.rydObvMarkerAnchor?.applyOptions({ visible: zscoreVisible });
     overlaySeriesRef.current.rydObvRaw?.applyOptions({ visible: rawVisible });
     chartRef.current?.applyOptions({ leftPriceScale: { visible: rawVisible } });
   }, [visibleIndicators]);
