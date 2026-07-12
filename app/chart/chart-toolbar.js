@@ -3,6 +3,7 @@
 import { CHART_PERIODS } from '../../lib/chart/chart-periods.js';
 import {
   CHART_SERIES,
+  INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
 } from '../../lib/chart/series-registry.js';
 
@@ -15,10 +16,13 @@ export default function ChartToolbar({
   onPeriodChange,
   onReset,
   onTickerChange,
+  onToggleIndicator,
   onToggleOverlay,
   period,
   ticker,
+  unavailableIndicators,
   unavailableOverlays,
+  visibleIndicators,
   visibleOverlays,
 }) {
   return (
@@ -72,6 +76,31 @@ export default function ChartToolbar({
                 title={unavailable ? `${CHART_SERIES[key].label} saknas för vald period` : `Visa eller dölj ${CHART_SERIES[key].label}`}
               >
                 <i aria-hidden="true" style={{ background: CHART_SERIES[key].color }} />
+                {CHART_SERIES[key].label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="chart-toolbar-group chart-toolbar-indicators" role="group" aria-label="Egna indikatorer">
+        <span>Indikatorer</span>
+        <div className="chart-overlay-control">
+          {INDICATOR_KEYS.map((key) => {
+            const unavailable = unavailableIndicators.includes(key);
+            const active = visibleIndicators.includes(key);
+            const color = CHART_SERIES[key].color ?? '#fffb00';
+            return (
+              <button
+                type="button"
+                aria-pressed={active}
+                className={active ? 'is-active' : undefined}
+                disabled={unavailable}
+                key={key}
+                onClick={() => onToggleIndicator(key)}
+                title={unavailable ? `${CHART_SERIES[key].label} saknas för vald period` : `Visa eller dölj ${CHART_SERIES[key].label}`}
+              >
+                <i aria-hidden="true" style={{ background: color }} />
                 {CHART_SERIES[key].label}
               </button>
             );
