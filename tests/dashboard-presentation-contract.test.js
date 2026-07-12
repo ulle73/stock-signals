@@ -6,16 +6,20 @@ import test from 'node:test';
 const root = process.cwd();
 const readSource = (relativePath) => readFile(path.join(root, relativePath), 'utf8');
 
-test('dashboard uses a prop-driven top navigation instead of a sidebar shell', async () => {
-  const [layout, topNav] = await Promise.all([
+test('dashboard uses a route-aware prop-driven top navigation instead of a sidebar shell', async () => {
+  const [layout, topNav, chartPage] = await Promise.all([
     readSource('app/layout.js'),
     readSource('app/dashboard-top-nav.js'),
+    readSource('app/chart/page.js'),
   ]);
 
   assert.doesNotMatch(layout, /className="side-nav"/);
-  assert.match(topNav, /export default function DashboardTopNav\(\{ updatedLabel \}\)/);
-  assert.match(topNav, /href: '#oversikt'/);
-  assert.match(topNav, /href: '#sektorer'/);
+  assert.match(topNav, /export default function DashboardTopNav\(\{ activeItem = 'Översikt', updatedLabel \}\)/);
+  assert.match(topNav, /href: '\/#oversikt'/);
+  assert.match(topNav, /href: '\/#sektorer'/);
+  assert.match(topNav, /href: '\/chart'/);
+  assert.match(topNav, /item\.label === activeItem/);
+  assert.match(chartPage, /<DashboardTopNav activeItem="Chart"/);
   assert.match(topNav, /<ThemeToggle\s*\/>/);
 });
 
