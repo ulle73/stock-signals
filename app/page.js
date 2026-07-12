@@ -7,6 +7,7 @@ import { buildOverviewAction, buildReferenceMarketMetrics } from '../lib/utils/d
 import { getVolumeEventLabel } from '../lib/utils/volume-events.js';
 import DashboardIcon from './dashboard-icons.js';
 import DashboardTopNav from './dashboard-top-nav.js';
+import GexDexSection from './gex-dex-section.js';
 import MarketBreadthMa200ForwardReturnComparisonSection from './market-breadth-ma200-forward-return-comparison-section.js';
 import SectorOverviewMatrix from './sector-overview-matrix.js';
 import StockSignalBoardClientSection from './stock-signal-board-client-section.js';
@@ -423,6 +424,24 @@ export default async function Home({ searchParams }) {
             </article>
           </section>
         ) : null}
+      </section>
+
+      <section className="category-section" id="options">
+        <SectionIntro
+          eyebrow="Options positioning · Beta"
+          title="Var ligger dealer-positioneringen just nu?"
+          copy="GEX och DEX är ett externt kontextlager. Det beskriver range-, flip- och expansionsrisk, inte köp- eller säljrekommendationer."
+        />
+        <Suspense
+          fallback={(
+            <SectionLoadingCard
+              title="Options positioning"
+              copy="Läser den senaste GammaLens-snapshoten."
+            />
+          )}
+        >
+          <GexDexSection />
+        </Suspense>
       </section>
 
       <section className="category-section" id="ma200">

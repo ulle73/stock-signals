@@ -1,0 +1,46 @@
+name: Fetch GammaLens GEX DEX Snapshots
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Covers the US cash session in both DST regimes; provider freshness is persisted per snapshot.
+    - cron: '17 13-21 * * 1-5'
+
+concurrency:
+  group: gex-dex-snapshots
+  cancel-in-progress: false
+
+env:
+  DATABASE_TARGET: default
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  NODE_ENV: production
+  NEXT_TELEMETRY_DISABLED: '1'
+  GEX_DEX_TICKERS: 'SPY,QQQ'
+
+jobs:
+  fetch-and-calculate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database migrations
+        run: npm run db:migrate
+
+      - name: Fetch GammaLens GEX/DEX snapshots
+        run: npm run fetch:gex-dex
+
+      - name: Calculate GEX/DEX contextual states
+        run: npm run calculate:gex-dex-signals

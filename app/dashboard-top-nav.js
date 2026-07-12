@@ -5,6 +5,7 @@ const navItems = [
   { href: '#oversikt', icon: 'grid', label: 'Översikt' },
   { href: '#signaler', icon: 'signal', label: 'Signaler' },
   { href: '#alla-aktier', icon: 'eye', label: 'Bevakning' },
+  { href: '#options', icon: 'target', label: 'Options' },
   { href: '#sektorer', icon: 'layers', label: 'Sektorer' },
   { href: '#signaler', icon: 'clock', label: 'Historik' },
   { icon: 'settings', label: 'Inställningar' },
