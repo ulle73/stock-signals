@@ -242,13 +242,15 @@ export default function FinancialChart({
       const height = Math.max(620, Math.floor(container.clientHeight));
       const width = Math.max(320, Math.floor(container.clientWidth));
       chart.resize(width, height);
+
       const panes = chart.panes();
       if (panes[2]) {
-        panes[2].setHeight(Math.max(150, Math.min(250, Math.round(height * 0.25))));
-      }
-      if (panes[1]) {
-        const volumeRatio = panes[2] ? 0.14 : 0.2;
-        panes[1].setHeight(Math.max(88, Math.min(145, Math.round(height * volumeRatio))));
+        panes[0]?.setStretchFactor(64);
+        panes[1]?.setStretchFactor(14);
+        panes[2].setStretchFactor(22);
+      } else {
+        panes[0]?.setStretchFactor(80);
+        panes[1]?.setStretchFactor(20);
       }
     };
 
