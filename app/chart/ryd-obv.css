@@ -1,0 +1,52 @@
+.chart-toolbar {
+  flex-wrap: wrap;
+}
+
+.chart-toolbar-indicators {
+  flex: 0 1 auto;
+}
+
+.chart-workspace-frame,
+.financial-chart-shell,
+.financial-chart-canvas,
+.chart-workspace-skeleton,
+.chart-workspace-message,
+.financial-chart-empty {
+  min-height: clamp(680px, 82vh, 980px);
+}
+
+@media (max-width: 1400px) {
+  .chart-toolbar-overlays {
+    order: 4;
+    flex-basis: 100%;
+  }
+
+  .chart-toolbar-indicators {
+    order: 5;
+    flex: 1 1 auto;
+  }
+
+  .chart-reset-button {
+    order: 6;
+  }
+}
+
+@media (max-width: 720px) {
+  .chart-workspace-frame,
+  .financial-chart-shell,
+  .financial-chart-canvas,
+  .chart-workspace-skeleton,
+  .chart-workspace-message,
+  .financial-chart-empty {
+    min-height: 680px;
+  }
+
+  .chart-toolbar-indicators .chart-overlay-control {
+    width: 100%;
+  }
+
+  .chart-toolbar-indicators .chart-overlay-control button {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+}
