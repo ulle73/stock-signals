@@ -1,9 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { getRydObvZscoreSeriesOptions } from '../lib/chart/chart-theme.js';
 import {
   RYD_OBV_LEVELS,
+  RYD_OBV_MARKER_GAP,
   buildRawObvLineData,
   buildRydObvHistogramData,
+  buildRydObvMarkerAnchorData,
   buildRydObvMarkers,
   getRydObvZscoreColor,
 } from '../lib/chart/ryd-obv-series.js';
@@ -42,6 +45,21 @@ test('RYD OBV histogram and raw line skip warmup gaps and invalid values', () =>
   ]);
 });
 
+test('RYD OBV marker anchors keep a fixed air gap outside signal bars', () => {
+  const bars = [
+    { time: '2026-07-01', ryd_obv_zscore_80: null, ryd_obv_buy_signal: true },
+    { time: '2026-07-02', ryd_obv_zscore_80: -2.6, ryd_obv_buy_signal: true },
+    { time: '2026-07-03', ryd_obv_zscore_80: 2.6, ryd_obv_sell_signal: true },
+    { time: '2026-07-04', ryd_obv_zscore_80: 1.8 },
+  ];
+
+  assert.equal(RYD_OBV_MARKER_GAP, 0.45);
+  assert.deepEqual(buildRydObvMarkerAnchorData(bars), [
+    { time: '2026-07-02', value: -3.05 },
+    { time: '2026-07-03', value: 3.05 },
+  ]);
+});
+
 test('RYD OBV markers use stored signals only when the Z-score point exists', () => {
   const bars = [
     { time: '2026-07-01', ryd_obv_zscore_80: null, ryd_obv_buy_signal: true },
@@ -63,4 +81,8 @@ test('RYD OBV markers use stored signals only when the Z-score point exists', ()
       shape: 'arrowDown',
     },
   ]);
+});
+
+test('RYD OBV Z-score hides its last-value name badge', () => {
+  assert.equal(getRydObvZscoreSeriesOptions().lastValueVisible, false);
 });
