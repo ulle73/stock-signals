@@ -78,6 +78,70 @@ test('normalizeChartRows rejects invalid OHLC rows but preserves zero and option
   ]);
 });
 
+test('normalizeChartRows preserves stored RYD OBV values and warmup gaps', () => {
+  const payload = normalizeChartRows({
+    ticker: 'AAPL',
+    company,
+    period: '1Y',
+    rows: [
+      {
+        date: '2026-07-09',
+        open: '208',
+        high: '211',
+        low: '207',
+        close: '210',
+        adj_close: '210',
+        volume: '9',
+        ryd_obv: '1000000',
+        ryd_obv_zscore_80: null,
+        ryd_obv_buy_signal: false,
+        ryd_obv_sell_signal: false,
+        ryd_obv_signal: 'none',
+      },
+      {
+        date: '2026-07-10',
+        open: '210',
+        high: '215',
+        low: '209',
+        close: '214',
+        adj_close: '214',
+        volume: '11',
+        ryd_obv: '1250000.5',
+        ryd_obv_zscore_80: '-2.6',
+        ryd_obv_buy_signal: true,
+        ryd_obv_sell_signal: false,
+        ryd_obv_signal: 'buy',
+      },
+    ],
+  });
+
+  assert.deepEqual(payload.bars[0], {
+    time: '2026-07-09',
+    open: 208,
+    high: 211,
+    low: 207,
+    close: 210,
+    volume: 9,
+    ryd_obv: 1000000,
+    ryd_obv_buy_signal: false,
+    ryd_obv_sell_signal: false,
+    ryd_obv_signal: 'none',
+  });
+  assert.deepEqual(payload.bars[1], {
+    time: '2026-07-10',
+    open: 210,
+    high: 215,
+    low: 209,
+    close: 214,
+    volume: 11,
+    ryd_obv: 1250000.5,
+    ryd_obv_zscore_80: -2.6,
+    ryd_obv_buy_signal: true,
+    ryd_obv_sell_signal: false,
+    ryd_obv_signal: 'buy',
+  });
+});
+
 test('normalizeChartRows returns an explicit empty payload', () => {
   assert.deepEqual(normalizeChartRows({ ticker: 'AAPL', company: null, period: '1Y', rows: [] }), {
     ticker: 'AAPL',
