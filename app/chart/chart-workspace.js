@@ -2,7 +2,13 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
-import { DEFAULT_VISIBLE_OVERLAYS, MOVING_AVERAGE_KEYS } from '../../lib/chart/series-registry.js';
+import {
+  CHART_SERIES,
+  DEFAULT_VISIBLE_INDICATORS,
+  DEFAULT_VISIBLE_OVERLAYS,
+  INDICATOR_KEYS,
+  MOVING_AVERAGE_KEYS,
+} from '../../lib/chart/series-registry.js';
 import ChartToolbar from './chart-toolbar.js';
 
 const FinancialChart = dynamic(() => import('./financial-chart.js'), {
@@ -48,6 +54,7 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
   const [ticker, setTicker] = useState(initialTicker);
   const [period, setPeriod] = useState(initialPeriod);
   const [visibleOverlays, setVisibleOverlays] = useState([...DEFAULT_VISIBLE_OVERLAYS]);
+  const [visibleIndicators, setVisibleIndicators] = useState([...DEFAULT_VISIBLE_INDICATORS]);
   const [payload, setPayload] = useState(null);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -107,6 +114,14 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
     );
   }, [payload]);
 
+  const unavailableIndicators = useMemo(() => {
+    const bars = payload?.bars ?? [];
+    return INDICATOR_KEYS.filter((key) => {
+      const dataKey = CHART_SERIES[key].dataKey;
+      return !bars.some((bar) => Number.isFinite(Number(bar[dataKey])));
+    });
+  }, [payload]);
+
   const dailyTone = Number(payload?.dailyChangePct) > 0
     ? 'positive'
     : Number(payload?.dailyChangePct) < 0
@@ -116,6 +131,15 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
   function toggleOverlay(key) {
     if (unavailableOverlays.includes(key)) return;
     setVisibleOverlays((current) => (
+      current.includes(key)
+        ? current.filter((item) => item !== key)
+        : [...current, key]
+    ));
+  }
+
+  function toggleIndicator(key) {
+    if (unavailableIndicators.includes(key)) return;
+    setVisibleIndicators((current) => (
       current.includes(key)
         ? current.filter((item) => item !== key)
         : [...current, key]
@@ -148,10 +172,13 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
         constituents={constituents}
         ticker={ticker}
         period={period}
+        visibleIndicators={visibleIndicators}
         visibleOverlays={visibleOverlays}
+        unavailableIndicators={unavailableIndicators}
         unavailableOverlays={unavailableOverlays}
         onTickerChange={setTicker}
         onPeriodChange={setPeriod}
+        onToggleIndicator={toggleIndicator}
         onToggleOverlay={toggleOverlay}
         onReset={() => setResetToken((value) => value + 1)}
       />
@@ -183,6 +210,7 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
             period={payload.period}
             resetToken={resetToken}
             ticker={payload.ticker}
+            visibleIndicators={visibleIndicators}
             visibleOverlays={visibleOverlays}
           />
         ) : null}
@@ -193,6 +221,9 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
         {unavailableOverlays.length ? (
           <span>{unavailableOverlays.length} MA-serier saknar data i vald period</span>
         ) : <span>Alla MA-serier tillgängliga</span>}
+        {unavailableIndicators.length === INDICATOR_KEYS.length
+          ? <span>RYD OBV saknar data i vald period</span>
+          : <span>RYD OBV tillgänglig</span>}
         <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">
           Charting by TradingView Lightweight Charts™
         </a>
