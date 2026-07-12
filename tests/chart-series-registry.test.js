@@ -2,11 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   CHART_SERIES,
+  DEFAULT_VISIBLE_INDICATORS,
   DEFAULT_VISIBLE_OVERLAYS,
+  INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
 } from '../lib/chart/series-registry.js';
 
-test('series registry contains stable V1 keys in render order', () => {
+test('series registry contains stable chart keys in render order', () => {
   assert.deepEqual(Object.keys(CHART_SERIES), [
     'price',
     'volume',
@@ -15,12 +17,24 @@ test('series registry contains stable V1 keys in render order', () => {
     'sma20',
     'sma50',
     'sma200',
+    'rydObvZscore',
+    'rydObvRaw',
   ]);
 });
 
 test('moving-average registry keys and default visibility are explicit', () => {
   assert.deepEqual(MOVING_AVERAGE_KEYS, ['sma5', 'sma10', 'sma20', 'sma50', 'sma200']);
   assert.deepEqual(DEFAULT_VISIBLE_OVERLAYS, ['sma20', 'sma50', 'sma200']);
+});
+
+test('RYD indicator registry keys use pane two and keep raw OBV optional', () => {
+  assert.deepEqual(INDICATOR_KEYS, ['rydObvZscore', 'rydObvRaw']);
+  assert.deepEqual(DEFAULT_VISIBLE_INDICATORS, ['rydObvZscore']);
+  assert.equal(CHART_SERIES.rydObvZscore.kind, 'histogram');
+  assert.equal(CHART_SERIES.rydObvZscore.pane, 2);
+  assert.equal(CHART_SERIES.rydObvRaw.kind, 'line');
+  assert.equal(CHART_SERIES.rydObvRaw.pane, 2);
+  assert.equal(CHART_SERIES.rydObvRaw.priceScaleId, 'left');
 });
 
 test('every moving average has one professional line definition', () => {
