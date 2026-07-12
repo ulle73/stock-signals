@@ -1,0 +1,57 @@
+name: Professional Chart Branch CI
+
+on:
+  push:
+    branches:
+      - codex/professional-chart-v1
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  chart:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/professional-chart-v1
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Run chart unit tests
+        run: node --test tests/chart-*.test.js
+
+      - name: Synchronize package lock
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Commit generated lockfile when needed
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "package-lock.json already synchronized"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "chore: sync professional chart lockfile"
+          git push origin HEAD:codex/professional-chart-v1
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run complete test suite
+        run: node --test tests/*.test.js
+
+      - name: Build production application
+        run: npm run build
