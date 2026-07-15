@@ -1,5 +1,6 @@
 import { closePool } from '../lib/db.js';
 import { ensureEnvLoaded } from '../lib/env.js';
+import { buildDailyPriceCoverageDecision } from '../lib/utils/daily-price-coverage.js';
 import { DEFAULT_YAHOO_DAILY_RANGE, getYahooDailyRange } from '../lib/utils/fetch-settings.js';
 import { FRED_SERIES_DEFINITIONS, FRED_SERIES_IDS, filterFredRowsForUpsert } from '../lib/utils/fred-series.js';
 import {
@@ -172,6 +173,7 @@ async function run() {
   let activeConstituents = [];
   let yahooResult = null;
   let benchmarkResult = null;
+  let coverageDecision = null;
 
   try {
     console.log('Fetching S&P 500 constituents...');
@@ -208,9 +210,26 @@ async function run() {
       upsertBenchmarkDailyPricesFn: upsertBenchmarkDailyPrices,
     });
 
-    if (yahooResult.failedTickers.length > 0 || benchmarkResult.failedBenchmarks.length > 0) {
+    if (benchmarkResult.failedBenchmarks.length > 0) {
       throw new Error(
-        `Core Yahoo daily data is incomplete: ${yahooResult.failedTickers.length} ticker fetches and ${benchmarkResult.failedBenchmarks.length} benchmark fetches failed.`
+        `Core benchmark data is incomplete: ${benchmarkResult.failedBenchmarks.length} benchmark fetches failed.`
+      );
+    }
+
+    coverageDecision = buildDailyPriceCoverageDecision({
+      observedCount: yahooResult.successfulTickers,
+      expectedCount: activeConstituents.length,
+    });
+
+    if (!coverageDecision.canContinue) {
+      throw new Error(`Daily price coverage is insufficient: ${coverageDecision.reason}`);
+    }
+
+    if (coverageDecision.isPartial) {
+      console.warn(
+        `Continuing with partial Yahoo coverage: ${coverageDecision.coveragePercent}% `
+        + `(${coverageDecision.observedCount}/${coverageDecision.expectedCount}); `
+        + `missing tickers: ${yahooResult.failedTickers.map((item) => item.ticker).join(', ') || 'none'}.`
       );
     }
 
@@ -237,6 +256,8 @@ async function run() {
       ...completionDetails,
       metadata: {
         ...completionDetails.metadata,
+        dailyPriceCoverage: coverageDecision,
+        failedTickers: yahooResult.failedTickers,
         globalManufacturingPmi: globalPmiResult,
         europeGrowth: europeGrowthResult,
       },
@@ -244,6 +265,7 @@ async function run() {
 
     console.log(`Fetch daily completed with status: ${status}`);
     console.log(`Yahoo: ${yahooResult.successfulTickers}/${activeConstituents.length} tickers succeeded.`);
+    console.log(`Daily price coverage: ${coverageDecision.coveragePercent}% (${coverageDecision.observedCount}/${coverageDecision.expectedCount}).`);
     console.log(`Benchmark: ${benchmarkResult.successfulBenchmarks}/${BENCHMARK_TICKERS.length} tickers succeeded.`);
     console.log(`FRED: ${fredResult.successfulSeries.length}/${FRED_SERIES_IDS.length} series succeeded.`);
     console.log(`Global Manufacturing PMI: ${globalPmiResult.successfulRows} rows updated.`);
@@ -260,6 +282,7 @@ async function run() {
       errorMessage: error.message,
       metadata: {
         stack: error.stack,
+        dailyPriceCoverage: coverageDecision,
         yahoo: yahooResult ? {
           successfulTickers: yahooResult.successfulTickers,
           failedTickers: yahooResult.failedTickers,
