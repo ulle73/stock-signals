@@ -1,0 +1,31 @@
+name: RYD Badge CI
+
+on:
+  push:
+    branches:
+      - codex/professional-chart-v1
+  workflow_dispatch:
+
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/professional-chart-v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Run focused RYD test
+        run: node --test tests/chart-ryd-obv-panel.test.js
+      - name: Install dependencies
+        run: npm ci
+      - name: Run full tests
+        run: node --test tests/*.test.js
+      - name: Build
+        run: npm run build
