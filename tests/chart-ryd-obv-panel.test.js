@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getRydObvZscoreSeriesOptions } from '../lib/chart/chart-theme.js';
@@ -10,6 +11,11 @@ import {
   buildRydObvMarkers,
   getRydObvZscoreColor,
 } from '../lib/chart/ryd-obv-series.js';
+
+const financialChartSource = readFileSync(
+  new URL('../app/chart/financial-chart.js', import.meta.url),
+  'utf8'
+);
 
 test('RYD OBV chart exposes the exact TradingView reference levels', () => {
   assert.deepEqual(RYD_OBV_LEVELS.map(({ value }) => value), [-6, -2.7, -1.25, 0, 1.25, 2.7, 6]);
@@ -83,6 +89,15 @@ test('RYD OBV markers use stored signals only when the Z-score point exists', ()
   ]);
 });
 
-test('RYD OBV Z-score hides its last-value name badge', () => {
-  assert.equal(getRydObvZscoreSeriesOptions().lastValueVisible, false);
+test('RYD OBV Z-score disables both last-value and series-title badges', () => {
+  const options = getRydObvZscoreSeriesOptions();
+  assert.equal(options.lastValueVisible, false);
+  assert.equal(options.title, '');
+
+  const zscoreSeriesBlock = financialChartSource.match(
+    /const zscoreSeries = chart\.addSeries\([\s\S]*?definition\.pane\s*\n\s*\);/
+  )?.[0];
+
+  assert.ok(zscoreSeriesBlock, 'z-score series configuration should be present');
+  assert.doesNotMatch(zscoreSeriesBlock, /title\s*:/);
 });
