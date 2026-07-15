@@ -59,13 +59,46 @@ test('daily refresh check requests rerun when downstream signals are stale', () 
   );
 });
 
-test('daily refresh check fetches when expected-date ticker coverage is incomplete', () => {
+test('daily refresh check accepts high partial source coverage when derived data is current', () => {
   const decision = buildDailyRefreshDecision({
     latestPriceDate: '2026-06-16',
     latestBenchmarkDate: '2026-06-16',
     latestMarketSignalDate: '2026-06-16',
     latestPositionSignalDate: '2026-06-16',
     priceTickerCountForExpectedDate: 506,
+    activeTickerCount: 507,
+    now: afterCloseNow,
+  });
+
+  assert.equal(decision.executionMode, DAILY_REFRESH_EXECUTION_MODES.SKIP);
+  assert.equal(decision.rawDataNeeded, false);
+  assert.equal(decision.derivedCalculationNeeded, false);
+  assert.equal(decision.targets.find((target) => target.label === 'stock_daily_prices:coverage')?.coveragePercent, 99.8);
+});
+
+test('daily refresh check calculates only when high partial source coverage exists and signals are stale', () => {
+  const decision = buildDailyRefreshDecision({
+    latestPriceDate: '2026-06-16',
+    latestBenchmarkDate: '2026-06-16',
+    latestMarketSignalDate: '2026-06-15',
+    latestPositionSignalDate: '2026-06-15',
+    priceTickerCountForExpectedDate: 506,
+    activeTickerCount: 507,
+    now: afterCloseNow,
+  });
+
+  assert.equal(decision.executionMode, DAILY_REFRESH_EXECUTION_MODES.CALCULATE_ONLY);
+  assert.equal(decision.rawDataNeeded, false);
+  assert.equal(decision.derivedCalculationNeeded, true);
+});
+
+test('daily refresh check fetches when expected-date ticker coverage falls below 98 percent', () => {
+  const decision = buildDailyRefreshDecision({
+    latestPriceDate: '2026-06-16',
+    latestBenchmarkDate: '2026-06-16',
+    latestMarketSignalDate: '2026-06-16',
+    latestPositionSignalDate: '2026-06-16',
+    priceTickerCountForExpectedDate: 496,
     activeTickerCount: 507,
     now: afterCloseNow,
   });
