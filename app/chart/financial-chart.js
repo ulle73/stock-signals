@@ -189,7 +189,6 @@ export default function FinancialChart({
         {
           ...getRydObvZscoreSeriesOptions(),
           visible: zscoreVisible,
-          title: definition.label,
         },
         definition.pane
       );
