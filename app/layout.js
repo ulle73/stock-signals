@@ -1,6 +1,8 @@
 import './globals.css';
 import './macro-matrix-colors.css';
 import './restyle.css';
+import './chart/chart.css';
+import './chart/ryd-obv.css';
 
 export const metadata = {
   title: 'Stock Signals',
