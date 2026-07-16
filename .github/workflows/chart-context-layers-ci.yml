@@ -1,0 +1,31 @@
+name: Chart Context Layers CI
+
+on:
+  push:
+    branches:
+      - codex/chart-context-layers-v1
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Focused chart context tests
+        run: |
+          node --test tests/chart-context.test.js
+          node --test tests/chart-data-context-sources.test.js
+          node --test tests/chart-gex-dex-levels.test.js
+          node --test tests/chart-earnings-markers.test.js
+          node --test tests/chart-context-strip.test.js
+          node --test tests/chart-context-layer-controls.test.js
+      - name: Complete Node test suite
+        run: node --test tests/*.test.js
+      - name: Next.js production build
+        run: npm run build
