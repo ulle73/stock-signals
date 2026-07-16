@@ -18,11 +18,7 @@ import {
   getRydObvZscoreSeriesOptions,
   getVolumeSeriesOptions,
 } from '../../lib/chart/chart-theme.js';
-import {
-  CHART_SERIES,
-  MOVING_AVERAGE_KEYS,
-  SIGNAL_KEYS,
-} from '../../lib/chart/series-registry.js';
+import { CHART_SERIES, MOVING_AVERAGE_KEYS, SIGNAL_KEYS } from '../../lib/chart/series-registry.js';
 import {
   RYD_OBV_LEVELS,
   buildRawObvLineData,
@@ -32,6 +28,7 @@ import {
 } from '../../lib/chart/ryd-obv-series.js';
 import { buildTfSyncAnchorData, buildTfSyncMarkers } from '../../lib/chart/tf-sync-markers.js';
 import { buildPlceAnchorData, buildPlceMarkers } from '../../lib/chart/plce-volume-markers.js';
+import { buildCvolAnchorData, buildCvolMarkers } from '../../lib/chart/cvol-markers.js';
 import CrosshairLegend from './crosshair-legend.js';
 
 function themeName() {
@@ -61,20 +58,14 @@ function volumeData(bars) {
 }
 
 function lineData(bars, key) {
-  return bars
-    .filter((bar) => Number.isFinite(Number(bar[key])))
+  return bars.filter((bar) => Number.isFinite(Number(bar[key])))
     .map((bar) => ({ time: bar.time, value: Number(bar[key]) }));
 }
 
 function invisibleMarkerSeriesOptions(visible) {
   return {
-    color: 'rgba(0, 0, 0, 0)',
-    lineWidth: 1,
-    priceLineVisible: false,
-    lastValueVisible: false,
-    crosshairMarkerVisible: false,
-    title: '',
-    visible,
+    color: 'rgba(0, 0, 0, 0)', lineWidth: 1, priceLineVisible: false,
+    lastValueVisible: false, crosshairMarkerVisible: false, title: '', visible,
   };
 }
 
@@ -125,6 +116,11 @@ function crosshairPoint(param, series, barsByTime) {
     plce_threshold_buy_signal: stored?.plce_threshold_buy_signal === true,
     plce_threshold_value: stored?.plce_threshold_value ?? null,
     plce_threshold_signal: stored?.plce_threshold_signal ?? 'none',
+    cvol_calls: stored?.cvol_calls ?? null,
+    cvol_sell_signal_1: stored?.cvol_sell_signal_1 === true,
+    cvol_sell_signal_2: stored?.cvol_sell_signal_2 === true,
+    cvol_sell_signal_3: stored?.cvol_sell_signal_3 === true,
+    cvol_signal: stored?.cvol_signal ?? 'none',
   };
 
   for (const key of MOVING_AVERAGE_KEYS) {
@@ -140,14 +136,8 @@ function crosshairPoint(param, series, barsByTime) {
 }
 
 export default function FinancialChart({
-  bars,
-  currency = 'USD',
-  period,
-  resetToken,
-  ticker,
-  visibleIndicators,
-  visibleOverlays,
-  visibleSignals,
+  bars, currency = 'USD', period, resetToken, ticker,
+  visibleIndicators, visibleOverlays, visibleSignals,
 }) {
   const containerRef = useRef(null);
   const chartRef = useRef(null);
@@ -181,7 +171,6 @@ export default function FinancialChart({
     const priceSeries = chart.addSeries(CandlestickSeries, getCandlestickSeriesOptions(), 0);
     const volumeSeries = chart.addSeries(HistogramSeries, getVolumeSeriesOptions(), 1);
     const series = { price: priceSeries, volume: volumeSeries };
-
     priceSeries.setData(candleData(bars));
     volumeSeries.setData(volumeData(bars));
     volumeSeries.priceScale().applyOptions({ scaleMargins: { top: 0.12, bottom: 0 }, borderVisible: false });
@@ -207,13 +196,20 @@ export default function FinancialChart({
       anchorData: buildPlceAnchorData(bars), markers: buildPlceMarkers(bars),
       visible: visibleSignals.includes('plceVolumeExtreme'),
     });
+    addMarkerLayer(chart, series, {
+      key: 'cvolExtreme', pane: 0,
+      anchorData: buildCvolAnchorData(bars), markers: buildCvolMarkers(bars),
+      visible: visibleSignals.includes('cvolExtreme'),
+    });
 
     let rydWatermark = null;
     if (rydZscoreData.length) {
       const definition = CHART_SERIES.rydObvZscore;
-      const zscoreSeries = chart.addSeries(HistogramSeries, {
-        ...getRydObvZscoreSeriesOptions(), visible: zscoreVisible,
-      }, definition.pane);
+      const zscoreSeries = chart.addSeries(
+        HistogramSeries,
+        { ...getRydObvZscoreSeriesOptions(), visible: zscoreVisible },
+        definition.pane
+      );
       zscoreSeries.setData(rydZscoreData);
       zscoreSeries.priceScale().applyOptions({ scaleMargins: { top: 0.14, bottom: 0.14 }, borderVisible: false });
       for (const level of RYD_OBV_LEVELS) zscoreSeries.createPriceLine(rydLevelOptions(level, currentTheme));
@@ -252,7 +248,6 @@ export default function FinancialChart({
 
     chartRef.current = chart;
     overlaySeriesRef.current = series;
-
     const fitPaneHeights = () => {
       const height = Math.max(620, Math.floor(container.clientHeight));
       chart.resize(Math.max(320, Math.floor(container.clientWidth)), height);
@@ -298,9 +293,7 @@ export default function FinancialChart({
   }, [bars, barsByTime, latestPoint, period, ticker]);
 
   useEffect(() => {
-    for (const key of MOVING_AVERAGE_KEYS) {
-      overlaySeriesRef.current[key]?.applyOptions({ visible: visibleOverlays.includes(key) });
-    }
+    for (const key of MOVING_AVERAGE_KEYS) overlaySeriesRef.current[key]?.applyOptions({ visible: visibleOverlays.includes(key) });
   }, [visibleOverlays]);
 
   useEffect(() => {
@@ -313,37 +306,19 @@ export default function FinancialChart({
   }, [visibleIndicators]);
 
   useEffect(() => {
-    for (const key of SIGNAL_KEYS) {
-      overlaySeriesRef.current[key]?.applyOptions({ visible: visibleSignals.includes(key) });
-    }
+    for (const key of SIGNAL_KEYS) overlaySeriesRef.current[key]?.applyOptions({ visible: visibleSignals.includes(key) });
   }, [visibleSignals]);
 
   useEffect(() => chartRef.current?.timeScale().fitContent(), [resetToken]);
 
   if (!bars.length) {
-    return (
-      <div className="financial-chart-empty" role="status">
-        <strong>Ingen användbar prishistorik</strong>
-        <span>Den valda tickern och perioden saknar kompletta OHLC-rader.</span>
-      </div>
-    );
+    return <div className="financial-chart-empty" role="status"><strong>Ingen användbar prishistorik</strong><span>Den valda tickern och perioden saknar kompletta OHLC-rader.</span></div>;
   }
 
   return (
     <div className="financial-chart-shell">
-      <CrosshairLegend
-        currency={currency}
-        point={legendPoint ?? latestPoint}
-        visibleIndicators={visibleIndicators}
-        visibleOverlays={visibleOverlays}
-        visibleSignals={visibleSignals}
-      />
-      <div
-        ref={containerRef}
-        className="financial-chart-canvas"
-        role="img"
-        aria-label={`${ticker} daglig prisgraf för perioden ${period} med candlesticks, volym, glidande medelvärden, RYD OBV och signalsymboler`}
-      />
+      <CrosshairLegend currency={currency} point={legendPoint ?? latestPoint} visibleIndicators={visibleIndicators} visibleOverlays={visibleOverlays} visibleSignals={visibleSignals} />
+      <div ref={containerRef} className="financial-chart-canvas" role="img" aria-label={`${ticker} daglig prisgraf för perioden ${period} med candlesticks, volym, glidande medelvärden, RYD OBV och signalsymboler`} />
     </div>
   );
 }

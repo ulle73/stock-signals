@@ -81,15 +81,29 @@ test('normalizeChartRows preserves stored TF Sync states and sanitizes unknown l
 test('normalizeChartRows preserves PLCE threshold values and stored signal booleans', () => {
   const payload = normalizeChartRows({
     ticker: 'AAPL', company, period: '1Y',
-    rows: [baseRow({
-      plce_threshold_value: '3123456.75',
-      plce_threshold_buy_signal: 'true',
-      plce_threshold_signal: 'buy',
-    })],
+    rows: [baseRow({ plce_threshold_value: '3123456.75', plce_threshold_buy_signal: 'true', plce_threshold_signal: 'buy' })],
   });
   assert.equal(payload.bars[0].plce_threshold_value, 3123456.75);
   assert.equal(payload.bars[0].plce_threshold_buy_signal, true);
   assert.equal(payload.bars[0].plce_threshold_signal, 'buy');
+});
+
+test('normalizeChartRows preserves optional market-wide CVOL fields', () => {
+  const payload = normalizeChartRows({
+    ticker: 'AAPL', company, period: '1Y',
+    rows: [baseRow({
+      cvol_calls: '61722200',
+      cvol_sell_signal_1: true,
+      cvol_sell_signal_2: 'true',
+      cvol_sell_signal_3: false,
+      cvol_signal: 'multiple_sell_signals',
+    })],
+  });
+  assert.equal(payload.bars[0].cvol_calls, 61722200);
+  assert.equal(payload.bars[0].cvol_sell_signal_1, true);
+  assert.equal(payload.bars[0].cvol_sell_signal_2, true);
+  assert.equal(payload.bars[0].cvol_sell_signal_3, false);
+  assert.equal(payload.bars[0].cvol_signal, 'multiple_sell_signals');
 });
 
 test('normalizeChartRows returns an explicit empty payload', () => {

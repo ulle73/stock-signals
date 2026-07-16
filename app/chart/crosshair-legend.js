@@ -30,21 +30,16 @@ function formatDate(value) {
 }
 
 export default function CrosshairLegend({
-  currency = 'USD',
-  point,
-  visibleIndicators = [],
-  visibleOverlays,
-  visibleSignals = [],
+  currency = 'USD', point, visibleIndicators = [], visibleOverlays, visibleSignals = [],
 }) {
   const overlays = visibleOverlays.filter((key) => Number.isFinite(Number(point?.[key])));
-  const showZscore = visibleIndicators.includes('rydObvZscore')
-    && Number.isFinite(Number(point?.ryd_obv_zscore_80));
-  const showRawObv = visibleIndicators.includes('rydObvRaw')
-    && Number.isFinite(Number(point?.ryd_obv));
+  const showZscore = visibleIndicators.includes('rydObvZscore') && Number.isFinite(Number(point?.ryd_obv_zscore_80));
+  const showRawObv = visibleIndicators.includes('rydObvRaw') && Number.isFinite(Number(point?.ryd_obv));
   const showTfSync = visibleSignals.includes('tfSync')
     && (point?.tf_sync_buy_signal === true || point?.tf_sync_sell_signal === true);
-  const showPlce = visibleSignals.includes('plceVolumeExtreme')
-    && point?.plce_threshold_buy_signal === true;
+  const showPlce = visibleSignals.includes('plceVolumeExtreme') && point?.plce_threshold_buy_signal === true;
+  const showCvol = visibleSignals.includes('cvolExtreme')
+    && (point?.cvol_sell_signal_1 === true || point?.cvol_sell_signal_2 === true || point?.cvol_sell_signal_3 === true);
 
   return (
     <div className="chart-crosshair-legend" aria-live="polite">
@@ -64,12 +59,9 @@ export default function CrosshairLegend({
         {showZscore ? <div><dt><i aria-hidden="true" style={{ background: '#fffb00' }} />RYD Z</dt><dd>{formatZscore(point.ryd_obv_zscore_80)}</dd></div> : null}
         {showRawObv ? <div><dt><i aria-hidden="true" style={{ background: CHART_SERIES.rydObvRaw.color }} />RYD OBV</dt><dd>{formatCompact(point.ryd_obv)}</dd></div> : null}
         {showZscore ? <div><dt>RYD-korsning</dt><dd>{formatSignal(point?.ryd_obv_signal)}</dd></div> : null}
-        {showTfSync ? (
-          <div><dt><i aria-hidden="true" style={{ background: point.tf_sync_buy_signal ? '#55ff55' : '#ff3b3b' }} />TF Sync</dt><dd>{point.tf_sync_buy_signal ? 'Grön' : 'Röd'}</dd></div>
-        ) : null}
-        {showPlce ? (
-          <div><dt><i aria-hidden="true" style={{ background: CHART_SERIES.plceVolumeExtreme.color }} />PUT volym extrem</dt><dd>{formatCompact(point.plce_threshold_value)}</dd></div>
-        ) : null}
+        {showTfSync ? <div><dt><i aria-hidden="true" style={{ background: point.tf_sync_buy_signal ? '#55ff55' : '#ff3b3b' }} />TF Sync</dt><dd>{point.tf_sync_buy_signal ? 'Grön' : 'Röd'}</dd></div> : null}
+        {showPlce ? <div><dt><i aria-hidden="true" style={{ background: CHART_SERIES.plceVolumeExtreme.color }} />PUT volym extrem</dt><dd>{formatCompact(point.plce_threshold_value)}</dd></div> : null}
+        {showCvol ? <div><dt><i aria-hidden="true" style={{ background: CHART_SERIES.cvolExtreme.color }} />CVOL extrem</dt><dd>{formatCompact(point.cvol_calls)}</dd></div> : null}
       </dl>
     </div>
   );
