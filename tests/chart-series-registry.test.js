@@ -12,16 +12,8 @@ import {
 
 test('series registry contains stable chart keys in render order', () => {
   assert.deepEqual(Object.keys(CHART_SERIES), [
-    'price',
-    'volume',
-    'sma5',
-    'sma10',
-    'sma20',
-    'sma50',
-    'sma200',
-    'rydObvZscore',
-    'rydObvRaw',
-    'tfSync',
+    'price', 'volume', 'sma5', 'sma10', 'sma20', 'sma50', 'sma200',
+    'rydObvZscore', 'rydObvRaw', 'tfSync', 'plceVolumeExtreme',
   ]);
 });
 
@@ -40,12 +32,15 @@ test('RYD indicator registry keys use pane two and keep raw OBV optional', () =>
   assert.equal(CHART_SERIES.rydObvRaw.priceScaleId, 'left');
 });
 
-test('TF Sync is a default visible pane-zero marker layer', () => {
-  assert.deepEqual(SIGNAL_KEYS, ['tfSync']);
-  assert.deepEqual(DEFAULT_VISIBLE_SIGNALS, ['tfSync']);
+test('TF Sync and PLCE are default visible pane-zero marker layers', () => {
+  assert.deepEqual(SIGNAL_KEYS, ['tfSync', 'plceVolumeExtreme']);
+  assert.deepEqual(DEFAULT_VISIBLE_SIGNALS, ['tfSync', 'plceVolumeExtreme']);
   assert.equal(CHART_SERIES.tfSync.kind, 'markers');
   assert.equal(CHART_SERIES.tfSync.pane, 0);
   assert.deepEqual(CHART_SERIES.tfSync.availabilityKeys, ['tf_sync_buy_signal', 'tf_sync_sell_signal']);
+  assert.equal(CHART_SERIES.plceVolumeExtreme.kind, 'markers');
+  assert.equal(CHART_SERIES.plceVolumeExtreme.pane, 0);
+  assert.deepEqual(CHART_SERIES.plceVolumeExtreme.availabilityKeys, ['plce_threshold_buy_signal']);
 });
 
 test('every moving average has one professional line definition', () => {

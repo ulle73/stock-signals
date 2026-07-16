@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { getRydObvZscoreSeriesOptions } from '../lib/chart/chart-theme.js';
 import {
   RYD_OBV_LEVELS,
@@ -95,7 +95,7 @@ test('RYD OBV Z-score disables both last-value and series-title badges', () => {
   assert.equal(options.title, '');
 
   const zscoreSeriesBlock = financialChartSource.match(
-    /const zscoreSeries = chart\.addSeries\([\s\S]*?definition\.pane\s*\n\s*\);/
+    /const zscoreSeries = chart\.addSeries\([\s\S]*?zscoreSeries\.setData/
   )?.[0];
 
   assert.ok(zscoreSeriesBlock, 'z-score series configuration should be present');
