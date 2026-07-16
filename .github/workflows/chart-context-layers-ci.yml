@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - codex/chart-context-layers-v1
+  pull_request:
+    branches:
+      - main
 
 jobs:
   verify:
