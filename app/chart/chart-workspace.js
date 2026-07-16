@@ -6,8 +6,10 @@ import {
   CHART_SERIES,
   DEFAULT_VISIBLE_INDICATORS,
   DEFAULT_VISIBLE_OVERLAYS,
+  DEFAULT_VISIBLE_SIGNALS,
   INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
+  SIGNAL_KEYS,
 } from '../../lib/chart/series-registry.js';
 import ChartToolbar from './chart-toolbar.js';
 
@@ -50,11 +52,17 @@ function formatDate(value) {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
+function signalAvailable(bars, definition) {
+  const keys = definition.availabilityKeys ?? [definition.dataKey];
+  return bars.some((bar) => keys.some((key) => bar[key] === true || bar[key] === false || (bar[key] !== null && bar[key] !== undefined)));
+}
+
 export default function ChartWorkspace({ constituents, initialPeriod, initialTicker }) {
   const [ticker, setTicker] = useState(initialTicker);
   const [period, setPeriod] = useState(initialPeriod);
   const [visibleOverlays, setVisibleOverlays] = useState([...DEFAULT_VISIBLE_OVERLAYS]);
   const [visibleIndicators, setVisibleIndicators] = useState([...DEFAULT_VISIBLE_INDICATORS]);
+  const [visibleSignals, setVisibleSignals] = useState([...DEFAULT_VISIBLE_SIGNALS]);
   const [payload, setPayload] = useState(null);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -122,24 +130,20 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
     });
   }, [payload]);
 
+  const unavailableSignals = useMemo(() => {
+    const bars = payload?.bars ?? [];
+    return SIGNAL_KEYS.filter((key) => !signalAvailable(bars, CHART_SERIES[key]));
+  }, [payload]);
+
   const dailyTone = Number(payload?.dailyChangePct) > 0
     ? 'positive'
     : Number(payload?.dailyChangePct) < 0
       ? 'danger'
       : 'neutral';
 
-  function toggleOverlay(key) {
-    if (unavailableOverlays.includes(key)) return;
-    setVisibleOverlays((current) => (
-      current.includes(key)
-        ? current.filter((item) => item !== key)
-        : [...current, key]
-    ));
-  }
-
-  function toggleIndicator(key) {
-    if (unavailableIndicators.includes(key)) return;
-    setVisibleIndicators((current) => (
+  function toggleList(setter, unavailable, key) {
+    if (unavailable.includes(key)) return;
+    setter((current) => (
       current.includes(key)
         ? current.filter((item) => item !== key)
         : [...current, key]
@@ -174,12 +178,15 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
         period={period}
         visibleIndicators={visibleIndicators}
         visibleOverlays={visibleOverlays}
+        visibleSignals={visibleSignals}
         unavailableIndicators={unavailableIndicators}
         unavailableOverlays={unavailableOverlays}
+        unavailableSignals={unavailableSignals}
         onTickerChange={setTicker}
         onPeriodChange={setPeriod}
-        onToggleIndicator={toggleIndicator}
-        onToggleOverlay={toggleOverlay}
+        onToggleIndicator={(key) => toggleList(setVisibleIndicators, unavailableIndicators, key)}
+        onToggleOverlay={(key) => toggleList(setVisibleOverlays, unavailableOverlays, key)}
+        onToggleSignal={(key) => toggleList(setVisibleSignals, unavailableSignals, key)}
         onReset={() => setResetToken((value) => value + 1)}
       />
 
@@ -212,6 +219,7 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
             ticker={payload.ticker}
             visibleIndicators={visibleIndicators}
             visibleOverlays={visibleOverlays}
+            visibleSignals={visibleSignals}
           />
         ) : null}
       </div>

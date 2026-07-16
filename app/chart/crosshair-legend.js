@@ -45,12 +45,15 @@ export default function CrosshairLegend({
   point,
   visibleIndicators = [],
   visibleOverlays,
+  visibleSignals = [],
 }) {
   const overlays = visibleOverlays.filter((key) => Number.isFinite(Number(point?.[key])));
   const showZscore = visibleIndicators.includes('rydObvZscore')
     && Number.isFinite(Number(point?.ryd_obv_zscore_80));
   const showRawObv = visibleIndicators.includes('rydObvRaw')
     && Number.isFinite(Number(point?.ryd_obv));
+  const showTfSync = visibleSignals.includes('tfSync')
+    && (point?.tf_sync_buy_signal === true || point?.tf_sync_sell_signal === true);
 
   return (
     <div className="chart-crosshair-legend" aria-live="polite">
@@ -89,6 +92,12 @@ export default function CrosshairLegend({
           <div>
             <dt>RYD-korsning</dt>
             <dd>{formatSignal(point?.ryd_obv_signal)}</dd>
+          </div>
+        ) : null}
+        {showTfSync ? (
+          <div>
+            <dt><i aria-hidden="true" style={{ background: point.tf_sync_buy_signal ? '#55ff55' : '#ff3b3b' }} />TF Sync</dt>
+            <dd>{point.tf_sync_buy_signal ? 'Grön' : 'Röd'}</dd>
           </div>
         ) : null}
       </dl>

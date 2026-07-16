@@ -4,8 +4,10 @@ import {
   CHART_SERIES,
   DEFAULT_VISIBLE_INDICATORS,
   DEFAULT_VISIBLE_OVERLAYS,
+  DEFAULT_VISIBLE_SIGNALS,
   INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
+  SIGNAL_KEYS,
 } from '../lib/chart/series-registry.js';
 
 test('series registry contains stable chart keys in render order', () => {
@@ -19,6 +21,7 @@ test('series registry contains stable chart keys in render order', () => {
     'sma200',
     'rydObvZscore',
     'rydObvRaw',
+    'tfSync',
   ]);
 });
 
@@ -35,6 +38,14 @@ test('RYD indicator registry keys use pane two and keep raw OBV optional', () =>
   assert.equal(CHART_SERIES.rydObvRaw.kind, 'line');
   assert.equal(CHART_SERIES.rydObvRaw.pane, 2);
   assert.equal(CHART_SERIES.rydObvRaw.priceScaleId, 'left');
+});
+
+test('TF Sync is a default visible pane-zero marker layer', () => {
+  assert.deepEqual(SIGNAL_KEYS, ['tfSync']);
+  assert.deepEqual(DEFAULT_VISIBLE_SIGNALS, ['tfSync']);
+  assert.equal(CHART_SERIES.tfSync.kind, 'markers');
+  assert.equal(CHART_SERIES.tfSync.pane, 0);
+  assert.deepEqual(CHART_SERIES.tfSync.availabilityKeys, ['tf_sync_buy_signal', 'tf_sync_sell_signal']);
 });
 
 test('every moving average has one professional line definition', () => {

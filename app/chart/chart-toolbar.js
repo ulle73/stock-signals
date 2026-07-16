@@ -5,10 +5,33 @@ import {
   CHART_SERIES,
   INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
+  SIGNAL_KEYS,
 } from '../../lib/chart/series-registry.js';
 
 function periodLabel(period) {
   return period === 'ALL' ? 'All' : period;
+}
+
+function ToggleButtons({ keys, unavailableKeys, visibleKeys, onToggle }) {
+  return keys.map((key) => {
+    const unavailable = unavailableKeys.includes(key);
+    const active = visibleKeys.includes(key);
+    const color = CHART_SERIES[key].color ?? '#fffb00';
+    return (
+      <button
+        type="button"
+        aria-pressed={active}
+        className={active ? 'is-active' : undefined}
+        disabled={unavailable}
+        key={key}
+        onClick={() => onToggle(key)}
+        title={unavailable ? `${CHART_SERIES[key].label} saknas för vald period` : `Visa eller dölj ${CHART_SERIES[key].label}`}
+      >
+        <i aria-hidden="true" style={{ background: color }} />
+        {CHART_SERIES[key].label}
+      </button>
+    );
+  });
 }
 
 export default function ChartToolbar({
@@ -18,12 +41,15 @@ export default function ChartToolbar({
   onTickerChange,
   onToggleIndicator,
   onToggleOverlay,
+  onToggleSignal,
   period,
   ticker,
   unavailableIndicators,
   unavailableOverlays,
+  unavailableSignals,
   visibleIndicators,
   visibleOverlays,
+  visibleSignals,
 }) {
   return (
     <div className="chart-toolbar" aria-label="Chartkontroller">
@@ -62,49 +88,36 @@ export default function ChartToolbar({
       <div className="chart-toolbar-group chart-toolbar-overlays" role="group" aria-label="Glidande medelvärden">
         <span>Överlays</span>
         <div className="chart-overlay-control">
-          {MOVING_AVERAGE_KEYS.map((key) => {
-            const unavailable = unavailableOverlays.includes(key);
-            const active = visibleOverlays.includes(key);
-            return (
-              <button
-                type="button"
-                aria-pressed={active}
-                className={active ? 'is-active' : undefined}
-                disabled={unavailable}
-                key={key}
-                onClick={() => onToggleOverlay(key)}
-                title={unavailable ? `${CHART_SERIES[key].label} saknas för vald period` : `Visa eller dölj ${CHART_SERIES[key].label}`}
-              >
-                <i aria-hidden="true" style={{ background: CHART_SERIES[key].color }} />
-                {CHART_SERIES[key].label}
-              </button>
-            );
-          })}
+          <ToggleButtons
+            keys={MOVING_AVERAGE_KEYS}
+            unavailableKeys={unavailableOverlays}
+            visibleKeys={visibleOverlays}
+            onToggle={onToggleOverlay}
+          />
         </div>
       </div>
 
       <div className="chart-toolbar-group chart-toolbar-indicators" role="group" aria-label="Egna indikatorer">
         <span>Indikatorer</span>
         <div className="chart-overlay-control">
-          {INDICATOR_KEYS.map((key) => {
-            const unavailable = unavailableIndicators.includes(key);
-            const active = visibleIndicators.includes(key);
-            const color = CHART_SERIES[key].color ?? '#fffb00';
-            return (
-              <button
-                type="button"
-                aria-pressed={active}
-                className={active ? 'is-active' : undefined}
-                disabled={unavailable}
-                key={key}
-                onClick={() => onToggleIndicator(key)}
-                title={unavailable ? `${CHART_SERIES[key].label} saknas för vald period` : `Visa eller dölj ${CHART_SERIES[key].label}`}
-              >
-                <i aria-hidden="true" style={{ background: color }} />
-                {CHART_SERIES[key].label}
-              </button>
-            );
-          })}
+          <ToggleButtons
+            keys={INDICATOR_KEYS}
+            unavailableKeys={unavailableIndicators}
+            visibleKeys={visibleIndicators}
+            onToggle={onToggleIndicator}
+          />
+        </div>
+      </div>
+
+      <div className="chart-toolbar-group chart-toolbar-signals" role="group" aria-label="Signalsymboler">
+        <span>Signaler</span>
+        <div className="chart-overlay-control">
+          <ToggleButtons
+            keys={SIGNAL_KEYS}
+            unavailableKeys={unavailableSignals}
+            visibleKeys={visibleSignals}
+            onToggle={onToggleSignal}
+          />
         </div>
       </div>
 

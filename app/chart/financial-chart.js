@@ -29,6 +29,10 @@ import {
   buildRydObvMarkerAnchorData,
   buildRydObvMarkers,
 } from '../../lib/chart/ryd-obv-series.js';
+import {
+  buildTfSyncAnchorData,
+  buildTfSyncMarkers,
+} from '../../lib/chart/tf-sync-markers.js';
 import CrosshairLegend from './crosshair-legend.js';
 
 function themeName() {
@@ -61,6 +65,33 @@ function lineData(bars, key) {
   return bars
     .filter((bar) => Number.isFinite(Number(bar[key])))
     .map((bar) => ({ time: bar.time, value: Number(bar[key]) }));
+}
+
+function invisibleMarkerSeriesOptions(visible) {
+  return {
+    color: 'rgba(0, 0, 0, 0)',
+    lineWidth: 1,
+    priceLineVisible: false,
+    lastValueVisible: false,
+    crosshairMarkerVisible: false,
+    title: '',
+    visible,
+  };
+}
+
+function addMarkerLayer(chart, series, {
+  key,
+  pane = 0,
+  anchorData,
+  markers,
+  visible,
+}) {
+  if (!anchorData.length || !markers.length) return null;
+  const markerSeries = chart.addSeries(LineSeries, invisibleMarkerSeriesOptions(visible), pane);
+  markerSeries.setData(anchorData);
+  createSeriesMarkers(markerSeries, markers);
+  series[key] = markerSeries;
+  return markerSeries;
 }
 
 function rydLevelOptions(level, currentTheme) {
@@ -97,6 +128,9 @@ function crosshairPoint(param, series, barsByTime) {
     close: price.close,
     volume: param.seriesData.get(series.volume)?.value ?? null,
     ryd_obv_signal: stored?.ryd_obv_signal ?? 'none',
+    tf_sync_buy_signal: stored?.tf_sync_buy_signal === true,
+    tf_sync_sell_signal: stored?.tf_sync_sell_signal === true,
+    tf_sync_signal: stored?.tf_sync_signal ?? 'none',
   };
 
   for (const key of MOVING_AVERAGE_KEYS) {
@@ -120,6 +154,7 @@ export default function FinancialChart({
   ticker,
   visibleIndicators,
   visibleOverlays,
+  visibleSignals,
 }) {
   const containerRef = useRef(null);
   const chartRef = useRef(null);
@@ -181,6 +216,14 @@ export default function FinancialChart({
       series[key] = lineSeries;
     }
 
+    addMarkerLayer(chart, series, {
+      key: 'tfSync',
+      pane: CHART_SERIES.tfSync.pane,
+      anchorData: buildTfSyncAnchorData(bars),
+      markers: buildTfSyncMarkers(bars),
+      visible: visibleSignals.includes('tfSync'),
+    });
+
     let rydWatermark = null;
     if (rydZscoreData.length) {
       const definition = CHART_SERIES.rydObvZscore;
@@ -205,14 +248,7 @@ export default function FinancialChart({
       if (rydMarkerAnchorData.length) {
         const markerAnchorSeries = chart.addSeries(
           LineSeries,
-          {
-            color: 'rgba(0, 0, 0, 0)',
-            lineWidth: 1,
-            priceLineVisible: false,
-            lastValueVisible: false,
-            crosshairMarkerVisible: false,
-            visible: zscoreVisible,
-          },
+          invisibleMarkerSeriesOptions(zscoreVisible),
           definition.pane
         );
         markerAnchorSeries.setData(rydMarkerAnchorData);
@@ -327,6 +363,10 @@ export default function FinancialChart({
   }, [visibleIndicators]);
 
   useEffect(() => {
+    overlaySeriesRef.current.tfSync?.applyOptions({ visible: visibleSignals.includes('tfSync') });
+  }, [visibleSignals]);
+
+  useEffect(() => {
     chartRef.current?.timeScale().fitContent();
   }, [resetToken]);
 
@@ -346,12 +386,13 @@ export default function FinancialChart({
         point={legendPoint ?? latestPoint}
         visibleIndicators={visibleIndicators}
         visibleOverlays={visibleOverlays}
+        visibleSignals={visibleSignals}
       />
       <div
         ref={containerRef}
         className="financial-chart-canvas"
         role="img"
-        aria-label={`${ticker} daglig prisgraf för perioden ${period} med candlesticks, volym, glidande medelvärden och RYD OBV`}
+        aria-label={`${ticker} daglig prisgraf för perioden ${period} med candlesticks, volym, glidande medelvärden, RYD OBV och signalsymboler`}
       />
     </div>
   );
