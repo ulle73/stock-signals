@@ -6,6 +6,7 @@ import { buildMacdVIndicatorRows } from '../lib/indicators/macd-v.js';
 import { buildPlceThresholdIndicatorRows } from '../lib/indicators/plce-threshold.js';
 import { buildPriceZscoreIndicatorRows } from '../lib/indicators/price-zscore.js';
 import { buildRydObvIndicatorRows } from '../lib/indicators/ryd-obv-zscore.js';
+import { buildYield2y10yIndicatorRows } from '../lib/indicators/yield-2y-10y.js';
 import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
 import { calculateTickerIndicators } from '../lib/utils/rolling-indicators.js';
 import {
@@ -20,6 +21,10 @@ import {
   upsertStockDailyIndicators,
 } from '../lib/repositories/indicators.js';
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
+import {
+  getYield2y10ySourceRows,
+  upsertYield2y10yIndicatorRows,
+} from '../lib/repositories/yield-2y-10y-indicator.js';
 
 const fetchRunGuard = createFetchRunGuard({
   finishRun: finishFetchRun,
@@ -30,17 +35,13 @@ const fetchRunGuard = createFetchRunGuard({
 });
 
 ensureEnvLoaded();
-
 const unregisterSignalHandlers = fetchRunGuard.register(process);
 
 function getCalculationOptions() {
   const ticker = process.env.CALCULATE_TICKER?.trim().toUpperCase() || null;
   const rawLimit = process.env.CALCULATE_TICKER_LIMIT;
   const parsedLimit = rawLimit ? Number(rawLimit) : null;
-  const tickerLimit = Number.isFinite(parsedLimit) && parsedLimit > 0
-    ? parsedLimit
-    : null;
-
+  const tickerLimit = Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : null;
   return { ticker, tickerLimit };
 }
 
@@ -65,6 +66,22 @@ async function processTickerRows(rows, plceShortVolumeRows) {
   return { indicators, inserted };
 }
 
+async function calculateYieldLayer(enabled) {
+  if (!enabled) {
+    console.log('Skipping 2Y + 10Y yield rebuild because calculation scope is limited.');
+    return 0;
+  }
+  const sourceRows = await getYield2y10ySourceRows();
+  const indicatorRows = buildYield2y10yIndicatorRows(sourceRows);
+  if (!indicatorRows.length) {
+    console.warn('Skipping 2Y + 10Y yield rebuild: aligned DGS2/DGS10/FEDFUNDS history is unavailable.');
+    return 0;
+  }
+  const inserted = await upsertYield2y10yIndicatorRows(indicatorRows);
+  console.log(`2Y + 10Y yield rows upserted: ${inserted}`);
+  return inserted;
+}
+
 async function run() {
   await failRunningFetchRuns('calculate_daily', 'calculate:daily interrupted before completion', {
     recoveredBy: 'calculate_daily',
@@ -74,7 +91,6 @@ async function run() {
 
   try {
     const options = getCalculationOptions();
-
     if (options.ticker) {
       console.log(`CALCULATE_TICKER=${options.ticker}; limiting indicator calculation to one ticker.`);
     } else if (options.tickerLimit) {
@@ -85,9 +101,7 @@ async function run() {
       getPriceHistoryForIndicators(options),
       getPlceShortVolumeIndicatorRows(),
     ]);
-    if (!priceRows.length) {
-      throw new Error('No stock price history found for indicator calculation.');
-    }
+    if (!priceRows.length) throw new Error('No stock price history found for indicator calculation.');
 
     const failedTickers = [];
     let rowsCalculated = 0;
@@ -95,19 +109,13 @@ async function run() {
     let attemptedTickers = 0;
     const totalTickers = new Set(priceRows.map((row) => row.ticker)).size;
     const shouldBuildBreadth = !options.ticker && !options.tickerLimit;
-    const breadthAccumulator = shouldBuildBreadth
-      ? createMarketBreadthAccumulator()
-      : null;
+    const breadthAccumulator = shouldBuildBreadth ? createMarketBreadthAccumulator() : null;
     let currentTicker = null;
     let currentRows = [];
 
     async function flushCurrentTicker() {
-      if (!currentTicker || !currentRows.length) {
-        return;
-      }
-
+      if (!currentTicker || !currentRows.length) return;
       attemptedTickers += 1;
-
       try {
         if (attemptedTickers === 1 || attemptedTickers % 25 === 0 || attemptedTickers === totalTickers) {
           console.log(`Calculating indicators ${attemptedTickers}/${totalTickers}: ${currentTicker} (${currentRows.length} rows)`);
@@ -115,10 +123,7 @@ async function run() {
         const { indicators, inserted } = await processTickerRows(currentRows, plceShortVolumeRows);
         rowsCalculated += inserted;
         successfulTickers += 1;
-
-        if (breadthAccumulator) {
-          accumulateMarketBreadth(breadthAccumulator, indicators);
-        }
+        if (breadthAccumulator) accumulateMarketBreadth(breadthAccumulator, indicators);
       } catch (error) {
         console.warn(`Failed indicator calculation for ${currentTicker}: ${error.message}`);
         failedTickers.push({ ticker: currentTicker, error: error.message });
@@ -130,11 +135,9 @@ async function run() {
         await flushCurrentTicker();
         currentRows = [];
       }
-
       currentTicker = row.ticker;
       currentRows.push(row);
     }
-
     await flushCurrentTicker();
 
     let breadthRowsUpserted = 0;
@@ -146,6 +149,7 @@ async function run() {
       console.log('Skipping breadth rebuild because calculation scope is limited.');
     }
 
+    const yieldRowsUpserted = await calculateYieldLayer(shouldBuildBreadth);
     const failedItems = failedTickers.length;
     const status = failedItems > 0 ? 'partial_success' : 'success';
 
@@ -156,6 +160,7 @@ async function run() {
       metadata: {
         rowsCalculated,
         breadthRowsUpserted,
+        yieldRowsUpserted,
         options,
         failedTickers,
       },

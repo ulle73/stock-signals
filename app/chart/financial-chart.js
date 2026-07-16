@@ -29,6 +29,7 @@ import {
 import { buildTfSyncAnchorData, buildTfSyncMarkers } from '../../lib/chart/tf-sync-markers.js';
 import { buildPlceAnchorData, buildPlceMarkers } from '../../lib/chart/plce-volume-markers.js';
 import { buildCvolAnchorData, buildCvolMarkers } from '../../lib/chart/cvol-markers.js';
+import { buildYieldAnchorData, buildYieldMarkers } from '../../lib/chart/yield-2y-10y-markers.js';
 import CrosshairLegend from './crosshair-legend.js';
 
 function themeName() {
@@ -121,6 +122,12 @@ function crosshairPoint(param, series, barsByTime) {
     cvol_sell_signal_2: stored?.cvol_sell_signal_2 === true,
     cvol_sell_signal_3: stored?.cvol_sell_signal_3 === true,
     cvol_signal: stored?.cvol_signal ?? 'none',
+    yield_2y: stored?.yield_2y ?? null,
+    yield_10y: stored?.yield_10y ?? null,
+    yield_frr_2_10: stored?.yield_frr_2_10 ?? null,
+    yield_2y_10y_buy_signal: stored?.yield_2y_10y_buy_signal === true,
+    yield_2y_10y_sell_signal: stored?.yield_2y_10y_sell_signal === true,
+    yield_2y_10y_signal: stored?.yield_2y_10y_signal ?? 'none',
   };
 
   for (const key of MOVING_AVERAGE_KEYS) {
@@ -200,6 +207,11 @@ export default function FinancialChart({
       key: 'cvolExtreme', pane: 0,
       anchorData: buildCvolAnchorData(bars), markers: buildCvolMarkers(bars),
       visible: visibleSignals.includes('cvolExtreme'),
+    });
+    addMarkerLayer(chart, series, {
+      key: 'yield2y10y', pane: 0,
+      anchorData: buildYieldAnchorData(bars), markers: buildYieldMarkers(bars),
+      visible: visibleSignals.includes('yield2y10y'),
     });
 
     let rydWatermark = null;

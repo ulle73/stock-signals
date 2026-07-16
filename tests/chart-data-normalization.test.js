@@ -106,6 +106,28 @@ test('normalizeChartRows preserves optional market-wide CVOL fields', () => {
   assert.equal(payload.bars[0].cvol_signal, 'multiple_sell_signals');
 });
 
+test('normalizeChartRows preserves optional market-wide 2Y + 10Y fields', () => {
+  const payload = normalizeChartRows({
+    ticker: 'AAPL', company, period: '1Y',
+    rows: [baseRow({
+      yield_2y: '2.5',
+      yield_10y: '5',
+      yield_effr: '6',
+      yield_frr_2_10: '1.125',
+      yield_2y_10y_buy_signal: 'true',
+      yield_2y_10y_sell_signal: false,
+      yield_2y_10y_signal: 'buy',
+    })],
+  });
+  assert.equal(payload.bars[0].yield_2y, 2.5);
+  assert.equal(payload.bars[0].yield_10y, 5);
+  assert.equal(payload.bars[0].yield_effr, 6);
+  assert.equal(payload.bars[0].yield_frr_2_10, 1.125);
+  assert.equal(payload.bars[0].yield_2y_10y_buy_signal, true);
+  assert.equal(payload.bars[0].yield_2y_10y_sell_signal, false);
+  assert.equal(payload.bars[0].yield_2y_10y_signal, 'buy');
+});
+
 test('normalizeChartRows returns an explicit empty payload', () => {
   assert.deepEqual(normalizeChartRows({ ticker: 'AAPL', company: null, period: '1Y', rows: [] }), {
     ticker: 'AAPL', companyName: 'AAPL', sector: null, currency: 'USD', period: '1Y', latestDate: null,
