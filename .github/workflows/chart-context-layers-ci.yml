@@ -6,6 +6,7 @@ on:
       - codex/chart-context-layers-v1
     paths-ignore:
       - .chart-context-ci-result
+      - .chart-context-ci-log
 
 permissions:
   contents: write
@@ -22,29 +23,43 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: Install dependencies
-        run: npm ci
-      - name: Focused chart context tests
+      - name: Verify and publish diagnostics
+        shell: bash
         run: |
-          node --test tests/chart-context.test.js
-          node --test tests/chart-data-context-sources.test.js
-          node --test tests/chart-gex-dex-levels.test.js
-          node --test tests/chart-earnings-markers.test.js
-          node --test tests/chart-context-strip.test.js
-          node --test tests/chart-context-layer-controls.test.js
-      - name: Complete Node test suite
-        run: node --test tests/*.test.js
-      - name: Next.js production build
-        run: npm run build
-      - name: Publish verification result
-        if: always()
-        env:
-          RESULT: ${{ job.status }}
-          VERIFIED_SHA: ${{ github.sha }}
-        run: |
-          printf 'result=%s\nverified_sha=%s\n' "$RESULT" "$VERIFIED_SHA" > .chart-context-ci-result
+          set +e
+          : > .chart-context-ci-log
+          status=0
+
+          run_check() {
+            printf '\n===== %s =====\n' "$1" >> .chart-context-ci-log
+            shift
+            "$@" >> .chart-context-ci-log 2>&1
+            code=$?
+            if [ "$code" -ne 0 ]; then
+              status=1
+              printf '\n[exit=%s]\n' "$code" >> .chart-context-ci-log
+            fi
+          }
+
+          run_check "npm ci" npm ci
+          if [ "$status" -eq 0 ]; then
+            run_check "focused context tests" node --test \
+              tests/chart-context.test.js \
+              tests/chart-data-context-sources.test.js \
+              tests/chart-gex-dex-levels.test.js \
+              tests/chart-earnings-markers.test.js \
+              tests/chart-context-strip.test.js \
+              tests/chart-context-layer-controls.test.js
+            run_check "complete Node test suite" node --test tests/*.test.js
+            run_check "Next.js production build" npm run build
+          fi
+
+          if [ "$status" -eq 0 ]; then result=success; else result=failure; fi
+          printf 'result=%s\nverified_sha=%s\n' "$result" "${GITHUB_SHA}" > .chart-context-ci-result
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .chart-context-ci-result
-          git commit -m "ci: record chart context verification result" || exit 0
+          git add .chart-context-ci-result .chart-context-ci-log
+          git commit -m "ci: record chart context verification diagnostics" || true
           git push origin HEAD:codex/chart-context-layers-v1
+          exit "$status"
