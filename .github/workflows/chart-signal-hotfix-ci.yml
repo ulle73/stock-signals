@@ -1,0 +1,27 @@
+name: Chart Signal Hotfix CI
+
+on:
+  push:
+    branches:
+      - hotfix/chart-top-signals-data
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --silent
+      - name: Run chart signal regressions
+        run: node --test tests/chart-signal-hotfix-regression.test.js
+      - name: Run complete test suite
+        run: node --test tests/*.test.js
+      - name: Build production application
+        run: npm run build
