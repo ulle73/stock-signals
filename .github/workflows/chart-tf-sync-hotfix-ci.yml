@@ -1,0 +1,29 @@
+name: Chart TF Sync Hotfix CI
+
+on:
+  push:
+    branches:
+      - hotfix/chart-tf-sync-source
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --silent
+      - name: Run TF Sync source regression
+        run: node --test tests/chart-data-tf-sync-source.test.js
+      - name: Run complete test suite
+        run: node --test tests/*.test.js
+      - name: Build production application
+        run: npm run build
