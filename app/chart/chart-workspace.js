@@ -11,6 +11,7 @@ import {
   MOVING_AVERAGE_KEYS,
   SIGNAL_KEYS,
 } from '../../lib/chart/series-registry.js';
+import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';
 import ChartToolbar from './chart-toolbar.js';
 
 const FinancialChart = dynamic(() => import('./financial-chart.js'), {
@@ -50,11 +51,6 @@ function formatDate(value) {
     dateStyle: 'medium',
     timeZone: 'UTC',
   }).format(new Date(`${value}T00:00:00Z`));
-}
-
-function signalAvailable(bars, definition) {
-  const keys = definition.availabilityKeys ?? [definition.dataKey];
-  return bars.some((bar) => keys.some((key) => bar[key] === true || bar[key] === false || (bar[key] !== null && bar[key] !== undefined)));
 }
 
 export default function ChartWorkspace({ constituents, initialPeriod, initialTicker }) {
@@ -130,10 +126,10 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
     });
   }, [payload]);
 
-  const unavailableSignals = useMemo(() => {
-    const bars = payload?.bars ?? [];
-    return SIGNAL_KEYS.filter((key) => !signalAvailable(bars, CHART_SERIES[key]));
-  }, [payload]);
+  const unavailableSignals = useMemo(
+    () => signalControlsUnavailable(payload?.bars ?? []),
+    [payload]
+  );
 
   const dailyTone = Number(payload?.dailyChangePct) > 0
     ? 'positive'
