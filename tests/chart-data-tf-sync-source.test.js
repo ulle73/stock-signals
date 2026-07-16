@@ -14,5 +14,6 @@ test('chart data reads TF Sync from its dedicated optional table', () => {
     'stock_daily_indicators must not be queried for TF Sync columns'
   );
   assert.match(source, /from tf_sync_indicator_daily/i);
-  assert.match(source, /Optional TF Sync chart layer unavailable/);
+  assert.match(source, /optionalRows\('TF Sync'/);
+  assert.match(source, /Optional \$\{label\} chart layer unavailable/);
 });
