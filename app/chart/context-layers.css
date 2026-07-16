@@ -1,0 +1,129 @@
+.chart-toolbar-context {
+  flex: 0 1 auto;
+}
+
+.chart-context-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--card-strong) 88%, transparent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.chart-context-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(145px, 1fr));
+  gap: 7px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.chart-context-card,
+.chart-next-event {
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--bg-strong) 86%, transparent);
+}
+
+.chart-context-card {
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  min-height: 64px;
+  padding: 9px 11px;
+  overflow: hidden;
+}
+
+.chart-context-label,
+.chart-next-event span {
+  color: var(--muted);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chart-context-state {
+  display: block;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-context-value {
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-next-event {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  flex: 0 0 172px;
+  padding: 9px 12px;
+}
+
+.chart-next-event strong {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 1280px) {
+  .chart-context-strip {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .chart-context-cards {
+    min-width: 720px;
+  }
+
+  .chart-next-event {
+    min-width: 172px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .chart-toolbar-context {
+    order: 5;
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .chart-context-strip {
+    gap: 7px;
+    padding: 7px;
+  }
+
+  .chart-context-cards {
+    grid-template-columns: repeat(4, minmax(152px, 1fr));
+    min-width: 660px;
+  }
+
+  .chart-context-card {
+    min-height: 60px;
+    padding: 8px 10px;
+  }
+
+  .chart-next-event {
+    flex-basis: 154px;
+    min-width: 154px;
+  }
+}
