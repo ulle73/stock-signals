@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   CHART_SERIES,
+  CONTEXT_LAYER_KEYS,
+  DEFAULT_VISIBLE_CONTEXT_LAYERS,
   DEFAULT_VISIBLE_INDICATORS,
   DEFAULT_VISIBLE_OVERLAYS,
   DEFAULT_VISIBLE_SIGNALS,
@@ -14,6 +16,7 @@ test('series registry contains stable chart keys in render order', () => {
   assert.deepEqual(Object.keys(CHART_SERIES), [
     'price', 'volume', 'sma5', 'sma10', 'sma20', 'sma50', 'sma200',
     'rydObvZscore', 'rydObvRaw', 'tfSync', 'plceVolumeExtreme', 'cvolExtreme', 'yield2y10y',
+    'gexDex', 'gexDexMore', 'earnings',
   ]);
 });
 
@@ -51,6 +54,15 @@ test('all four TradingView signal layers are visible by default on pane zero', (
   assert.equal(CHART_SERIES.yield2y10y.kind, 'markers');
   assert.equal(CHART_SERIES.yield2y10y.pane, 0);
   assert.deepEqual(CHART_SERIES.yield2y10y.availabilityKeys, ['yield_2y_10y_buy_signal', 'yield_2y_10y_sell_signal']);
+});
+
+test('context registry keeps the clean default and optional detail layers explicit', () => {
+  assert.deepEqual(CONTEXT_LAYER_KEYS, ['gexDex', 'gexDexMore', 'earnings']);
+  assert.deepEqual(DEFAULT_VISIBLE_CONTEXT_LAYERS, ['gexDex', 'earnings']);
+  for (const key of CONTEXT_LAYER_KEYS) {
+    assert.equal(CHART_SERIES[key].kind, 'context');
+    assert.equal(CHART_SERIES[key].pane, 0);
+  }
 });
 
 test('every moving average has one professional line definition', () => {
