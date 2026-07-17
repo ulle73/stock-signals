@@ -15,187 +15,2722 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.263065
+  duration_ms: 1.191492
   type: 'test'
   ...
 # Subtest: strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
 ok 2 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
   ---
-  duration_ms: 2.983855
+  duration_ms: 3.004543
   type: 'test'
   ...
 # Subtest: all provider strikes are shown when each side stays within the thirty-row cap
 ok 3 - all provider strikes are shown when each side stays within the thirty-row cap
   ---
-  duration_ms: 0.300549
+  duration_ms: 0.33611
   type: 'test'
   ...
 # Subtest: options positioning model builds centered GEX and DEX bars with key-level annotations
 ok 4 - options positioning model builds centered GEX and DEX bars with key-level annotations
   ---
-  duration_ms: 0.921516
+  duration_ms: 0.995693
   type: 'test'
   ...
 # Subtest: key-level history remains available for hover and keyboard tooltips
 ok 5 - key-level history remains available for hover and keyboard tooltips
   ---
-  duration_ms: 8.204881
+  duration_ms: 8.434843
   type: 'test'
   ...
 # Subtest: chart renders isolated Options Positioning strike bars instead of the old ladder table
-not ok 6 - chart renders isolated Options Positioning strike bars instead of the old ladder table
+ok 6 - chart renders isolated Options Positioning strike bars instead of the old ladder table
   ---
-  duration_ms: 10.89007
+  duration_ms: 8.225937
   type: 'test'
-  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:115:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    The input did not match the regular expression /from gex_dex_strike_snapshots/. Input:
-    
-    "import { query } from '../db.js';\n" +
-      '\n' +
-      'function finiteNumber(value) {\n' +
-      "  if (value === null || value === undefined || value === '') return null;\n" +
-      '  const number = Number(value);\n' +
-      '  return Number.isFinite(number) ? number : null;\n' +
-      '}\n' +
-      '\n' +
-      'export async function getLatestGexDexStrikeSnapshot(ticker) {\n' +
-      '  const result = await query(\n' +
-      '    `with latest as (\n' +
-      '       select\n' +
-      '         id,\n' +
-      '         source_timestamp,\n' +
-      '         spot_price\n' +
-      '       from gex_dex_source_snapshots\n' +
-      '       where ticker = $1\n' +
-      '         and source_timestamp <= now()\n' +
-      '       order by source_timestamp desc\n' +
-      '       limit 1\n' +
-      '     )\n' +
-      '     select\n' +
-      '       latest.source_timestamp::text as source_timestamp,\n' +
-      '       latest.spot_price::text as spot_price,\n' +
-      '       strike.strike::text as strike,\n' +
-      '       strike.call_gex::text as call_gex,\n' +
-      '       strike.put_gex::text as put_gex,\n' +
-      '       strike.net_gex::text as net_gex,\n' +
-      '       strike.call_dex::text as call_dex,\n' +
-      '       strike.put_dex::text as put_dex,\n' +
-      '       strike.net_dex::text as net_dex,\n' +
-      '       strike.expiry_count::text as expiry_count\n' +
-      '     from latest\n' +
-      '     left join gex_dex_strike_snapshots strike\n' +
-      '       on strike.snapshot_id = latest.id\n' +
-      '     order by strike.strike asc`,\n' +
-      '    [ticker]\n' +
-      '  );\n' +
-      '\n' +
-      '  const first = result.rows[0] ?? null;\n' +
-      '  if (!first) {\n' +
-      '    return { sourceTimestamp: null, spotPrice: null, strikes: [] };\n' +
-      '  }\n' +
-      '\n' +
-      '  return {\n' +
-      '    sourceTimestamp: first.source_timestamp ?? null,\n' +
-      '    spotPrice: finiteNumber(first.spot_price),\n' +
-      '    strikes: result.rows.flatMap((row) => {\n' +
-      '      const strike = finiteNumber(row.strike);\n' +
-      '      if (strike === null) return [];\n' +
-      '      return [{\n' +
-      '        strike,\n' +
-      '        call_gex: finiteNumber(row.call_gex),\n' +
-      '        put_gex: finiteNumber(row.put_gex),\n' +
-      '        net_gex: finiteNumber(row.net_gex),\n' +
-      '        call_dex: finiteNumber(row.call_dex),\n' +
-      '        put_dex: finiteNumber(row.put_dex),\n' +
-      '        net_dex: finiteNumber(row.net_dex),\n' +
-      '        expiry_count: finiteNumber(row.expiry_count),\n' +
-      '      }];\n' +
-      '    }),\n' +
-      '  };\n' +
-      '}\n'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected:
-  actual: |-
-    import { query } from '../db.js';
-    
-    function finiteNumber(value) {
-      if (value === null || value === undefined || value === '') return null;
-      const number = Number(value);
-      return Number.isFinite(number) ? number : null;
-    }
-    
-    export async function getLatestGexDexStrikeSnapshot(ticker) {
-      const result = await query(
-        `with latest as (
-           select
-             id,
-             source_timestamp,
-             spot_price
-           from gex_dex_source_snapshots
-           where ticker = $1
-             and source_timestamp <= now()
-           order by source_timestamp desc
-           limit 1
-         )
-         select
-           latest.source_timestamp::text as source_timestamp,
-           latest.spot_price::text as spot_price,
-           strike.strike::text as strike,
-           strike.call_gex::text as call_gex,
-           strike.put_gex::text as put_gex,
-           strike.net_gex::text as net_gex,
-           strike.call_dex::text as call_dex,
-           strike.put_dex::text as put_dex,
-           strike.net_dex::text as net_dex,
-           strike.expiry_count::text as expiry_count
-         from latest
-         left join gex_dex_strike_snapshots strike
-           on strike.snapshot_id = latest.id
-         order by strike.strike asc`,
-        [ticker]
-      );
-    
-      const first = result.rows[0] ?? null;
-      if (!first) {
-        return { sourceTimestamp: null, spotPrice: null, strikes: [] };
-      }
-    
-      return {
-        sourceTimestamp: first.source_timestamp ?? null,
-        spotPrice: finiteNumber(first.spot_price),
-        strikes: result.rows.flatMap((row) => {
-          const strike = finiteNumber(row.strike);
-          if (strike === null) return [];
-          return [{
-            strike,
-            call_gex: finiteNumber(row.call_gex),
-            put_gex: finiteNumber(row.put_gex),
-            net_gex: finiteNumber(row.net_gex),
-            call_dex: finiteNumber(row.call_dex),
-            put_dex: finiteNumber(row.put_dex),
-            net_dex: finiteNumber(row.net_dex),
-            expiry_count: finiteNumber(row.expiry_count),
-          }];
-        }),
-      };
-    }
-    
-  operator: 'match'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:134:10)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 1..6
 # tests 6
 # suites 0
-# pass 5
-# fail 1
+# pass 6
+# fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 83.598932
+# duration_ms 76.964724
+===== complete Node test suite =====
+TAP version 13
+# Subtest: alpaca client sends authenticated account request to configured paper endpoint
+ok 1 - alpaca client sends authenticated account request to configured paper endpoint
+  ---
+  duration_ms: 2.35278
+  type: 'test'
+  ...
+# Subtest: alpaca client submits market order payload without embedding credentials in body
+ok 2 - alpaca client submits market order payload without embedding credentials in body
+  ---
+  duration_ms: 0.484866
+  type: 'test'
+  ...
+# Subtest: alpaca client builds calendar query strings for next-session lookups
+ok 3 - alpaca client builds calendar query strings for next-session lookups
+  ---
+  duration_ms: 1.581981
+  type: 'test'
+  ...
+# Subtest: alpaca client error messages do not leak credentials
+ok 4 - alpaca client error messages do not leak credentials
+  ---
+  duration_ms: 2.096091
+  type: 'test'
+  ...
+# Subtest: package.json exposes alpaca operational scripts
+ok 5 - package.json exposes alpaca operational scripts
+  ---
+  duration_ms: 8.8919
+  type: 'test'
+  ...
+# Subtest: normalizeAlpacaBrokerState converts raw Alpaca payloads into generic numeric execution state
+ok 6 - normalizeAlpacaBrokerState converts raw Alpaca payloads into generic numeric execution state
+  ---
+  duration_ms: 1.720745
+  type: 'test'
+  ...
+# Subtest: buildBrokerStateSnapshotRows emits account, position and open-order snapshots
+ok 7 - buildBrokerStateSnapshotRows emits account, position and open-order snapshots
+  ---
+  duration_ms: 0.750144
+  type: 'test'
+  ...
+# Subtest: buildBacktestRunArtifacts simulates buy-and-hold and signal-driven long/cash transitions
+ok 8 - buildBacktestRunArtifacts simulates buy-and-hold and signal-driven long/cash transitions
+  ---
+  duration_ms: 10.622064
+  type: 'test'
+  ...
+# Subtest: deriveAdjustedOpen keeps open on the adjusted scale of adj_close
+ok 9 - deriveAdjustedOpen keeps open on the adjusted scale of adj_close
+  ---
+  duration_ms: 1.386602
+  type: 'test'
+  ...
+# Subtest: calculateDailyStrategyReturn handles long-to-long close-to-close returns
+ok 10 - calculateDailyStrategyReturn handles long-to-long close-to-close returns
+  ---
+  duration_ms: 1.781573
+  type: 'test'
+  ...
+# Subtest: calculateDailyStrategyReturn handles cash-to-long entry at next open with transaction cost
+ok 11 - calculateDailyStrategyReturn handles cash-to-long entry at next open with transaction cost
+  ---
+  duration_ms: 0.258496
+  type: 'test'
+  ...
+# Subtest: calculateDailyStrategyReturn handles long-to-cash exit at next open with transaction cost
+ok 12 - calculateDailyStrategyReturn handles long-to-cash exit at next open with transaction cost
+  ---
+  duration_ms: 0.341912
+  type: 'test'
+  ...
+# Subtest: calculateDailyStrategyReturn returns zero for cash-to-cash days
+ok 13 - calculateDailyStrategyReturn returns zero for cash-to-cash days
+  ---
+  duration_ms: 0.24171
+  type: 'test'
+  ...
+# Subtest: calculateDailyStrategyReturn supports partial allocations and open rebalance costs
+ok 14 - calculateDailyStrategyReturn supports partial allocations and open rebalance costs
+  ---
+  duration_ms: 0.25511
+  type: 'test'
+  ...
+# Subtest: calculateDrawdown returns percentage drop from the running peak
+ok 15 - calculateDrawdown returns percentage drop from the running peak
+  ---
+  duration_ms: 0.320624
+  type: 'test'
+  ...
+# Subtest: buildStrategyDefinitionUpsertStatements upserts strategy definitions by code
+ok 16 - buildStrategyDefinitionUpsertStatements upserts strategy definitions by code
+  ---
+  duration_ms: 2.210537
+  type: 'test'
+  ...
+# Subtest: buildStrategyPositionUpsertStatements batches daily positions by run and date
+ok 17 - buildStrategyPositionUpsertStatements batches daily positions by run and date
+  ---
+  duration_ms: 0.820318
+  type: 'test'
+  ...
+# Subtest: buildStrategyEquityUpsertStatements batches daily equity rows by run and date
+ok 18 - buildStrategyEquityUpsertStatements batches daily equity rows by run and date
+  ---
+  duration_ms: 0.608517
+  type: 'test'
+  ...
+# Subtest: buildBacktestRunRetentionStatement prunes older runs for one strategy and status while keeping the latest N
+ok 19 - buildBacktestRunRetentionStatement prunes older runs for one strategy and status while keeping the latest N
+  ---
+  duration_ms: 0.348347
+  type: 'test'
+  ...
+# Subtest: buildStockDailyPriceUpsertStatements batches multiple candles into one statement
+ok 20 - buildStockDailyPriceUpsertStatements batches multiple candles into one statement
+  ---
+  duration_ms: 3.370604
+  type: 'test'
+  ...
+# Subtest: buildMarketSeriesUpsertStatements batches multiple rows into one statement
+ok 21 - buildMarketSeriesUpsertStatements batches multiple rows into one statement
+  ---
+  duration_ms: 0.619487
+  type: 'test'
+  ...
+# Subtest: buildBenchmarkPriceUpsertStatements batches benchmark rows with stable params and benchmark conflict updates
+ok 22 - buildBenchmarkPriceUpsertStatements batches benchmark rows with stable params and benchmark conflict updates
+  ---
+  duration_ms: 2.761111
+  type: 'test'
+  ...
+# Subtest: upsertBenchmarkDailyPrices executes each chunked statement through the provided client
+ok 23 - upsertBenchmarkDailyPrices executes each chunked statement through the provided client
+  ---
+  duration_ms: 0.516834
+  type: 'test'
+  ...
+# Subtest: parseYahooDailyChartPayload returns normalized daily rows for benchmark payloads
+ok 24 - parseYahooDailyChartPayload returns normalized daily rows for benchmark payloads
+  ---
+  duration_ms: 2.520201
+  type: 'test'
+  ...
+# Subtest: buildMarketBreadthUpsertStatements batches breadth rows into one statement
+ok 25 - buildMarketBreadthUpsertStatements batches breadth rows into one statement
+  ---
+  duration_ms: 2.654392
+  type: 'test'
+  ...
+# Subtest: buildBreakout20dIndicatorRows generates buy on 20-day high break and sell on 20-day low break
+ok 26 - buildBreakout20dIndicatorRows generates buy on 20-day high break and sell on 20-day low break
+  ---
+  duration_ms: 17.126409
+  type: 'test'
+  ...
+# Subtest: buildBrokerStateSnapshotInsertStatements batches broker state snapshots
+ok 27 - buildBrokerStateSnapshotInsertStatements batches broker state snapshots
+  ---
+  duration_ms: 2.08851
+  type: 'test'
+  ...
+# Subtest: buildMarketSignalRowsFromSources aligns breadth and market series, skips invalid dates, and calculates signal rows
+ok 28 - buildMarketSignalRowsFromSources aligns breadth and market series, skips invalid dates, and calculates signal rows
+  ---
+  duration_ms: 9.088175
+  type: 'test'
+  ...
+# Subtest: buildMarketSignalRowsFromSources carries forward the latest available VIX row when FRED lags one day
+ok 29 - buildMarketSignalRowsFromSources carries forward the latest available VIX row when FRED lags one day
+  ---
+  duration_ms: 1.090139
+  type: 'test'
+  ...
+# Subtest: main GEX DEX and earnings are the only default context layers
+ok 30 - main GEX DEX and earnings are the only default context layers
+  ---
+  duration_ms: 0.959138
+  type: 'test'
+  ...
+# Subtest: workspace passes context payloads without creating extra panes
+ok 31 - workspace passes context payloads without creating extra panes
+  ---
+  duration_ms: 0.242229
+  type: 'test'
+  ...
+# Subtest: financial chart uses step lines and independent context visibility
+ok 32 - financial chart uses step lines and independent context visibility
+  ---
+  duration_ms: 0.270849
+  type: 'test'
+  ...
+# Subtest: a single fresh GEX snapshot renders as a visible current price level
+ok 33 - a single fresh GEX snapshot renders as a visible current price level
+  ---
+  duration_ms: 0.129214
+  type: 'test'
+  ...
+# Subtest: context strip contains the four approved insight cards
+ok 34 - context strip contains the four approved insight cards
+  ---
+  duration_ms: 0.725318
+  type: 'test'
+  ...
+# Subtest: next earnings remains a compact context event rather than a future chart point
+ok 35 - next earnings remains a compact context event rather than a future chart point
+  ---
+  duration_ms: 0.269682
+  type: 'test'
+  ...
+# Subtest: relative strength uses 63d percentile and 21d five-observation direction
+ok 36 - relative strength uses 63d percentile and 21d five-observation direction
+  ---
+  duration_ms: 14.07008
+  type: 'test'
+  ...
+# Subtest: breadth requires a two percentage point move for direction
+ok 37 - breadth requires a two percentage point move for direction
+  ---
+  duration_ms: 0.537549
+  type: 'test'
+  ...
+# Subtest: Wilder ATR uses the initial average and recursive smoothing
+ok 38 - Wilder ATR uses the initial average and recursive smoothing
+  ---
+  duration_ms: 2.119157
+  type: 'test'
+  ...
+# Subtest: volatility classifies low ATR percentile as compression
+ok 39 - volatility classifies low ATR percentile as compression
+  ---
+  duration_ms: 2.107179
+  type: 'test'
+  ...
+# Subtest: earnings are deduplicated and only real bar dates become markers
+ok 40 - earnings are deduplicated and only real bar dates become markers
+  ---
+  duration_ms: 1.265742
+  type: 'test'
+  ...
+# Subtest: GEX snapshots collapse to the latest real snapshot per date
+ok 41 - GEX snapshots collapse to the latest real snapshot per date
+  ---
+  duration_ms: 0.404263
+  type: 'test'
+  ...
+# Subtest: financial chart passes all visibility arrays to the crosshair legend
+ok 42 - financial chart passes all visibility arrays to the crosshair legend
+  ---
+  duration_ms: 1.060864
+  type: 'test'
+  ...
+# Subtest: crosshair legend fails open when a visibility array is omitted
+ok 43 - crosshair legend fails open when a visibility array is omitted
+  ---
+  duration_ms: 0.192474
+  type: 'test'
+  ...
+# Subtest: CVOL uses a deterministic gap above the candle
+ok 44 - CVOL uses a deterministic gap above the candle
+  ---
+  duration_ms: 0.795729
+  type: 'test'
+  ...
+# Subtest: CVOL creates one anchor for any stored sell threshold
+ok 45 - CVOL creates one anchor for any stored sell threshold
+  ---
+  duration_ms: 0.70601
+  type: 'test'
+  ...
+# Subtest: CVOL collapses simultaneous thresholds to one blue marker and enlarges multiples
+ok 46 - CVOL collapses simultaneous thresholds to one blue marker and enlarges multiples
+  ---
+  duration_ms: 0.27343
+  type: 'test'
+  ...
+# Subtest: chart context sources remain optional and isolated
+ok 47 - chart context sources remain optional and isolated
+  ---
+  duration_ms: 0.734191
+  type: 'test'
+  ...
+# Subtest: chart payload exposes all context families without changing bar joins
+ok 48 - chart payload exposes all context families without changing bar joins
+  ---
+  duration_ms: 0.219223
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows sorts ascending and keeps the last duplicate date
+ok 49 - normalizeChartRows sorts ascending and keeps the last duplicate date
+  ---
+  duration_ms: 15.48883
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows adjusts all OHLC values to the adjusted-close scale
+ok 50 - normalizeChartRows adjusts all OHLC values to the adjusted-close scale
+  ---
+  duration_ms: 1.867682
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows rejects invalid OHLC rows but preserves zero and optional MA gaps
+ok 51 - normalizeChartRows rejects invalid OHLC rows but preserves zero and optional MA gaps
+  ---
+  duration_ms: 0.338388
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows preserves stored RYD OBV values and warmup gaps
+ok 52 - normalizeChartRows preserves stored RYD OBV values and warmup gaps
+  ---
+  duration_ms: 0.506397
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows preserves stored TF Sync states and sanitizes unknown labels
+ok 53 - normalizeChartRows preserves stored TF Sync states and sanitizes unknown labels
+  ---
+  duration_ms: 0.395581
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows preserves PLCE threshold values and stored signal booleans
+ok 54 - normalizeChartRows preserves PLCE threshold values and stored signal booleans
+  ---
+  duration_ms: 0.265863
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows preserves optional market-wide CVOL fields
+ok 55 - normalizeChartRows preserves optional market-wide CVOL fields
+  ---
+  duration_ms: 0.370667
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows preserves optional market-wide 2Y + 10Y fields
+ok 56 - normalizeChartRows preserves optional market-wide 2Y + 10Y fields
+  ---
+  duration_ms: 0.308939
+  type: 'test'
+  ...
+# Subtest: normalizeChartRows returns an explicit empty payload
+ok 57 - normalizeChartRows returns an explicit empty payload
+  ---
+  duration_ms: 0.505514
+  type: 'test'
+  ...
+# Subtest: chart data reads TF Sync from its dedicated optional table
+ok 58 - chart data reads TF Sync from its dedicated optional table
+  ---
+  duration_ms: 1.19066
+  type: 'test'
+  ...
+# Subtest: earnings anchors only use real bar dates
+ok 59 - earnings anchors only use real bar dates
+  ---
+  duration_ms: 1.835665
+  type: 'test'
+  ...
+# Subtest: earnings markers are compact amber E events
+ok 60 - earnings markers are compact amber E events
+  ---
+  duration_ms: 0.33325
+  type: 'test'
+  ...
+# Subtest: chart ticker options pin SPY and QQQ before the shared top-volume universe
+ok 61 - chart ticker options pin SPY and QQQ before the shared top-volume universe
+  ---
+  duration_ms: 15.397328
+  type: 'test'
+  ...
+# Subtest: chart benchmark definitions identify SPY and QQQ as benchmark price sources
+ok 62 - chart benchmark definitions identify SPY and QQQ as benchmark price sources
+  ---
+  duration_ms: 0.401444
+  type: 'test'
+  ...
+# Subtest: chart page, chart data and daily fetch use the shared benchmark universe
+ok 63 - chart page, chart data and daily fetch use the shared benchmark universe
+  ---
+  duration_ms: 8.517971
+  type: 'test'
+  ...
+# Subtest: ticker selector groups prioritized GEX DEX instruments above the remaining S&P 500 list
+ok 64 - ticker selector groups prioritized GEX DEX instruments above the remaining S&P 500 list
+  ---
+  duration_ms: 2.823659
+  type: 'test'
+  ...
+# Subtest: GEX levels begin at the first real snapshot and extend only forward
+ok 65 - GEX levels begin at the first real snapshot and extend only forward
+  ---
+  duration_ms: 8.558602
+  type: 'test'
+  ...
+# Subtest: a fresh snapshot after the latest price bar anchors at the latest real candle
+ok 66 - a fresh snapshot after the latest price bar anchors at the latest real candle
+  ---
+  duration_ms: 0.350621
+  type: 'test'
+  ...
+# Subtest: missing provider values break the line instead of inventing continuity
+ok 67 - missing provider values break the line instead of inventing continuity
+  ---
+  duration_ms: 1.006925
+  type: 'test'
+  ...
+# Subtest: Gamma Flip is the independent default group and all other levels are optional
+ok 68 - Gamma Flip is the independent default group and all other levels are optional
+  ---
+  duration_ms: 0.355484
+  type: 'test'
+  ...
+# Subtest: chart periods expose the supported public values
+ok 69 - chart periods expose the supported public values
+  ---
+  duration_ms: 1.859325
+  type: 'test'
+  ...
+# Subtest: normalizeChartPeriod accepts supported values and falls back to 1Y
+ok 70 - normalizeChartPeriod accepts supported values and falls back to 1Y
+  ---
+  duration_ms: 0.251594
+  type: 'test'
+  ...
+# Subtest: getChartStartDate returns deterministic UTC calendar boundaries
+ok 71 - getChartStartDate returns deterministic UTC calendar boundaries
+  ---
+  duration_ms: 0.630247
+  type: 'test'
+  ...
+# Subtest: getChartStartDate clamps end-of-month dates safely
+ok 72 - getChartStartDate clamps end-of-month dates safely
+  ---
+  duration_ms: 0.213065
+  type: 'test'
+  ...
+# Subtest: normalizeChartTicker accepts listed symbol syntax and rejects malformed input
+ok 73 - normalizeChartTicker accepts listed symbol syntax and rejects malformed input
+  ---
+  duration_ms: 0.328325
+  type: 'test'
+  ...
+# Subtest: PLCE uses a deterministic gap below the candle
+ok 74 - PLCE uses a deterministic gap below the candle
+  ---
+  duration_ms: 1.123945
+  type: 'test'
+  ...
+# Subtest: PLCE anchors stored threshold signals only
+ok 75 - PLCE anchors stored threshold signals only
+  ---
+  duration_ms: 1.085281
+  type: 'test'
+  ...
+# Subtest: PLCE renders one large blue upward marker per signal date
+ok 76 - PLCE renders one large blue upward marker per signal date
+  ---
+  duration_ms: 0.262953
+  type: 'test'
+  ...
+# Subtest: RYD OBV chart exposes the exact TradingView reference levels
+ok 77 - RYD OBV chart exposes the exact TradingView reference levels
+  ---
+  duration_ms: 2.044375
+  type: 'test'
+  ...
+# Subtest: RYD OBV Z-score colors use gray neutral, green positive, red negative, and yellow extremes
+ok 78 - RYD OBV Z-score colors use gray neutral, green positive, red negative, and yellow extremes
+  ---
+  duration_ms: 0.240066
+  type: 'test'
+  ...
+# Subtest: RYD OBV histogram and raw line skip warmup gaps and invalid values
+ok 79 - RYD OBV histogram and raw line skip warmup gaps and invalid values
+  ---
+  duration_ms: 0.320363
+  type: 'test'
+  ...
+# Subtest: RYD OBV marker anchors keep a fixed air gap outside signal bars
+ok 80 - RYD OBV marker anchors keep a fixed air gap outside signal bars
+  ---
+  duration_ms: 0.299857
+  type: 'test'
+  ...
+# Subtest: RYD OBV markers use stored signals only when the Z-score point exists
+ok 81 - RYD OBV markers use stored signals only when the Z-score point exists
+  ---
+  duration_ms: 0.195911
+  type: 'test'
+  ...
+# Subtest: RYD OBV Z-score disables both last-value and series-title badges
+ok 82 - RYD OBV Z-score disables both last-value and series-title badges
+  ---
+  duration_ms: 0.430987
+  type: 'test'
+  ...
+# Subtest: series registry contains stable chart keys in render order
+ok 83 - series registry contains stable chart keys in render order
+  ---
+  duration_ms: 1.328888
+  type: 'test'
+  ...
+# Subtest: moving-average registry keys and default visibility are explicit
+ok 84 - moving-average registry keys and default visibility are explicit
+  ---
+  duration_ms: 0.180682
+  type: 'test'
+  ...
+# Subtest: RYD indicator registry keys use pane two and keep raw OBV optional
+ok 85 - RYD indicator registry keys use pane two and keep raw OBV optional
+  ---
+  duration_ms: 0.235379
+  type: 'test'
+  ...
+# Subtest: all four TradingView signal layers are visible by default on pane zero
+ok 86 - all four TradingView signal layers are visible by default on pane zero
+  ---
+  duration_ms: 1.239254
+  type: 'test'
+  ...
+# Subtest: context registry keeps the clean default and optional detail layers explicit
+ok 87 - context registry keeps the clean default and optional detail layers explicit
+  ---
+  duration_ms: 0.195027
+  type: 'test'
+  ...
+# Subtest: every moving average has one professional line definition
+ok 88 - every moving average has one professional line definition
+  ---
+  duration_ms: 0.322186
+  type: 'test'
+  ...
+# Subtest: signal controls stay interactive even when the selected period has no events
+ok 89 - signal controls stay interactive even when the selected period has no events
+  ---
+  duration_ms: 1.003641
+  type: 'test'
+  ...
+# Subtest: TF Sync uses one fixed lane above the full visible price range
+ok 90 - TF Sync uses one fixed lane above the full visible price range
+  ---
+  duration_ms: 1.188196
+  type: 'test'
+  ...
+# Subtest: all TF Sync signal dates share the same top anchor
+ok 91 - all TF Sync signal dates share the same top anchor
+  ---
+  duration_ms: 1.004687
+  type: 'test'
+  ...
+# Subtest: TF Sync renders green and red downward arrows
+ok 92 - TF Sync renders green and red downward arrows
+  ---
+  duration_ms: 0.325069
+  type: 'test'
+  ...
+# Subtest: 2Y + 10Y markers use the outer collision tier
+ok 93 - 2Y + 10Y markers use the outer collision tier
+  ---
+  duration_ms: 1.020088
+  type: 'test'
+  ...
+# Subtest: 2Y + 10Y creates anchors for stored buy and sell events only
+ok 94 - 2Y + 10Y creates anchors for stored buy and sell events only
+  ---
+  duration_ms: 0.712837
+  type: 'test'
+  ...
+# Subtest: 2Y + 10Y renders very large white directional triangles
+ok 95 - 2Y + 10Y renders very large white directional triangles
+  ---
+  duration_ms: 0.260397
+  type: 'test'
+  ...
+# Subtest: parseOccDailyVolumePayload parses OCC daily totals and preserves the Total row fields
+ok 96 - parseOccDailyVolumePayload parses OCC daily totals and preserves the Total row fields
+  ---
+  duration_ms: 2.178626
+  type: 'test'
+  ...
+# Subtest: buildOccDailyVolumeUpsertStatements stores OCC total rows with unique report_date and exchange fields
+ok 97 - buildOccDailyVolumeUpsertStatements stores OCC total rows with unique report_date and exchange fields
+  ---
+  duration_ms: 1.022877
+  type: 'test'
+  ...
+# Subtest: buildCvolCallVolumeIndicatorRows uses previous stored report rows for price condition and handles z-score warmup
+ok 98 - buildCvolCallVolumeIndicatorRows uses previous stored report rows for price condition and handles z-score warmup
+  ---
+  duration_ms: 11.670375
+  type: 'test'
+  ...
+# Subtest: buildCvolCallVolumeIndicatorRows calculates z-scores and raw sell signals from OCC call volume
+ok 99 - buildCvolCallVolumeIndicatorRows calculates z-scores and raw sell signals from OCC call volume
+  ---
+  duration_ms: 1.232542
+  type: 'test'
+  ...
+# Subtest: buildCvolCallVolumeIndicatorUpsertStatements stores raw values and raw signal fields
+ok 100 - buildCvolCallVolumeIndicatorUpsertStatements stores raw values and raw signal fields
+  ---
+  duration_ms: 0.61544
+  type: 'test'
+  ...
+# Subtest: daily coverage defaults to a 98 percent operational threshold
+ok 101 - daily coverage defaults to a 98 percent operational threshold
+  ---
+  duration_ms: 1.169307
+  type: 'test'
+  ...
+# Subtest: one persistent ticker failure does not stop a 507 ticker daily run
+ok 102 - one persistent ticker failure does not stop a 507 ticker daily run
+  ---
+  duration_ms: 0.404181
+  type: 'test'
+  ...
+# Subtest: eight intermittent ticker failures still allow calculation to continue
+ok 103 - eight intermittent ticker failures still allow calculation to continue
+  ---
+  duration_ms: 0.190875
+  type: 'test'
+  ...
+# Subtest: coverage below 98 percent remains a hard stop
+ok 104 - coverage below 98 percent remains a hard stop
+  ---
+  duration_ms: 0.363169
+  type: 'test'
+  ...
+# Subtest: missing or invalid universe counts remain a hard stop
+ok 105 - missing or invalid universe counts remain a hard stop
+  ---
+  duration_ms: 1.078284
+  type: 'test'
+  ...
+# Subtest: daily refresh check skips when all tracked datasets are current
+ok 106 - daily refresh check skips when all tracked datasets are current
+  ---
+  duration_ms: 24.568639
+  type: 'test'
+  ...
+# Subtest: daily refresh check requests rerun when raw prices are stale
+ok 107 - daily refresh check requests rerun when raw prices are stale
+  ---
+  duration_ms: 1.702454
+  type: 'test'
+  ...
+# Subtest: daily refresh check requests rerun when downstream signals are stale
+ok 108 - daily refresh check requests rerun when downstream signals are stale
+  ---
+  duration_ms: 0.763802
+  type: 'test'
+  ...
+# Subtest: daily refresh check accepts high partial source coverage when derived data is current
+ok 109 - daily refresh check accepts high partial source coverage when derived data is current
+  ---
+  duration_ms: 0.870136
+  type: 'test'
+  ...
+# Subtest: daily refresh check calculates only when high partial source coverage exists and signals are stale
+ok 110 - daily refresh check calculates only when high partial source coverage exists and signals are stale
+  ---
+  duration_ms: 0.707705
+  type: 'test'
+  ...
+# Subtest: daily refresh check fetches when expected-date ticker coverage falls below 98 percent
+ok 111 - daily refresh check fetches when expected-date ticker coverage falls below 98 percent
+  ---
+  duration_ms: 0.561189
+  type: 'test'
+  ...
+# Subtest: daily refresh check calculates only when source data is current and signals are stale
+ok 112 - daily refresh check calculates only when source data is current and signals are stale
+  ---
+  duration_ms: 0.721907
+  type: 'test'
+  ...
+# Subtest: daily refresh check defers source recovery while an earlier source fetch is running
+ok 113 - daily refresh check defers source recovery while an earlier source fetch is running
+  ---
+  duration_ms: 0.548638
+  type: 'test'
+  ...
+# Subtest: daily refresh check does not trigger duplicate work while fetch is already running
+ok 114 - daily refresh check does not trigger duplicate work while fetch is already running
+  ---
+  duration_ms: 0.977864
+  type: 'test'
+  ...
+# Subtest: dashboard uses a route-aware prop-driven top navigation instead of a sidebar shell
+ok 115 - dashboard uses a route-aware prop-driven top navigation instead of a sidebar shell
+  ---
+  duration_ms: 6.12188
+  type: 'test'
+  ...
+# Subtest: overview uses the existing market decision with the reference-style action hero
+ok 116 - overview uses the existing market decision with the reference-style action hero
+  ---
+  duration_ms: 2.613452
+  type: 'test'
+  ...
+# Subtest: all current sectors follow the compact market cards with performance, ROC, acceleration, and trend
+ok 117 - all current sectors follow the compact market cards with performance, ROC, acceleration, and trend
+  ---
+  duration_ms: 1.585717
+  type: 'test'
+  ...
+# Subtest: reference dashboard styles include compact hero, six-card strip, and sector matrix rules
+ok 118 - reference dashboard styles include compact hero, six-card strip, and sector matrix rules
+  ---
+  duration_ms: 1.180589
+  type: 'test'
+  ...
+# Subtest: watchlist icon uses a valid closed eye path
+ok 119 - watchlist icon uses a valid closed eye path
+  ---
+  duration_ms: 0.989029
+  type: 'test'
+  ...
+# Subtest: reference sector matrix keeps horizontal overflow inside its own panel
+ok 120 - reference sector matrix keeps horizontal overflow inside its own panel
+  ---
+  duration_ms: 1.645281
+  type: 'test'
+  ...
+# Subtest: reference sector matrix keeps strength bars, signed values, and segmented acceleration visible
+ok 121 - reference sector matrix keeps strength bars, signed values, and segmented acceleration visible
+  ---
+  duration_ms: 1.859994
+  type: 'test'
+  ...
+# Subtest: reference metric strip uses six equal desktop cards
+ok 122 - reference metric strip uses six equal desktop cards
+  ---
+  duration_ms: 1.21737
+  type: 'test'
+  ...
+# Subtest: backtest table gives duplicate strategy codes distinct React keys
+ok 123 - backtest table gives duplicate strategy codes distinct React keys
+  ---
+  duration_ms: 1.35697
+  type: 'test'
+  ...
+# Subtest: buildOverviewAction maps existing recommendation labels to action-first dashboard copy
+ok 124 - buildOverviewAction maps existing recommendation labels to action-first dashboard copy
+  ---
+  duration_ms: 1.085374
+  type: 'test'
+  ...
+# Subtest: buildReferenceMarketMetrics uses existing recent market fields and sector strength only
+ok 125 - buildReferenceMarketMetrics uses existing recent market fields and sector strength only
+  ---
+  duration_ms: 14.361188
+  type: 'test'
+  ...
+# Subtest: formatTickerMarkovStrategyName humanizes ticker Markov study names
+ok 126 - formatTickerMarkovStrategyName humanizes ticker Markov study names
+  ---
+  duration_ms: 2.027489
+  type: 'test'
+  ...
+# Subtest: buildDashboardBacktestRows merges and sorts standard and ticker Markov backtests by finished time
+ok 127 - buildDashboardBacktestRows merges and sorts standard and ticker Markov backtests by finished time
+  ---
+  duration_ms: 14.079585
+  type: 'test'
+  ...
+# Subtest: buildTickerMarkovDashboardBacktestRow converts decimal drawdown to percent points
+ok 128 - buildTickerMarkovDashboardBacktestRow converts decimal drawdown to percent points
+  ---
+  duration_ms: 0.342734
+  type: 'test'
+  ...
+# Subtest: normalizeTickerInput uppercases, trims, and falls back to AAPL
+ok 129 - normalizeTickerInput uppercases, trims, and falls back to AAPL
+  ---
+  duration_ms: 0.75692
+  type: 'test'
+  ...
+# Subtest: resolveSelectedTicker keeps valid values and falls back to the first active constituent
+ok 130 - resolveSelectedTicker keeps valid values and falls back to the first active constituent
+  ---
+  duration_ms: 0.181978
+  type: 'test'
+  ...
+# Subtest: buildMarketSeriesCards returns fixed cards and fills missing series with null
+ok 131 - buildMarketSeriesCards returns fixed cards and fills missing series with null
+  ---
+  duration_ms: 0.631075
+  type: 'test'
+  ...
+# Subtest: buildPositionStatusViewModel shapes current position, flags, and backtest comparison
+ok 132 - buildPositionStatusViewModel shapes current position, flags, and backtest comparison
+  ---
+  duration_ms: 1.626358
+  type: 'test'
+  ...
+# Subtest: buildPositionStatusViewModel handles missing position data
+ok 133 - buildPositionStatusViewModel handles missing position data
+  ---
+  duration_ms: 0.148352
+  type: 'test'
+  ...
+# Subtest: buildSignalDataQualityRows marks all gates pass when datasets are current and complete
+ok 134 - buildSignalDataQualityRows marks all gates pass when datasets are current and complete
+  ---
+  duration_ms: 2.101049
+  type: 'test'
+  ...
+# Subtest: buildSignalDataQualityRows blocks stale core layers and distinguishes warning vs blocking auxiliary gates
+ok 135 - buildSignalDataQualityRows blocks stale core layers and distinguishes warning vs blocking auxiliary gates
+  ---
+  duration_ms: 2.252083
+  type: 'test'
+  ...
+# Subtest: buildSignalDataQualityRows blocks missing snapshots explicitly
+ok 136 - buildSignalDataQualityRows blocks missing snapshots explicitly
+  ---
+  duration_ms: 0.286286
+  type: 'test'
+  ...
+# Subtest: formatUtcDate formats both date-only and ISO timestamps without throwing
+ok 137 - formatUtcDate formats both date-only and ISO timestamps without throwing
+  ---
+  duration_ms: 23.213705
+  type: 'test'
+  ...
+# Subtest: formatUtcDate returns dash for invalid input
+ok 138 - formatUtcDate returns dash for invalid input
+  ---
+  duration_ms: 0.225683
+  type: 'test'
+  ...
+# Subtest: formatUtcDateTime formats ISO timestamps and rejects invalid values
+ok 139 - formatUtcDateTime formats ISO timestamps and rejects invalid values
+  ---
+  duration_ms: 0.533747
+  type: 'test'
+  ...
+# Subtest: getDatabaseTarget falls back to default
+ok 140 - getDatabaseTarget falls back to default
+  ---
+  duration_ms: 2.09206
+  type: 'test'
+  ...
+# Subtest: getDatabaseUrl uses DATABASE_URL for the implicit standard target
+ok 141 - getDatabaseUrl uses DATABASE_URL for the implicit standard target
+  ---
+  duration_ms: 0.329542
+  type: 'test'
+  ...
+# Subtest: getDatabaseUrl removes matching wrapper quotes from deployment environment values
+ok 142 - getDatabaseUrl removes matching wrapper quotes from deployment environment values
+  ---
+  duration_ms: 0.171823
+  type: 'test'
+  ...
+# Subtest: getDatabaseUrl uses a named database target when configured
+ok 143 - getDatabaseUrl uses a named database target when configured
+  ---
+  duration_ms: 0.175148
+  type: 'test'
+  ...
+# Subtest: getDatabaseUrl throws when the selected named target is missing
+ok 144 - getDatabaseUrl throws when the selected named target is missing
+  ---
+  duration_ms: 0.602366
+  type: 'test'
+  ...
+# Subtest: buildPoolConfig strips sslrootcert when the referenced file is missing in the current runtime
+ok 145 - buildPoolConfig strips sslrootcert when the referenced file is missing in the current runtime
+  ---
+  duration_ms: 1.087424
+  type: 'test'
+  ...
+# Subtest: buildPoolConfig keeps sslrootcert when the referenced file exists
+ok 146 - buildPoolConfig keeps sslrootcert when the referenced file exists
+  ---
+  duration_ms: 0.301398
+  type: 'test'
+  ...
+# Subtest: buildPoolConfig adds a permissive SSL fallback for remote URLs without explicit SSL settings
+ok 147 - buildPoolConfig adds a permissive SSL fallback for remote URLs without explicit SSL settings
+  ---
+  duration_ms: 0.199796
+  type: 'test'
+  ...
+# Subtest: buildPoolConfig leaves localhost URLs without an injected SSL fallback
+ok 148 - buildPoolConfig leaves localhost URLs without an injected SSL fallback
+  ---
+  duration_ms: 0.505935
+  type: 'test'
+  ...
+# Subtest: classifyLongDivergence returns bearish_warning_strong when breadth weakens under a rising index with confirmation
+ok 149 - classifyLongDivergence returns bearish_warning_strong when breadth weakens under a rising index with confirmation
+  ---
+  duration_ms: 1.164464
+  type: 'test'
+  ...
+# Subtest: classifyLongDivergence returns bearish_warning without secondary confirmation
+ok 150 - classifyLongDivergence returns bearish_warning without secondary confirmation
+  ---
+  duration_ms: 1.67947
+  type: 'test'
+  ...
+# Subtest: classifyLongDivergence returns bullish_divergence when breadth improves under a weak index
+ok 151 - classifyLongDivergence returns bullish_divergence when breadth improves under a weak index
+  ---
+  duration_ms: 0.189753
+  type: 'test'
+  ...
+# Subtest: classifyShortDivergence returns short-negative and short-positive labels
+ok 152 - classifyShortDivergence returns short-negative and short-positive labels
+  ---
+  duration_ms: 0.212519
+  type: 'test'
+  ...
+# Subtest: calculateMarketRegimeScore and classifyMarketSignal map the combined state into risk buckets
+ok 153 - calculateMarketRegimeScore and classifyMarketSignal map the combined state into risk buckets
+  ---
+  duration_ms: 0.787208
+  type: 'test'
+  ...
+# Subtest: buildMarketSignalRows computes rolling changes, AD line, and divergence statuses
+ok 154 - buildMarketSignalRows computes rolling changes, AD line, and divergence statuses
+  ---
+  duration_ms: 13.986799
+  type: 'test'
+  ...
+# Subtest: dynamic condition engine evaluates numeric, boolean and enum operators
+ok 155 - dynamic condition engine evaluates numeric, boolean and enum operators
+  ---
+  duration_ms: 1.588566
+  type: 'test'
+  ...
+# Subtest: dynamic condition engine detects crosses and composite modes
+ok 156 - dynamic condition engine detects crosses and composite modes
+  ---
+  duration_ms: 0.243464
+  type: 'test'
+  ...
+# Subtest: dynamic condition engine validates registry-backed operators safely
+ok 157 - dynamic condition engine validates registry-backed operators safely
+  ---
+  duration_ms: 2.239973
+  type: 'test'
+  ...
+# Subtest: evaluateEarningsRisk returns not_available when no snapshot exists yet for the ticker
+ok 158 - evaluateEarningsRisk returns not_available when no snapshot exists yet for the ticker
+  ---
+  duration_ms: 1.217277
+  type: 'test'
+  ...
+# Subtest: evaluateEarningsRisk blocks pre-earnings and post-earnings windows using trading-day distance
+ok 159 - evaluateEarningsRisk blocks pre-earnings and post-earnings windows using trading-day distance
+  ---
+  duration_ms: 0.94831
+  type: 'test'
+  ...
+# Subtest: evaluateEarningsRisk blocks unknown rows once earnings snapshots exist but the source failed
+ok 160 - evaluateEarningsRisk blocks unknown rows once earnings snapshots exist but the source failed
+  ---
+  duration_ms: 0.927045
+  type: 'test'
+  ...
+# Subtest: buildEarningsWhispersStockUrl uses the public stock page per ticker
+ok 161 - buildEarningsWhispersStockUrl uses the public stock page per ticker
+  ---
+  duration_ms: 1.154022
+  type: 'test'
+  ...
+# Subtest: parseEarningsWhispersCalendarPage parses expected dates as unconfirmed
+ok 162 - parseEarningsWhispersCalendarPage parses expected dates as unconfirmed
+  ---
+  duration_ms: 1.724192
+  type: 'test'
+  ...
+# Subtest: parseEarningsWhispersCalendarPage parses scheduled dates as confirmed
+ok 163 - parseEarningsWhispersCalendarPage parses scheduled dates as confirmed
+  ---
+  duration_ms: 0.470366
+  type: 'test'
+  ...
+# Subtest: getExecutionConfig returns safe buffered-band defaults for paper execution
+ok 164 - getExecutionConfig returns safe buffered-band defaults for paper execution
+  ---
+  duration_ms: 2.269249
+  type: 'test'
+  ...
+# Subtest: getExecutionConfig normalizes symbols and numeric env overrides
+ok 165 - getExecutionConfig normalizes symbols and numeric env overrides
+  ---
+  duration_ms: 0.365362
+  type: 'test'
+  ...
+# Subtest: getExecutionConfig rejects invalid numeric env values
+ok 166 - getExecutionConfig rejects invalid numeric env values
+  ---
+  duration_ms: 0.729023
+  type: 'test'
+  ...
+# Subtest: getExecutionConfig rejects unsupported rebalance policies
+ok 167 - getExecutionConfig rejects unsupported rebalance policies
+  ---
+  duration_ms: 1.219494
+  type: 'test'
+  ...
+# Subtest: getMarkovPaperAccountConfigs parses named paper accounts for strategy automation
+ok 168 - getMarkovPaperAccountConfigs parses named paper accounts for strategy automation
+  ---
+  duration_ms: 0.674757
+  type: 'test'
+  ...
+# Subtest: returns no_op for a no-op intent
+ok 169 - returns no_op for a no-op intent
+  ---
+  duration_ms: 3.119819
+  type: 'test'
+  ...
+# Subtest: builds a dry-run buy decision for a long target when no position exists
+ok 170 - builds a dry-run buy decision for a long target when no position exists
+  ---
+  duration_ms: 1.267793
+  type: 'test'
+  ...
+# Subtest: builds a dry-run sell decision when target is cash and SPY is currently held
+ok 171 - builds a dry-run sell decision when target is cash and SPY is currently held
+  ---
+  duration_ms: 0.382085
+  type: 'test'
+  ...
+# Subtest: blocks an adapter-blocked short signal before any order can be proposed
+ok 172 - blocks an adapter-blocked short signal before any order can be proposed
+  ---
+  duration_ms: 1.033303
+  type: 'test'
+  ...
+# Subtest: approves a paper-execute decision only when trading is enabled and all rules pass
+ok 173 - approves a paper-execute decision only when trading is enabled and all rules pass
+  ---
+  duration_ms: 0.770475
+  type: 'test'
+  ...
+# Subtest: full_rebalance_exact still builds a quantity-based sell decision when enabled explicitly
+ok 174 - full_rebalance_exact still builds a quantity-based sell decision when enabled explicitly
+  ---
+  duration_ms: 0.296266
+  type: 'test'
+  ...
+# Subtest: builds a short-entry decision when shorting is enabled and a reference price is available
+ok 175 - builds a short-entry decision when shorting is enabled and a reference price is available
+  ---
+  duration_ms: 0.439769
+  type: 'test'
+  ...
+# Subtest: rounds short-entry quantity down to whole shares so Alpaca can accept the order
+ok 176 - rounds short-entry quantity down to whole shares so Alpaca can accept the order
+  ---
+  duration_ms: 0.278604
+  type: 'test'
+  ...
+# Subtest: buffered_band_rebalance sells a ticker fully when it leaves the basket
+ok 177 - buffered_band_rebalance sells a ticker fully when it leaves the basket
+  ---
+  duration_ms: 0.670098
+  type: 'test'
+  ...
+# Subtest: buffered_band_rebalance keeps surviving basket members inside the drift band
+ok 178 - buffered_band_rebalance keeps surviving basket members inside the drift band
+  ---
+  duration_ms: 0.730673
+  type: 'test'
+  ...
+# Subtest: buffered_band_rebalance trims only to the upper band instead of exact target
+ok 179 - buffered_band_rebalance trims only to the upper band instead of exact target
+  ---
+  duration_ms: 0.444916
+  type: 'test'
+  ...
+# Subtest: buffered_band_rebalance buys new entries from cash above the configured buffer
+ok 180 - buffered_band_rebalance buys new entries from cash above the configured buffer
+  ---
+  duration_ms: 0.476244
+  type: 'test'
+  ...
+# Subtest: buffered_band_rebalance skips small orders below the configured minimum
+ok 181 - buffered_band_rebalance skips small orders below the configured minimum
+  ---
+  duration_ms: 0.28125
+  type: 'test'
+  ...
+# Subtest: maps an approved buy decision to an Alpaca market order request
+ok 182 - maps an approved buy decision to an Alpaca market order request
+  ---
+  duration_ms: 2.135945
+  type: 'test'
+  ...
+# Subtest: maps an approved sell-to-cash decision to a quantity-based Alpaca order request
+ok 183 - maps an approved sell-to-cash decision to a quantity-based Alpaca order request
+  ---
+  duration_ms: 0.378364
+  type: 'test'
+  ...
+# Subtest: maps an approved buy-to-cover decision to a quantity-based Alpaca order request
+ok 184 - maps an approved buy-to-cover decision to a quantity-based Alpaca order request
+  ---
+  duration_ms: 1.532585
+  type: 'test'
+  ...
+# Subtest: refuses to build a broker request for blocked or no-op decisions
+ok 185 - refuses to build a broker request for blocked or no-op decisions
+  ---
+  duration_ms: 0.557993
+  type: 'test'
+  ...
+# Subtest: blocks execution when paper endpoint is not configured
+ok 186 - blocks execution when paper endpoint is not configured
+  ---
+  duration_ms: 1.207532
+  type: 'test'
+  ...
+# Subtest: blocks execution when trading is disabled for paper_execute mode
+ok 187 - blocks execution when trading is disabled for paper_execute mode
+  ---
+  duration_ms: 0.27947
+  type: 'test'
+  ...
+# Subtest: blocks execution for unsupported symbols, short intents, stale signals, open orders and oversize trades
+ok 188 - blocks execution for unsupported symbols, short intents, stale signals, open orders and oversize trades
+  ---
+  duration_ms: 0.313419
+  type: 'test'
+  ...
+# Subtest: passes symbol checks when no allowlist is configured and shorting is enabled
+ok 189 - passes symbol checks when no allowlist is configured and shorting is enabled
+  ---
+  duration_ms: 0.75122
+  type: 'test'
+  ...
+# Subtest: buildExecutionIntentInsertStatement stores normalized adapter output
+ok 190 - buildExecutionIntentInsertStatement stores normalized adapter output
+  ---
+  duration_ms: 2.179492
+  type: 'test'
+  ...
+# Subtest: buildExecutionDecisionInsertStatement stores decision, risk and proposal fields
+ok 191 - buildExecutionDecisionInsertStatement stores decision, risk and proposal fields
+  ---
+  duration_ms: 0.584613
+  type: 'test'
+  ...
+# Subtest: buildExecutionOrderInsertStatement stores broker request and response payloads
+ok 192 - buildExecutionOrderInsertStatement stores broker request and response payloads
+  ---
+  duration_ms: 0.353073
+  type: 'test'
+  ...
+# Subtest: buildExecutionOrderUpdateStatement updates broker response by broker order id
+ok 193 - buildExecutionOrderUpdateStatement updates broker response by broker order id
+  ---
+  duration_ms: 0.347214
+  type: 'test'
+  ...
+# Subtest: fetchBenchmarkData fetches benchmark candles and upserts them with ticker attached
+ok 194 - fetchBenchmarkData fetches benchmark candles and upserts them with ticker attached
+  ---
+  duration_ms: 3.443765
+  type: 'test'
+  ...
+# Subtest: buildFetchRunCompletionDetails includes benchmark counts in final metadata
+ok 195 - buildFetchRunCompletionDetails includes benchmark counts in final metadata
+  ---
+  duration_ms: 0.382712
+  type: 'test'
+  ...
+# Subtest: fetch daily uses the shared operational coverage policy
+ok 196 - fetch daily uses the shared operational coverage policy
+  ---
+  duration_ms: 1.721637
+  type: 'test'
+  ...
+# Subtest: fetch daily no longer aborts merely because one constituent failed
+ok 197 - fetch daily no longer aborts merely because one constituent failed
+  ---
+  duration_ms: 0.220063
+  type: 'test'
+  ...
+# Subtest: fetch daily keeps benchmark failure and insufficient coverage as hard stops
+ok 198 - fetch daily keeps benchmark failure and insufficient coverage as hard stops
+  ---
+  duration_ms: 0.197444
+  type: 'test'
+  ...
+# Subtest: fetch daily records coverage and failed tickers in completion metadata
+ok 199 - fetch daily records coverage and failed tickers in completion metadata
+  ---
+  duration_ms: 0.203843
+  type: 'test'
+  ...
+# Subtest: daily workflow exposes and routes the refresh execution mode
+ok 200 - daily workflow exposes and routes the refresh execution mode
+  ---
+  duration_ms: 0.730127
+  type: 'test'
+  ...
+# Subtest: marks an active fetch run as failure when interrupted
+ok 201 - marks an active fetch run as failure when interrupted
+  ---
+  duration_ms: 2.140059
+  type: 'test'
+  ...
+# Subtest: does not finish the same fetch run twice
+ok 202 - does not finish the same fetch run twice
+  ---
+  duration_ms: 0.521801
+  type: 'test'
+  ...
+# Subtest: getYahooDailyRange falls back to the default range
+ok 203 - getYahooDailyRange falls back to the default range
+  ---
+  duration_ms: 0.847327
+  type: 'test'
+  ...
+# Subtest: getYahooDailyRange returns the configured range
+ok 204 - getYahooDailyRange returns the configured range
+  ---
+  duration_ms: 0.166141
+  type: 'test'
+  ...
+# Subtest: getYahooIntraday60mRange falls back to the default range
+ok 205 - getYahooIntraday60mRange falls back to the default range
+  ---
+  duration_ms: 0.162591
+  type: 'test'
+  ...
+# Subtest: getYahooIntraday60mRange returns the configured range
+ok 206 - getYahooIntraday60mRange returns the configured range
+  ---
+  duration_ms: 1.109621
+  type: 'test'
+  ...
+# Subtest: getYahooProxyDailyRange falls back to the default incremental range
+ok 207 - getYahooProxyDailyRange falls back to the default incremental range
+  ---
+  duration_ms: 0.222953
+  type: 'test'
+  ...
+# Subtest: getYahooProxyDailyRange returns the configured incremental range
+ok 208 - getYahooProxyDailyRange returns the configured incremental range
+  ---
+  duration_ms: 0.15983
+  type: 'test'
+  ...
+# Subtest: getYahooProxyDailyInitialRange falls back to the default backfill range
+ok 209 - getYahooProxyDailyInitialRange falls back to the default backfill range
+  ---
+  duration_ms: 0.125131
+  type: 'test'
+  ...
+# Subtest: getYahooProxyDailyInitialRange returns the configured backfill range
+ok 210 - getYahooProxyDailyInitialRange returns the configured backfill range
+  ---
+  duration_ms: 0.088964
+  type: 'test'
+  ...
+# Subtest: forward horizon study detects composite signal starts and summarizes returns per horizon
+ok 211 - forward horizon study detects composite signal starts and summarizes returns per horizon
+  ---
+  duration_ms: 3.309488
+  type: 'test'
+  ...
+# Subtest: parseFredCsv accepts observation_date headers from FRED
+ok 212 - parseFredCsv accepts observation_date headers from FRED
+  ---
+  duration_ms: 1.864613
+  type: 'test'
+  ...
+# Subtest: FRED series config includes all market, macro, and yield-state inputs
+ok 213 - FRED series config includes all market, macro, and yield-state inputs
+  ---
+  duration_ms: 1.821053
+  type: 'test'
+  ...
+# Subtest: filterFredRowsForUpsert keeps a short overlap for daily FRED series
+ok 214 - filterFredRowsForUpsert keeps a short overlap for daily FRED series
+  ---
+  duration_ms: 2.029047
+  type: 'test'
+  ...
+# Subtest: filterFredRowsForUpsert keeps the full history for monthly FRED series
+ok 215 - filterFredRowsForUpsert keeps the full history for monthly FRED series
+  ---
+  duration_ms: 0.211566
+  type: 'test'
+  ...
+# Subtest: buildGammaLensGexDexUrl encodes an upper-case ticker
+ok 216 - buildGammaLensGexDexUrl encodes an upper-case ticker
+  ---
+  duration_ms: 0.740597
+  type: 'test'
+  ...
+# Subtest: resolveGammaLensGexDexTickers defaults to SPY and QQQ and normalizes configured values
+ok 217 - resolveGammaLensGexDexTickers defaults to SPY and QQQ and normalizes configured values
+  ---
+  duration_ms: 0.717669
+  type: 'test'
+  ...
+# Subtest: parseGammaLensGexDexPayload normalizes a source snapshot and per-strike GEX/DEX rows
+ok 218 - parseGammaLensGexDexPayload normalizes a source snapshot and per-strike GEX/DEX rows
+  ---
+  duration_ms: 0.824683
+  type: 'test'
+  ...
+# Subtest: parseGammaLensGexDexPayload preserves stale provider snapshots without treating them as active
+ok 219 - parseGammaLensGexDexPayload preserves stale provider snapshots without treating them as active
+  ---
+  duration_ms: 1.08497
+  type: 'test'
+  ...
+# Subtest: parseGammaLensGexDexPayload rejects malformed or mismatched provider payloads
+ok 220 - parseGammaLensGexDexPayload rejects malformed or mismatched provider payloads
+  ---
+  duration_ms: 0.889162
+  type: 'test'
+  ...
+# Subtest: buildGexDexDashboardView exposes a current positioning map and normalizes strike bars
+ok 221 - buildGexDexDashboardView exposes a current positioning map and normalizes strike bars
+  ---
+  duration_ms: 1.159692
+  type: 'test'
+  ...
+# Subtest: buildGexDexDashboardView makes provider-stale data visibly unavailable for decisions
+ok 222 - buildGexDexDashboardView makes provider-stale data visibly unavailable for decisions
+  ---
+  duration_ms: 0.253629
+  type: 'test'
+  ...
+# Subtest: fetchAndStoreGexDexSnapshots preserves successful symbols when one source request fails
+ok 223 - fetchAndStoreGexDexSnapshots preserves successful symbols when one source request fails
+  ---
+  duration_ms: 2.190052
+  type: 'test'
+  ...
+# Subtest: fetchAndStoreGexDexSnapshots respects bounded concurrency and preserves result order
+ok 224 - fetchAndStoreGexDexSnapshots respects bounded concurrency and preserves result order
+  ---
+  duration_ms: 21.406868
+  type: 'test'
+  ...
+# Subtest: buildGexDexRegimeRows marks positive gamma inside aligned walls as range
+ok 225 - buildGexDexRegimeRows marks positive gamma inside aligned walls as range
+  ---
+  duration_ms: 1.563092
+  type: 'test'
+  ...
+# Subtest: buildGexDexRegimeRows prioritizes flip risk over a range state
+ok 226 - buildGexDexRegimeRows prioritizes flip risk over a range state
+  ---
+  duration_ms: 0.303698
+  type: 'test'
+  ...
+# Subtest: buildGexDexRegimeRows marks a negative-gamma wall break as expansion
+ok 227 - buildGexDexRegimeRows marks a negative-gamma wall break as expansion
+  ---
+  duration_ms: 0.246158
+  type: 'test'
+  ...
+# Subtest: buildGexDexRegimeRows marks stale source data as unknown instead of emitting a regime
+ok 228 - buildGexDexRegimeRows marks stale source data as unknown instead of emitting a regime
+  ---
+  duration_ms: 0.306142
+  type: 'test'
+  ...
+# Subtest: buildGexDexSignalUpsertStatements stores contextual GEX/DEX state by source snapshot
+ok 229 - buildGexDexSignalUpsertStatements stores contextual GEX/DEX state by source snapshot
+  ---
+  duration_ms: 1.563162
+  type: 'test'
+  ...
+# Subtest: buildGexDexSnapshotUpsertStatement preserves GammaLens source metadata
+ok 230 - buildGexDexSnapshotUpsertStatement preserves GammaLens source metadata
+  ---
+  duration_ms: 2.318777
+  type: 'test'
+  ...
+# Subtest: buildGexDexStrikeUpsertStatements stores the full GEX/DEX strike distribution
+ok 231 - buildGexDexStrikeUpsertStatements stores the full GEX/DEX strike distribution
+  ---
+  duration_ms: 0.438997
+  type: 'test'
+  ...
+# Subtest: GEX DEX fetch combines SPY and QQQ with a dynamic top-30 volume universe
+ok 232 - GEX DEX fetch combines SPY and QQQ with a dynamic top-30 volume universe
+  ---
+  duration_ms: 1.336917
+  type: 'test'
+  ...
+# Subtest: buildTopVolumeGexDexTickerStatement ranks active S&P 500 stocks by trailing share volume
+ok 233 - buildTopVolumeGexDexTickerStatement ranks active S&P 500 stocks by trailing share volume
+  ---
+  duration_ms: 3.141418
+  type: 'test'
+  ...
+# Subtest: getTopVolumeGexDexTickers normalizes database rows and removes duplicates
+ok 234 - getTopVolumeGexDexTickers normalizes database rows and removes duplicates
+  ---
+  duration_ms: 0.366178
+  type: 'test'
+  ...
+# Subtest: mergeGexDexTickerUniverse keeps configured ETFs first and deduplicates top-volume stocks
+ok 235 - mergeGexDexTickerUniverse keeps configured ETFs first and deduplicates top-volume stocks
+  ---
+  duration_ms: 0.15979
+  type: 'test'
+  ...
+# Subtest: classifyMarkovState maps 20-day returns to bull, sideways, and bear
+ok 236 - classifyMarkovState maps 20-day returns to bull, sideways, and bear
+  ---
+  duration_ms: 1.126245
+  type: 'test'
+  ...
+# Subtest: buildHistoricalEdgeFingerprint combines trend, breadth, and volatility buckets
+ok 237 - buildHistoricalEdgeFingerprint combines trend, breadth, and volatility buckets
+  ---
+  duration_ms: 0.294175
+  type: 'test'
+  ...
+# Subtest: buildHistoricalEdgeByDate exposes active bullish edge from historical transitions and forward returns
+ok 238 - buildHistoricalEdgeByDate exposes active bullish edge from historical transitions and forward returns
+  ---
+  duration_ms: 20.976708
+  type: 'test'
+  ...
+# Subtest: isHistoryPruneEnabled defaults to false and accepts boolean-like env values
+ok 239 - isHistoryPruneEnabled defaults to false and accepts boolean-like env values
+  ---
+  duration_ms: 0.74905
+  type: 'test'
+  ...
+# Subtest: getHistoryPruneSettings uses free-tier friendly defaults
+ok 240 - getHistoryPruneSettings uses free-tier friendly defaults
+  ---
+  duration_ms: 0.615351
+  type: 'test'
+  ...
+# Subtest: getHistoryPrunePlan applies category-specific retention windows
+ok 241 - getHistoryPrunePlan applies category-specific retention windows
+  ---
+  duration_ms: 0.30969
+  type: 'test'
+  ...
+# Subtest: buildHistoryPruneStatement deletes rows older than the configured retention window
+ok 242 - buildHistoryPruneStatement deletes rows older than the configured retention window
+  ---
+  duration_ms: 0.164477
+  type: 'test'
+  ...
+# Subtest: buildIbsRsiIndicatorRows generates a buy signal when IBS is below 20 and RSI14 is below 30
+ok 243 - buildIbsRsiIndicatorRows generates a buy signal when IBS is below 20 and RSI14 is below 30
+  ---
+  duration_ms: 8.556116
+  type: 'test'
+  ...
+# Subtest: buildIbsRsiIndicatorRows leaves IBS null when the candle range is zero
+ok 244 - buildIbsRsiIndicatorRows leaves IBS null when the candle range is zero
+  ---
+  duration_ms: 1.044145
+  type: 'test'
+  ...
+# Subtest: buildImpliedVolatilityRatioDashboardView sorts rows, compacts labels, and maps values onto the fixed chart scale
+ok 245 - buildImpliedVolatilityRatioDashboardView sorts rows, compacts labels, and maps values onto the fixed chart scale
+  ---
+  duration_ms: 2.384111
+  type: 'test'
+  ...
+# Subtest: calculateRealisedVolatility30d annualises 30-day log-return volatility
+ok 246 - calculateRealisedVolatility30d annualises 30-day log-return volatility
+  ---
+  duration_ms: 13.184383
+  type: 'test'
+  ...
+# Subtest: calculateIvolRvolZScore requires 126 valid observations and exposes 1-week-ago z-score
+ok 247 - calculateIvolRvolZScore requires 126 valid observations and exposes 1-week-ago z-score
+  ---
+  duration_ms: 3.403292
+  type: 'test'
+  ...
+# Subtest: classifyIvolRvolSignal returns SHORT_SQUEEZE_SETUP when fear is high but trend starts improving
+ok 248 - classifyIvolRvolSignal returns SHORT_SQUEEZE_SETUP when fear is high but trend starts improving
+  ---
+  duration_ms: 0.837408
+  type: 'test'
+  ...
+# Subtest: classifyIvolRvolSignal upgrades to SHORT_SQUEEZE_BUY when trend is stronger and vol premium eases
+ok 249 - classifyIvolRvolSignal upgrades to SHORT_SQUEEZE_BUY when trend is stronger and vol premium eases
+  ---
+  duration_ms: 0.142715
+  type: 'test'
+  ...
+# Subtest: classifyIvolRvolSignal returns HIGH_IVOL_RVOL_RISK_OFF when fear is high and trend is still deteriorating
+ok 250 - classifyIvolRvolSignal returns HIGH_IVOL_RVOL_RISK_OFF when fear is high and trend is still deteriorating
+  ---
+  duration_ms: 0.236369
+  type: 'test'
+  ...
+# Subtest: classifyIvolRvolSignal returns COMPLACENCY_BREAKDOWN_RISK when vol is cheap and trend is breaking down
+ok 251 - classifyIvolRvolSignal returns COMPLACENCY_BREAKDOWN_RISK when vol is cheap and trend is breaking down
+  ---
+  duration_ms: 0.138792
+  type: 'test'
+  ...
+# Subtest: rankIvolRvolAssets ranks only scorable rows and leaves missing rows unranked
+ok 252 - rankIvolRvolAssets ranks only scorable rows and leaves missing rows unranked
+  ---
+  duration_ms: 0.395376
+  type: 'test'
+  ...
+# Subtest: IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS includes the expanded cross-asset proxy universe
+ok 253 - IMPLIED_VOLATILITY_PROXY_ASSET_DEFINITIONS includes the expanded cross-asset proxy universe
+  ---
+  duration_ms: 1.287017
+  type: 'test'
+  ...
+# Subtest: buildImpliedVolatilityProxySourceRows merges asset candles with IV proxy rows and preserves missing-IV dates
+ok 254 - buildImpliedVolatilityProxySourceRows merges asset candles with IV proxy rows and preserves missing-IV dates
+  ---
+  duration_ms: 0.430466
+  type: 'test'
+  ...
+# Subtest: buildImpliedVolatilityProxySourceUpsertStatements stores raw price and implied-volatility proxy inputs
+ok 255 - buildImpliedVolatilityProxySourceUpsertStatements stores raw price and implied-volatility proxy inputs
+  ---
+  duration_ms: 0.687369
+  type: 'test'
+  ...
+# Subtest: buildImpliedVolatilityRatioSignalUpsertStatements stores calculated IVOL/RVOL signal rows
+ok 256 - buildImpliedVolatilityRatioSignalUpsertStatements stores calculated IVOL/RVOL signal rows
+  ---
+  duration_ms: 0.469083
+  type: 'test'
+  ...
+# Subtest: hasYahooDailyRangeOverride detects explicit overrides only
+ok 257 - hasYahooDailyRangeOverride detects explicit overrides only
+  ---
+  duration_ms: 1.044674
+  type: 'test'
+  ...
+# Subtest: buildYahooFetchRequest uses fallback range for new tickers
+ok 258 - buildYahooFetchRequest uses fallback range for new tickers
+  ---
+  duration_ms: 1.00774
+  type: 'test'
+  ...
+# Subtest: buildYahooFetchRequest uses fallback range when a one-off override is set
+ok 259 - buildYahooFetchRequest uses fallback range when a one-off override is set
+  ---
+  duration_ms: 0.176971
+  type: 'test'
+  ...
+# Subtest: buildYahooFetchRequest uses period bounds for incremental fetches
+ok 260 - buildYahooFetchRequest uses period bounds for incremental fetches
+  ---
+  duration_ms: 0.474784
+  type: 'test'
+  ...
+# Subtest: filterIncrementalRows keeps a small overlap window
+ok 261 - filterIncrementalRows keeps a small overlap window
+  ---
+  duration_ms: 0.440755
+  type: 'test'
+  ...
+# Subtest: addDays shifts ISO dates in UTC
+ok 262 - addDays shifts ISO dates in UTC
+  ---
+  duration_ms: 0.195755
+  type: 'test'
+  ...
+# Subtest: buildStockDailyIndicatorUpsertStatements batches multiple indicator rows into one statement
+ok 263 - buildStockDailyIndicatorUpsertStatements batches multiple indicator rows into one statement
+  ---
+  duration_ms: 3.358383
+  type: 'test'
+  ...
+# Subtest: buildStockIntraday60mPriceUpsertStatements batches hourly rows with stable params
+ok 264 - buildStockIntraday60mPriceUpsertStatements batches hourly rows with stable params
+  ---
+  duration_ms: 2.237393
+  type: 'test'
+  ...
+# Subtest: upsertStockIntraday60mPrices executes each chunked statement through the provided client
+ok 265 - upsertStockIntraday60mPrices executes each chunked statement through the provided client
+  ---
+  duration_ms: 0.347781
+  type: 'test'
+  ...
+# Subtest: buildMacdVIndicatorRows warms up ATR26, turns active above 70, and deactivates on EMA crossunder
+ok 266 - buildMacdVIndicatorRows warms up ATR26, turns active above 70, and deactivates on EMA crossunder
+  ---
+  duration_ms: 18.307875
+  type: 'test'
+  ...
+# Subtest: calculateEquitySectorStyleMonthlyReturns uses monthly last adjusted close
+ok 267 - calculateEquitySectorStyleMonthlyReturns uses monthly last adjusted close
+  ---
+  duration_ms: 8.527257
+  type: 'test'
+  ...
+# Subtest: calculateEquitySectorStyleRegimeStats calculates stats by regime and beta
+ok 268 - calculateEquitySectorStyleRegimeStats calculates stats by regime and beta
+  ---
+  duration_ms: 1.036786
+  type: 'test'
+  ...
+# Subtest: scoreEquitySectorStylesForCurrentRegime ranks leaders and maps allocation bias
+ok 269 - scoreEquitySectorStylesForCurrentRegime ranks leaders and maps allocation bias
+  ---
+  duration_ms: 0.585198
+  type: 'test'
+  ...
+# Subtest: transformGrowthDataBaseEffectSeriesToMonthlyObservations computes YoY, MoM and base-effect fields
+ok 270 - transformGrowthDataBaseEffectSeriesToMonthlyObservations computes YoY, MoM and base-effect fields
+  ---
+  duration_ms: 15.967785
+  type: 'test'
+  ...
+# Subtest: classifyBaseEffectRegime maps easy, normal and hard comparison regimes
+ok 271 - classifyBaseEffectRegime maps easy, normal and hard comparison regimes
+  ---
+  duration_ms: 0.29616
+  type: 'test'
+  ...
+# Subtest: classifyGrowthDataBaseEffectRegime reduces severity when falling growth has hard comparisons
+ok 272 - classifyGrowthDataBaseEffectRegime reduces severity when falling growth has hard comparisons
+  ---
+  duration_ms: 0.282762
+  type: 'test'
+  ...
+# Subtest: buildGrowthDataBaseEffectsMatrix excludes missing rows from denominator and calculates category scores
+ok 273 - buildGrowthDataBaseEffectsMatrix excludes missing rows from denominator and calculates category scores
+  ---
+  duration_ms: 2.603373
+  type: 'test'
+  ...
+# Subtest: transformPmiMacroSeriesToMonthlyObservations aligns monthly rows and computes YoY momentum
+ok 274 - transformPmiMacroSeriesToMonthlyObservations aligns monthly rows and computes YoY momentum
+  ---
+  duration_ms: 16.570424
+  type: 'test'
+  ...
+# Subtest: transformPmiMacroSeriesToMonthlyObservations applies PMI 50-line direction scoring
+ok 275 - transformPmiMacroSeriesToMonthlyObservations applies PMI 50-line direction scoring
+  ---
+  duration_ms: 0.657847
+  type: 'test'
+  ...
+# Subtest: transformPmiMacroSeriesToMonthlyObservations applies neutral-level confidence scoring
+ok 276 - transformPmiMacroSeriesToMonthlyObservations applies neutral-level confidence scoring
+  ---
+  duration_ms: 0.580538
+  type: 'test'
+  ...
+# Subtest: buildMacroMatrixPmiGrowth calculates services-led expansion from category scores
+ok 277 - buildMacroMatrixPmiGrowth calculates services-led expansion from category scores
+  ---
+  duration_ms: 2.576864
+  type: 'test'
+  ...
+# Subtest: classifyPmiGrowthRegime prioritizes severe stress before broad contraction
+ok 278 - classifyPmiGrowthRegime prioritizes severe stress before broad contraction
+  ---
+  duration_ms: 0.210052
+  type: 'test'
+  ...
+# Subtest: SECTOR_FACTOR_REGIME_ASSET_DEFINITIONS includes the requested cross-asset groups with fetchable proxies
+ok 279 - SECTOR_FACTOR_REGIME_ASSET_DEFINITIONS includes the requested cross-asset groups with fetchable proxies
+  ---
+  duration_ms: 1.979996
+  type: 'test'
+  ...
+# Subtest: buildSectorFactorRegimePerformanceMatrix scores cross-asset rows for the current regime
+ok 280 - buildSectorFactorRegimePerformanceMatrix scores cross-asset rows for the current regime
+  ---
+  duration_ms: 14.491705
+  type: 'test'
+  ...
+# Subtest: buildSectorFactorRegimePerformanceMatrix can use a hidden OMXS30 benchmark without rendering it as a visible row
+ok 281 - buildSectorFactorRegimePerformanceMatrix can use a hidden OMXS30 benchmark without rendering it as a visible row
+  ---
+  duration_ms: 1.116897
+  type: 'test'
+  ...
+# Subtest: transformMacroSeriesToMonthlyObservations aligns weekly rows to monthly averages and computes YoY for jobless claims
+ok 282 - transformMacroSeriesToMonthlyObservations aligns weekly rows to monthly averages and computes YoY for jobless claims
+  ---
+  duration_ms: 15.918853
+  type: 'test'
+  ...
+# Subtest: transformMacroSeriesToMonthlyObservations applies inflation special rule when elevated inflation cools
+ok 283 - transformMacroSeriesToMonthlyObservations applies inflation special rule when elevated inflation cools
+  ---
+  duration_ms: 0.570385
+  type: 'test'
+  ...
+# Subtest: transformMacroSeriesToMonthlyObservations applies PMI diffusion rule
+ok 284 - transformMacroSeriesToMonthlyObservations applies PMI diffusion rule
+  ---
+  duration_ms: 0.526227
+  type: 'test'
+  ...
+# Subtest: buildMacroMatrixUsGrowth excludes missing rows from denominator and builds monthly summary
+ok 285 - buildMacroMatrixUsGrowth excludes missing rows from denominator and builds monthly summary
+  ---
+  duration_ms: 2.388996
+  type: 'test'
+  ...
+# Subtest: classifyMacroGrowthRegime returns severe risk-off classification for broad contraction
+ok 286 - classifyMacroGrowthRegime returns severe risk-off classification for broad contraction
+  ---
+  duration_ms: 0.216422
+  type: 'test'
+  ...
+# Subtest: getMacroMatrixYahooProxySymbols returns the deduplicated proxy universe used by both macro matrices
+ok 287 - getMacroMatrixYahooProxySymbols returns the deduplicated proxy universe used by both macro matrices
+  ---
+  duration_ms: 0.875093
+  type: 'test'
+  ...
+# Subtest: buildMacroMatrixYahooProxySourceRows maps Yahoo candles into DB source rows with traceable source URL
+ok 288 - buildMacroMatrixYahooProxySourceRows maps Yahoo candles into DB source rows with traceable source URL
+  ---
+  duration_ms: 0.849832
+  type: 'test'
+  ...
+# Subtest: buildMacroMatrixYahooProxySourceUpsertStatements stores proxy daily candles in a dedicated source table
+ok 289 - buildMacroMatrixYahooProxySourceUpsertStatements stores proxy daily candles in a dedicated source table
+  ---
+  duration_ms: 0.681784
+  type: 'test'
+  ...
+# Subtest: buildMarketBreadthForwardReturnComparisonViewModel builds a current-bucket comparison across all horizons
+ok 290 - buildMarketBreadthForwardReturnComparisonViewModel builds a current-bucket comparison across all horizons
+  ---
+  duration_ms: 1.950225
+  type: 'test'
+  ...
+# Subtest: buildMarketBreadthForwardReturnComparisonViewModel returns null when either model row is missing
+ok 291 - buildMarketBreadthForwardReturnComparisonViewModel returns null when either model row is missing
+  ---
+  duration_ms: 0.340422
+  type: 'test'
+  ...
+# Subtest: buildMa200BreadthForwardReturnEmpiricalUpsertStatements stores empirical counts, returns, and win ratios for the active breadth bucket
+ok 292 - buildMa200BreadthForwardReturnEmpiricalUpsertStatements stores empirical counts, returns, and win ratios for the active breadth bucket
+  ---
+  duration_ms: 1.855815
+  type: 'test'
+  ...
+# Subtest: buildMa200BreadthForwardReturnEmpiricalRows only uses matured same-bucket history and prefers adj_close over close
+ok 293 - buildMa200BreadthForwardReturnEmpiricalRows only uses matured same-bucket history and prefers adj_close over close
+  ---
+  duration_ms: 19.206501
+  type: 'test'
+  ...
+# Subtest: bucketMa200Breadth assigns boundary values to the correct bucket
+ok 294 - bucketMa200Breadth assigns boundary values to the correct bucket
+  ---
+  duration_ms: 1.12811
+  type: 'test'
+  ...
+# Subtest: getMa200BreadthForwardStats returns fixed return and win-ratio priors from the reference table
+ok 295 - getMa200BreadthForwardStats returns fixed return and win-ratio priors from the reference table
+  ---
+  duration_ms: 1.03958
+  type: 'test'
+  ...
+# Subtest: classifyMa200BreadthSignal treats 0-10 breadth as a capitulation buy without requiring positive slope
+ok 296 - classifyMa200BreadthSignal treats 0-10 breadth as a capitulation buy without requiring positive slope
+  ---
+  duration_ms: 0.377696
+  type: 'test'
+  ...
+# Subtest: classifyMa200BreadthSignal upgrades 10-20 breadth to buy when 10d and 20d slope both improve
+ok 297 - classifyMa200BreadthSignal upgrades 10-20 breadth to buy when 10d and 20d slope both improve
+  ---
+  duration_ms: 0.30779
+  type: 'test'
+  ...
+# Subtest: classifyMa200BreadthSignal keeps 20-40 breadth in risk reduction and adds stretch warning at 90-100 rollover
+ok 298 - classifyMa200BreadthSignal keeps 20-40 breadth in risk reduction and adds stretch warning at 90-100 rollover
+  ---
+  duration_ms: 0.216566
+  type: 'test'
+  ...
+# Subtest: buildMa200BreadthForwardReturnSignalRows attaches priors, slope fields, and deterministic outputs from market breadth history
+ok 299 - buildMa200BreadthForwardReturnSignalRows attaches priors, slope fields, and deterministic outputs from market breadth history
+  ---
+  duration_ms: 14.431918
+  type: 'test'
+  ...
+# Subtest: buildMa200BreadthForwardReturnSignalUpsertStatements stores bucket, slope, priors, and signal fields
+ok 300 - buildMa200BreadthForwardReturnSignalUpsertStatements stores bucket, slope, priors, and signal fields
+  ---
+  duration_ms: 2.511045
+  type: 'test'
+  ...
+# Subtest: buildMarketBreadthRows aggregates breadth counts and percentages by date
+ok 301 - buildMarketBreadthRows aggregates breadth counts and percentages by date
+  ---
+  duration_ms: 2.193562
+  type: 'test'
+  ...
+# Subtest: buildMarketSignalUpsertStatements batches market signal rows into one statement
+ok 302 - buildMarketSignalUpsertStatements batches market signal rows into one statement
+  ---
+  duration_ms: 2.674368
+  type: 'test'
+  ...
+# Subtest: shouldUseCockroachMigrationCompatibility detects Cockroach from the selected connection string
+ok 303 - shouldUseCockroachMigrationCompatibility detects Cockroach from the selected connection string
+  ---
+  duration_ms: 2.160974
+  type: 'test'
+  ...
+# Subtest: transformMigrationSqlForCockroach converts add-constraint DO blocks into rerunnable constraint statements
+ok 304 - transformMigrationSqlForCockroach converts add-constraint DO blocks into rerunnable constraint statements
+  ---
+  duration_ms: 1.293232
+  type: 'test'
+  ...
+# Subtest: transformMigrationSqlForCockroach drops legacy rename DO blocks that are only needed for old schemas
+ok 305 - transformMigrationSqlForCockroach drops legacy rename DO blocks that are only needed for old schemas
+  ---
+  duration_ms: 0.361916
+  type: 'test'
+  ...
+# Subtest: splitSqlStatements splits transformed Cockroach SQL into sequential statements
+ok 306 - splitSqlStatements splits transformed Cockroach SQL into sequential statements
+  ---
+  duration_ms: 0.954768
+  type: 'test'
+  ...
+# Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
+ok 307 - only Gamma Flip belongs to the default GEX/DEX chart group
+  ---
+  duration_ms: 1.830501
+  type: 'test'
+  ...
+# Subtest: strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
+ok 308 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
+  ---
+  duration_ms: 4.229283
+  type: 'test'
+  ...
+# Subtest: all provider strikes are shown when each side stays within the thirty-row cap
+ok 309 - all provider strikes are shown when each side stays within the thirty-row cap
+  ---
+  duration_ms: 0.594995
+  type: 'test'
+  ...
+# Subtest: options positioning model builds centered GEX and DEX bars with key-level annotations
+ok 310 - options positioning model builds centered GEX and DEX bars with key-level annotations
+  ---
+  duration_ms: 1.234965
+  type: 'test'
+  ...
+# Subtest: key-level history remains available for hover and keyboard tooltips
+ok 311 - key-level history remains available for hover and keyboard tooltips
+  ---
+  duration_ms: 13.205348
+  type: 'test'
+  ...
+# Subtest: chart renders isolated Options Positioning strike bars instead of the old ladder table
+ok 312 - chart renders isolated Options Positioning strike bars instead of the old ladder table
+  ---
+  duration_ms: 11.552517
+  type: 'test'
+  ...
+# Subtest: parseFinraShortVolumeFile parses pipe-delimited FINRA rows and does not sum symbols together
+ok 313 - parseFinraShortVolumeFile parses pipe-delimited FINRA rows and does not sum symbols together
+  ---
+  duration_ms: 1.558875
+  type: 'test'
+  ...
+# Subtest: buildFinraShortVolumeUpsertStatements stores FINRA short-volume fields for PLCE
+ok 314 - buildFinraShortVolumeUpsertStatements stores FINRA short-volume fields for PLCE
+  ---
+  duration_ms: 0.567332
+  type: 'test'
+  ...
+# Subtest: buildPlceShortVolumeIndicatorRows handles z-score warmup and price condition from PLCE short volume
+ok 315 - buildPlceShortVolumeIndicatorRows handles z-score warmup and price condition from PLCE short volume
+  ---
+  duration_ms: 8.033084
+  type: 'test'
+  ...
+# Subtest: buildPlceShortVolumeIndicatorRows calculates raw buy and extreme signals from FINRA short volume
+ok 316 - buildPlceShortVolumeIndicatorRows calculates raw buy and extreme signals from FINRA short volume
+  ---
+  duration_ms: 0.692227
+  type: 'test'
+  ...
+# Subtest: buildPlceShortVolumeIndicatorUpsertStatements stores raw PLCE short-volume values and raw signal fields
+ok 317 - buildPlceShortVolumeIndicatorUpsertStatements stores raw PLCE short-volume values and raw signal fields
+  ---
+  duration_ms: 0.373547
+  type: 'test'
+  ...
+# Subtest: buildPlceThresholdIndicatorRows copies the daily PLCE threshold signal onto each ticker row by date
+ok 318 - buildPlceThresholdIndicatorRows copies the daily PLCE threshold signal onto each ticker row by date
+  ---
+  duration_ms: 2.05771
+  type: 'test'
+  ...
+# Subtest: buildPositionFactUpsertStatements batches daily position fact rows into one statement
+ok 319 - buildPositionFactUpsertStatements batches daily position fact rows into one statement
+  ---
+  duration_ms: 2.474754
+  type: 'test'
+  ...
+# Subtest: buildPositionFactRowsFromSources aligns macro series as-of each market day and classifies position facts
+ok 320 - buildPositionFactRowsFromSources aligns macro series as-of each market day and classifies position facts
+  ---
+  duration_ms: 18.680802
+  type: 'test'
+  ...
+# Subtest: buildPositionSignalUpsertStatements batches position signal rows into one statement
+ok 321 - buildPositionSignalUpsertStatements batches position signal rows into one statement
+  ---
+  duration_ms: 2.323052
+  type: 'test'
+  ...
+# Subtest: buildPositionSignalRowsFromSources requires a 2-day 4-flag hard-risk cluster before going fully to cash
+ok 322 - buildPositionSignalRowsFromSources requires a 2-day 4-flag hard-risk cluster before going fully to cash
+  ---
+  duration_ms: 16.652536
+  type: 'test'
+  ...
+# Subtest: buildPositionSignalRowsFromSources scales down after sustained 3+ hard flags and waits 5 days before reopening
+ok 323 - buildPositionSignalRowsFromSources scales down after sustained 3+ hard flags and waits 5 days before reopening
+  ---
+  duration_ms: 2.325781
+  type: 'test'
+  ...
+# Subtest: buildPriceZscoreIndicatorRows keeps z-score warming up before z-score average exists
+ok 324 - buildPriceZscoreIndicatorRows keeps z-score warming up before z-score average exists
+  ---
+  duration_ms: 9.51723
+  type: 'test'
+  ...
+# Subtest: buildPriceZscoreIndicatorRows generates buy when z-score crosses above its 20-day average below -1
+ok 325 - buildPriceZscoreIndicatorRows generates buy when z-score crosses above its 20-day average below -1
+  ---
+  duration_ms: 0.709498
+  type: 'test'
+  ...
+# Subtest: buildPriceZscoreIndicatorRows generates sell when z-score crosses below its 20-day average above 1.4
+ok 326 - buildPriceZscoreIndicatorRows generates sell when z-score crosses below its 20-day average above 1.4
+  ---
+  duration_ms: 1.296919
+  type: 'test'
+  ...
+# Subtest: parseBarchartBreadthPage parses Last Price from the configured symbol page without relying on full title text
+ok 327 - parseBarchartBreadthPage parses Last Price from the configured symbol page without relying on full title text
+  ---
+  duration_ms: 2.599589
+  type: 'test'
+  ...
+# Subtest: buildExternalBreadthUpsertStatements stores raw Barchart breadth values for R3TW and MMTW
+ok 328 - buildExternalBreadthUpsertStatements stores raw Barchart breadth values for R3TW and MMTW
+  ---
+  duration_ms: 0.844966
+  type: 'test'
+  ...
+# Subtest: buildR3twMmtw20dmaBreadthIndicatorRows requires both R3TW and MMTW to cross above 20 on the same date
+ok 329 - buildR3twMmtw20dmaBreadthIndicatorRows requires both R3TW and MMTW to cross above 20 on the same date
+  ---
+  duration_ms: 13.529644
+  type: 'test'
+  ...
+# Subtest: buildR3twMmtw20dmaBreadthIndicatorUpsertStatements stores raw crossover values and signal fields
+ok 330 - buildR3twMmtw20dmaBreadthIndicatorUpsertStatements stores raw crossover values and signal fields
+  ---
+  duration_ms: 0.555937
+  type: 'test'
+  ...
+# Subtest: buildRegimeGatedBreakoutUpsertStatements stores breakout decision rows with JSON metadata
+ok 331 - buildRegimeGatedBreakoutUpsertStatements stores breakout decision rows with JSON metadata
+  ---
+  duration_ms: 2.460025
+  type: 'test'
+  ...
+# Subtest: buildRegimeGatedBreakoutRowsFromSources allows warning-quality breakouts when all setup gates confirm
+ok 332 - buildRegimeGatedBreakoutRowsFromSources allows warning-quality breakouts when all setup gates confirm
+  ---
+  duration_ms: 3.06072
+  type: 'test'
+  ...
+# Subtest: buildRegimeGatedBreakoutRowsFromSources blocks risk-off and quality-blocked breakouts
+ok 333 - buildRegimeGatedBreakoutRowsFromSources blocks risk-off and quality-blocked breakouts
+  ---
+  duration_ms: 15.723711
+  type: 'test'
+  ...
+# Subtest: buildRegimeGatedBreakoutRowsFromSources blocks buy setups inside the earnings window
+ok 334 - buildRegimeGatedBreakoutRowsFromSources blocks buy setups inside the earnings window
+  ---
+  duration_ms: 1.327575
+  type: 'test'
+  ...
+# Subtest: buildRelativeStrengthRows applies the ratio-vs-SPY definition and leaves warmup rows null
+ok 335 - buildRelativeStrengthRows applies the ratio-vs-SPY definition and leaves warmup rows null
+  ---
+  duration_ms: 19.266625
+  type: 'test'
+  ...
+# Subtest: buildRelativeStrengthRows ranks each date across the active universe with deterministic ticker tie-breaks
+ok 336 - buildRelativeStrengthRows ranks each date across the active universe with deterministic ticker tie-breaks
+  ---
+  duration_ms: 0.758058
+  type: 'test'
+  ...
+# Subtest: buildRelativeStrengthUpsertStatements batches RS rows for storage
+ok 337 - buildRelativeStrengthUpsertStatements batches RS rows for storage
+  ---
+  duration_ms: 0.835617
+  type: 'test'
+  ...
+# Subtest: calculateTickerIndicators uses adj_close before close and honors warmup windows
+ok 338 - calculateTickerIndicators uses adj_close before close and honors warmup windows
+  ---
+  duration_ms: 3.276254
+  type: 'test'
+  ...
+# Subtest: classifyVolumeEvent prioritizes volume event regimes
+ok 339 - classifyVolumeEvent prioritizes volume event regimes
+  ---
+  duration_ms: 1.372554
+  type: 'test'
+  ...
+# Subtest: calculateTickerIndicators throws when no usable price exists
+ok 340 - calculateTickerIndicators throws when no usable price exists
+  ---
+  duration_ms: 0.681331
+  type: 'test'
+  ...
+# Subtest: runExecutionPipeline persists snapshots, intents and dry-run decisions without submitting orders
+ok 341 - runExecutionPipeline persists snapshots, intents and dry-run decisions without submitting orders
+  ---
+  duration_ms: 3.001419
+  type: 'test'
+  ...
+# Subtest: runExecutionPipeline persists blocked short intents without calling Alpaca submitOrder
+ok 342 - runExecutionPipeline persists blocked short intents without calling Alpaca submitOrder
+  ---
+  duration_ms: 1.010251
+  type: 'test'
+  ...
+# Subtest: runExecutionPipeline submits approved paper orders and persists broker responses
+ok 343 - runExecutionPipeline submits approved paper orders and persists broker responses
+  ---
+  duration_ms: 1.755916
+  type: 'test'
+  ...
+# Subtest: runExecutionPipeline propagates custom broker labels into snapshots and orders
+ok 344 - runExecutionPipeline propagates custom broker labels into snapshots and orders
+  ---
+  duration_ms: 0.490069
+  type: 'test'
+  ...
+# Subtest: buildRydObvIndicatorRows starts OBV at zero and uses adj_close before close for direction
+ok 345 - buildRydObvIndicatorRows starts OBV at zero and uses adj_close before close for direction
+  ---
+  duration_ms: 18.479817
+  type: 'test'
+  ...
+# Subtest: buildRydObvIndicatorRows keeps z-score null until 80 OBV values exist
+ok 346 - buildRydObvIndicatorRows keeps z-score null until 80 OBV values exist
+  ---
+  duration_ms: 1.551499
+  type: 'test'
+  ...
+# Subtest: buildRydObvIndicatorRows returns null z-score when rolling OBV stdev is zero
+ok 347 - buildRydObvIndicatorRows returns null z-score when rolling OBV stdev is zero
+  ---
+  duration_ms: 0.737749
+  type: 'test'
+  ...
+# Subtest: buildRydObvIndicatorRows generates buy when z-score crosses above -2.7 and sell when it crosses below 2.7
+ok 348 - buildRydObvIndicatorRows generates buy when z-score crosses above -2.7 and sell when it crosses below 2.7
+  ---
+  duration_ms: 1.01397
+  type: 'test'
+  ...
+# Subtest: buildSectorBreadthUpsertStatements batches sector breadth rows into one statement
+ok 349 - buildSectorBreadthUpsertStatements batches sector breadth rows into one statement
+  ---
+  duration_ms: 1.620556
+  type: 'test'
+  ...
+# Subtest: buildSectorBreadthRows aggregates breadth counts per sector and date
+ok 350 - buildSectorBreadthRows aggregates breadth counts per sector and date
+  ---
+  duration_ms: 14.996218
+  type: 'test'
+  ...
+# Subtest: buildSectorOverviewRows compounds stored daily sector returns and compares prior ROC
+ok 351 - buildSectorOverviewRows compounds stored daily sector returns and compares prior ROC
+  ---
+  duration_ms: 14.565989
+  type: 'test'
+  ...
+# Subtest: buildSectorOverviewRows averages constituents by sector and preserves incomplete history
+ok 352 - buildSectorOverviewRows averages constituents by sector and preserves incomplete history
+  ---
+  duration_ms: 0.827545
+  type: 'test'
+  ...
+# Subtest: getSectorOverviewSnapshot reads existing sector sources and assembles the calculated rows
+ok 353 - getSectorOverviewSnapshot reads existing sector sources and assembles the calculated rows
+  ---
+  duration_ms: 19.057112
+  type: 'test'
+  ...
+# Subtest: buildSectorSignalUpsertStatements batches sector signal rows into one statement
+ok 354 - buildSectorSignalUpsertStatements batches sector signal rows into one statement
+  ---
+  duration_ms: 1.606241
+  type: 'test'
+  ...
+# Subtest: buildSectorSignalRowsFromSources classifies sectors into leading, improving, weakening, and lagging
+ok 355 - buildSectorSignalRowsFromSources classifies sectors into leading, improving, weakening, and lagging
+  ---
+  duration_ms: 9.207101
+  type: 'test'
+  ...
+# Subtest: buildSignalDataQualityUpsertStatements stores generic gate payloads with date + gate key upserts
+ok 356 - buildSignalDataQualityUpsertStatements stores generic gate payloads with date + gate key upserts
+  ---
+  duration_ms: 2.698944
+  type: 'test'
+  ...
+# Subtest: buildSignalEventUpsertStatements batches signal events without resetting status fields on conflict
+ok 357 - buildSignalEventUpsertStatements batches signal events without resetting status fields on conflict
+  ---
+  duration_ms: 2.133075
+  type: 'test'
+  ...
+# Subtest: buildSignalEventStatusUpdateStatement sets sent timestamp when marking events sent
+ok 358 - buildSignalEventStatusUpdateStatement sets sent timestamp when marking events sent
+  ---
+  duration_ms: 0.349271
+  type: 'test'
+  ...
+# Subtest: buildMarketRegimeChangeSignalEvents only emits rows on regime changes after the first observed state
+ok 359 - buildMarketRegimeChangeSignalEvents only emits rows on regime changes after the first observed state
+  ---
+  duration_ms: 13.761909
+  type: 'test'
+  ...
+# Subtest: buildRegimeGatedBreakoutSignalEvents only emits bullish breakout triggers with structured payloads
+ok 360 - buildRegimeGatedBreakoutSignalEvents only emits bullish breakout triggers with structured payloads
+  ---
+  duration_ms: 0.737474
+  type: 'test'
+  ...
+# Subtest: signal study registry exposes expected core fields
+ok 361 - signal study registry exposes expected core fields
+  ---
+  duration_ms: 1.6762
+  type: 'test'
+  ...
+# Subtest: signal study registry returns computed enum metadata for tf_sync.state
+ok 362 - signal study registry returns computed enum metadata for tf_sync.state
+  ---
+  duration_ms: 1.082649
+  type: 'test'
+  ...
+# Subtest: signal study registry rejects unknown fields
+ok 363 - signal study registry rejects unknown fields
+  ---
+  duration_ms: 0.171836
+  type: 'test'
+  ...
+# Subtest: signal study config normalizes modes for forward horizon studies
+ok 364 - signal study config normalizes modes for forward horizon studies
+  ---
+  duration_ms: 1.088427
+  type: 'test'
+  ...
+# Subtest: signal study config rejects invalid enum value in condition
+ok 365 - signal study config rejects invalid enum value in condition
+  ---
+  duration_ms: 1.204595
+  type: 'test'
+  ...
+# Subtest: signal study output slugifies study names safely
+ok 366 - signal study output slugifies study names safely
+  ---
+  duration_ms: 1.191864
+  type: 'test'
+  ...
+# Subtest: signal study output builds stable UTC timestamp labels
+ok 367 - signal study output builds stable UTC timestamp labels
+  ---
+  duration_ms: 0.245767
+  type: 'test'
+  ...
+# Subtest: signal study output builds timestamped and latest result paths
+ok 368 - signal study output builds timestamped and latest result paths
+  ---
+  duration_ms: 0.404535
+  type: 'test'
+  ...
+# Subtest: signal study output builds filesystem storage refs from local paths
+ok 369 - signal study output builds filesystem storage refs from local paths
+  ---
+  duration_ms: 0.395103
+  type: 'test'
+  ...
+# Subtest: signal study output builds database ids and refs without filesystem paths
+ok 370 - signal study output builds database ids and refs without filesystem paths
+  ---
+  duration_ms: 0.442208
+  type: 'test'
+  ...
+# Subtest: signal study results repository builds insert statements with serialized payload json
+ok 371 - signal study results repository builds insert statements with serialized payload json
+  ---
+  duration_ms: 2.89699
+  type: 'test'
+  ...
+# Subtest: signal study results repository persists records through injected query executor
+ok 372 - signal study results repository persists records through injected query executor
+  ---
+  duration_ms: 0.441662
+  type: 'test'
+  ...
+# Subtest: signal study results repository maps latest rows into app-friendly objects
+ok 373 - signal study results repository maps latest rows into app-friendly objects
+  ---
+  duration_ms: 0.458028
+  type: 'test'
+  ...
+# Subtest: signal study run endpoint returns 404 when feature flag is disabled
+ok 374 - signal study run endpoint returns 404 when feature flag is disabled
+  ---
+  duration_ms: 1.270356
+  type: 'test'
+  ...
+# Subtest: signal study run endpoint returns 401 on missing or wrong token
+ok 375 - signal study run endpoint returns 401 on missing or wrong token
+  ---
+  duration_ms: 0.332932
+  type: 'test'
+  ...
+# Subtest: signal study run endpoint returns 400 for invalid json payloads
+ok 376 - signal study run endpoint returns 400 for invalid json payloads
+  ---
+  duration_ms: 0.278206
+  type: 'test'
+  ...
+# Subtest: signal study run endpoint returns 400 for config validation errors
+ok 377 - signal study run endpoint returns 400 for config validation errors
+  ---
+  duration_ms: 0.453481
+  type: 'test'
+  ...
+# Subtest: signal study run endpoint returns 500 for persistence errors
+ok 378 - signal study run endpoint returns 500 for persistence errors
+  ---
+  duration_ms: 0.375603
+  type: 'test'
+  ...
+# Subtest: signal study run endpoint returns 200 and payload on success
+ok 379 - signal study run endpoint returns 200 and payload on success
+  ---
+  duration_ms: 0.301604
+  type: 'test'
+  ...
+# Subtest: signal study runner resolves storage kinds predictably
+ok 380 - signal study runner resolves storage kinds predictably
+  ---
+  duration_ms: 1.096142
+  type: 'test'
+  ...
+# Subtest: signal study runner wraps validation errors as config errors
+ok 381 - signal study runner wraps validation errors as config errors
+  ---
+  duration_ms: 0.914202
+  type: 'test'
+  ...
+# Subtest: signal study runner writes filesystem refs for local CLI flow
+ok 382 - signal study runner writes filesystem refs for local CLI flow
+  ---
+  duration_ms: 1.372752
+  type: 'test'
+  ...
+# Subtest: signal study runner saves database-backed results with stable refs
+ok 383 - signal study runner saves database-backed results with stable refs
+  ---
+  duration_ms: 0.599436
+  type: 'test'
+  ...
+# Subtest: signal study runner wraps database persistence failures
+ok 384 - signal study runner wraps database persistence failures
+  ---
+  duration_ms: 0.909279
+  type: 'test'
+  ...
+# Subtest: signal study UI detects when ticker-scoped fields require signal instrument
+ok 385 - signal study UI detects when ticker-scoped fields require signal instrument
+  ---
+  duration_ms: 0.691238
+  type: 'test'
+  ...
+# Subtest: signal study UI coerces invalid ticker-scoped signal instrument to valid return ticker
+ok 386 - signal study UI coerces invalid ticker-scoped signal instrument to valid return ticker
+  ---
+  duration_ms: 0.250974
+  type: 'test'
+  ...
+# Subtest: signal study UI clears invalid signal instrument when only global fields are selected
+ok 387 - signal study UI clears invalid signal instrument when only global fields are selected
+  ---
+  duration_ms: 1.498349
+  type: 'test'
+  ...
+# Subtest: state period study enters after signal start and exits after neutral streak with delay bars
+ok 388 - state period study enters after signal start and exits after neutral streak with delay bars
+  ---
+  duration_ms: 2.85022
+  type: 'test'
+  ...
+# Subtest: buildStockEarningsCalendarUpsertStatements stores snapshot earnings rows with JSON details
+ok 389 - buildStockEarningsCalendarUpsertStatements stores snapshot earnings rows with JSON details
+  ---
+  duration_ms: 3.131528
+  type: 'test'
+  ...
+# Subtest: buildStockSignalBoardViewModel prioritizes active signals and summarizes board coverage
+ok 390 - buildStockSignalBoardViewModel prioritizes active signals and summarizes board coverage
+  ---
+  duration_ms: 3.405275
+  type: 'test'
+  ...
+# Subtest: buildStockSignalBoardViewModel keeps latest active indicator signal when it is newer than watchlist history
+ok 391 - buildStockSignalBoardViewModel keeps latest active indicator signal when it is newer than watchlist history
+  ---
+  duration_ms: 0.345777
+  type: 'test'
+  ...
+# Subtest: buildStockSignalBoardViewModel exposes all stock indicators for compact chips and detailed drilldown
+ok 392 - buildStockSignalBoardViewModel exposes all stock indicators for compact chips and detailed drilldown
+  ---
+  duration_ms: 7.569245
+  type: 'test'
+  ...
+# Subtest: buildStockSignalBoardViewModel supports summary override and pagination metadata for partial board loads
+ok 393 - buildStockSignalBoardViewModel supports summary override and pagination metadata for partial board loads
+  ---
+  duration_ms: 0.534584
+  type: 'test'
+  ...
+# Subtest: buildStockSignalBoardViewModel exposes regime breakout trigger and blocked detail states
+ok 394 - buildStockSignalBoardViewModel exposes regime breakout trigger and blocked detail states
+  ---
+  duration_ms: 1.1614
+  type: 'test'
+  ...
+# Subtest: buildSwingSignalUpsertStatements batches swing signal rows into one statement
+ok 395 - buildSwingSignalUpsertStatements batches swing signal rows into one statement
+  ---
+  duration_ms: 2.122237
+  type: 'test'
+  ...
+# Subtest: buildSwingSignalRowsFromSources sequences watchlist, long, risk reduction, and short watch decisions
+ok 396 - buildSwingSignalRowsFromSources sequences watchlist, long, risk reduction, and short watch decisions
+  ---
+  duration_ms: 14.263419
+  type: 'test'
+  ...
+# Subtest: buildSwingWatchlistUpsertStatements batches ranked watchlist rows into one statement
+ok 397 - buildSwingWatchlistUpsertStatements batches ranked watchlist rows into one statement
+  ---
+  duration_ms: 2.361343
+  type: 'test'
+  ...
+# Subtest: buildSwingWatchlistRowsFromSources ranks top long and short candidates per day
+ok 398 - buildSwingWatchlistRowsFromSources ranks top long and short candidates per day
+  ---
+  duration_ms: 13.564846
+  type: 'test'
+  ...
+# Subtest: buildSwingWatchlistRowsFromSources annotates weakening setups as defensive and hedge watchlists
+ok 399 - buildSwingWatchlistRowsFromSources annotates weakening setups as defensive and hedge watchlists
+  ---
+  duration_ms: 0.561504
+  type: 'test'
+  ...
+# Subtest: buildTfSyncIndicatorUpsertStatements stores TF Sync daily rows with raw state fields
+ok 400 - buildTfSyncIndicatorUpsertStatements stores TF Sync daily rows with raw state fields
+  ---
+  duration_ms: 2.352198
+  type: 'test'
+  ...
+# Subtest: upsertTfSyncIndicatorRows executes each TF Sync statement through the provided client
+ok 401 - upsertTfSyncIndicatorRows executes each TF Sync statement through the provided client
+  ---
+  duration_ms: 0.59227
+  type: 'test'
+  ...
+# Subtest: buildTfSyncIndicatorRows derives daily, weekly and latest 60m color states and persists active bias until opposite trigger
+ok 402 - buildTfSyncIndicatorRows derives daily, weekly and latest 60m color states and persists active bias until opposite trigger
+  ---
+  duration_ms: 9.482811
+  type: 'test'
+  ...
+# Subtest: buildTfSyncIndicatorRows skips output rows until a latest 60m candle exists but still uses earlier daily rows for weekly context
+ok 403 - buildTfSyncIndicatorRows skips output rows until a latest 60m candle exists but still uses earlier daily rows for weekly context
+  ---
+  duration_ms: 0.44966
+  type: 'test'
+  ...
+# Subtest: syncs into the carryover weekly basket when the account is empty mid-week
+ok 404 - syncs into the carryover weekly basket when the account is empty mid-week
+  ---
+  duration_ms: 27.567202
+  type: 'test'
+  ...
+# Subtest: rebalances into the next weekly bull basket and exits removed holdings
+ok 405 - rebalances into the next weekly bull basket and exits removed holdings
+  ---
+  duration_ms: 0.94781
+  type: 'test'
+  ...
+# Subtest: exits weekly short holdings mid-week when the daily guard no longer qualifies them
+ok 406 - exits weekly short holdings mid-week when the daily guard no longer qualifies them
+  ---
+  duration_ms: 0.920252
+  type: 'test'
+  ...
+# Subtest: default ticker Markov strategies no longer include exclude-bottom-bear variants
+ok 407 - default ticker Markov strategies no longer include exclude-bottom-bear variants
+  ---
+  duration_ms: 1.000162
+  type: 'test'
+  ...
+# Subtest: ticker Markov strategies only hold signal-aligned names by side
+ok 408 - ticker Markov strategies only hold signal-aligned names by side
+  ---
+  duration_ms: 8.533465
+  type: 'test'
+  ...
+# Subtest: maps KÖP SPY to a normalized long execution intent
+ok 409 - maps KÖP SPY to a normalized long execution intent
+  ---
+  duration_ms: 1.314421
+  type: 'test'
+  ...
+# Subtest: maps GÅ TILL CASH to a normalized cash execution intent
+ok 410 - maps GÅ TILL CASH to a normalized cash execution intent
+  ---
+  duration_ms: 0.232972
+  type: 'test'
+  ...
+# Subtest: maps BEHÅLL and SITT STILL to no-op intents
+ok 411 - maps BEHÅLL and SITT STILL to no-op intents
+  ---
+  duration_ms: 0.239674
+  type: 'test'
+  ...
+# Subtest: maps GÅ KORT SPY to a blocked intent that stays audit-safe
+ok 412 - maps GÅ KORT SPY to a blocked intent that stays audit-safe
+  ---
+  duration_ms: 0.239219
+  type: 'test'
+  ...
+# Subtest: maps STÄNG KORT to a blocked intent for unsupported short workflows
+ok 413 - maps STÄNG KORT to a blocked intent for unsupported short workflows
+  ---
+  duration_ms: 1.491236
+  type: 'test'
+  ...
+# Subtest: buildTradingSignalUpsertStatements includes historical edge fields
+ok 414 - buildTradingSignalUpsertStatements includes historical edge fields
+  ---
+  duration_ms: 1.904133
+  type: 'test'
+  ...
+# Subtest: buildTradingSignalRowsFromSources sequences long, cash, short, and risk-off decisions
+ok 415 - buildTradingSignalRowsFromSources sequences long, cash, short, and risk-off decisions
+  ---
+  duration_ms: 15.426936
+  type: 'test'
+  ...
+# Subtest: buildTradingSignalRowsFromSources lets historical edge directly trigger buy decisions
+ok 416 - buildTradingSignalRowsFromSources lets historical edge directly trigger buy decisions
+  ---
+  duration_ms: 9.502893
+  type: 'test'
+  ...
+# Subtest: US equity market holiday set includes fixed and movable 2026 holidays
+ok 417 - US equity market holiday set includes fixed and movable 2026 holidays
+  ---
+  duration_ms: 1.10224
+  type: 'test'
+  ...
+# Subtest: US equity market holiday detection covers observed spillover dates
+ok 418 - US equity market holiday detection covers observed spillover dates
+  ---
+  duration_ms: 0.339038
+  type: 'test'
+  ...
+# Subtest: US equity market date detection excludes weekends and holidays
+ok 419 - US equity market date detection excludes weekends and holidays
+  ---
+  duration_ms: 1.180121
+  type: 'test'
+  ...
+# Subtest: US equity market previous date walks back across weekends and holidays
+ok 420 - US equity market previous date walks back across weekends and holidays
+  ---
+  duration_ms: 0.408867
+  type: 'test'
+  ...
+# Subtest: US equity market day counting ignores weekends and holidays
+ok 421 - US equity market day counting ignores weekends and holidays
+  ---
+  duration_ms: 0.727291
+  type: 'test'
+  ...
+# Subtest: expected latest market date uses New York close cutoff on open days
+ok 422 - expected latest market date uses New York close cutoff on open days
+  ---
+  duration_ms: 15.373558
+  type: 'test'
+  ...
+# Subtest: expected latest market date falls back across holidays
+ok 423 - expected latest market date falls back across holidays
+  ---
+  duration_ms: 0.437423
+  type: 'test'
+  ...
+# Subtest: buildYahooQuotePageUrl points at the Yahoo quote page used for embedded calendar data
+ok 424 - buildYahooQuotePageUrl points at the Yahoo quote page used for embedded calendar data
+  ---
+  duration_ms: 1.121266
+  type: 'test'
+  ...
+# Subtest: parseYahooEarningsCalendarFromQuotePage extracts the earliest earnings date and confirmation state
+ok 425 - parseYahooEarningsCalendarFromQuotePage extracts the earliest earnings date and confirmation state
+  ---
+  duration_ms: 14.789817
+  type: 'test'
+  ...
+# Subtest: parseYahooEarningsCalendarFromQuotePage marks rows missing when Yahoo exposes no upcoming earnings date
+ok 426 - parseYahooEarningsCalendarFromQuotePage marks rows missing when Yahoo exposes no upcoming earnings date
+  ---
+  duration_ms: 0.386572
+  type: 'test'
+  ...
+# Subtest: parseYahooIntradayChartPayload returns normalized 60m candles with timestamps
+ok 427 - parseYahooIntradayChartPayload returns normalized 60m candles with timestamps
+  ---
+  duration_ms: 2.330573
+  type: 'test'
+  ...
+# Subtest: daily Yahoo fetch exposes 429 as a typed retryable error
+ok 428 - daily Yahoo fetch exposes 429 as a typed retryable error
+  ---
+  duration_ms: 28.316278
+  type: 'test'
+  ...
+# Subtest: Yahoo fetch circuit stops assigning new items after a rate limit
+ok 429 - Yahoo fetch circuit stops assigning new items after a rate limit
+  ---
+  duration_ms: 1.337828
+  type: 'test'
+  ...
+# Subtest: buildYahooChartUrl uses range queries by default
+ok 430 - buildYahooChartUrl uses range queries by default
+  ---
+  duration_ms: 1.199683
+  type: 'test'
+  ...
+# Subtest: buildYahooChartUrl uses period bounds for incremental fetches
+ok 431 - buildYahooChartUrl uses period bounds for incremental fetches
+  ---
+  duration_ms: 0.217326
+  type: 'test'
+  ...
+# Subtest: buildYahooChartUrl uses the same daily interval for benchmark tickers
+ok 432 - buildYahooChartUrl uses the same daily interval for benchmark tickers
+  ---
+  duration_ms: 0.141354
+  type: 'test'
+  ...
+# Subtest: buildYahooChartUrl accepts intraday intervals for separate fetch pipelines
+ok 433 - buildYahooChartUrl accepts intraday intervals for separate fetch pipelines
+  ---
+  duration_ms: 0.205466
+  type: 'test'
+  ...
+# Subtest: yield source alignment intersects daily yields and forward-fills FEDFUNDS
+ok 434 - yield source alignment intersects daily yields and forward-fills FEDFUNDS
+  ---
+  duration_ms: 15.968115
+  type: 'test'
+  ...
+# Subtest: yield state machine persists inversion, emits sell, and later emits buy
+ok 435 - yield state machine persists inversion, emits sell, and later emits buy
+  ---
+  duration_ms: 1.09768
+  type: 'test'
+  ...
+# Subtest: yield state machine fails closed when required values are unavailable
+ok 436 - yield state machine fails closed when required values are unavailable
+  ---
+  duration_ms: 0.395493
+  type: 'test'
+  ...
+# Subtest: yield repository builds parameterized idempotent upserts
+ok 437 - yield repository builds parameterized idempotent upserts
+  ---
+  duration_ms: 2.126135
+  type: 'test'
+  ...
+# Subtest: yield repository chunks large writes without losing rows
+ok 438 - yield repository chunks large writes without losing rows
+  ---
+  duration_ms: 0.208331
+  type: 'test'
+  ...
+1..438
+# tests 438
+# suites 0
+# pass 438
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3922.124025
+===== Next.js production build =====
+
+> stock-signals@0.1.0 build
+> next build
+
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+▲ Next.js 16.2.4 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.9s
+  Running TypeScript ...
+  Finished TypeScript in 73ms ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/3) ...
+✓ Generating static pages using 3 workers (3/3) in 126ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/chart-data
+├ ƒ /api/gex-dex-strikes
+├ ƒ /api/sector-factor-regime-performance
+├ ƒ /api/signal-study/run
+├ ƒ /api/stock-signal-board
+├ ƒ /chart
+├ ○ /icon.svg
+└ ƒ /signal-study-lab
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
