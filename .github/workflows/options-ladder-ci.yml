@@ -1,0 +1,47 @@
+name: Options Ladder CI
+
+on:
+  push:
+    branches:
+      - codex/options-ladder-gamma-default
+    paths-ignore:
+      - .options-ladder-ci-result
+      - .options-ladder-ci-log
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/options-ladder-gamma-default
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Verify
+        id: verify
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            npm ci
+            echo '===== focused tests ====='
+            node --test tests/options-ladder.test.js
+          } 2>&1 | tee .options-ladder-ci-log
+      - name: Publish result
+        if: always()
+        env:
+          OUTCOME: ${{ steps.verify.outcome }}
+          VERIFIED_SHA: ${{ github.sha }}
+        run: |
+          printf 'result=%s\nverified_sha=%s\n' "$OUTCOME" "$VERIFIED_SHA" > .options-ladder-ci-result
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .options-ladder-ci-result .options-ladder-ci-log
+          git commit -m "ci: record options ladder verification" || exit 0
+          git push origin HEAD:codex/options-ladder-gamma-default
