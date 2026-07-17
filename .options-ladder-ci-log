@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 10s
+added 43 packages, and audited 44 packages in 7s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,25 +15,25 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.552418
+  duration_ms: 1.334223
   type: 'test'
   ...
 # Subtest: options ladder uses the latest snapshot and sorts available levels from highest to lowest
 ok 2 - options ladder uses the latest snapshot and sorts available levels from highest to lowest
   ---
-  duration_ms: 2.593231
+  duration_ms: 2.145712
   type: 'test'
   ...
 # Subtest: options ladder fails open when no provider snapshot exists
 ok 3 - options ladder fails open when no provider snapshot exists
   ---
-  duration_ms: 0.3372
+  duration_ms: 0.336416
   type: 'test'
   ...
 # Subtest: workspace renders a responsive Options Ladder beside the existing chart
 not ok 4 - workspace renders a responsive Options Ladder beside the existing chart
   ---
-  duration_ms: 11.819726
+  duration_ms: 8.715297
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:71:1'
   failureType: 'testCodeFailure'
@@ -1052,4 +1052,4 @@ not ok 4 - workspace renders a responsive Options Ladder beside the existing cha
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 81.163102
+# duration_ms 70.045578
