@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 6s
+added 43 packages, and audited 44 packages in 10s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,548 +15,1032 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.028219
+  duration_ms: 1.552418
   type: 'test'
   ...
 # Subtest: options ladder uses the latest snapshot and sorts available levels from highest to lowest
 ok 2 - options ladder uses the latest snapshot and sorts available levels from highest to lowest
   ---
-  duration_ms: 1.879187
+  duration_ms: 2.593231
   type: 'test'
   ...
 # Subtest: options ladder fails open when no provider snapshot exists
 ok 3 - options ladder fails open when no provider snapshot exists
   ---
-  duration_ms: 0.246859
+  duration_ms: 0.3372
   type: 'test'
   ...
 # Subtest: workspace renders a responsive Options Ladder beside the existing chart
 not ok 4 - workspace renders a responsive Options Ladder beside the existing chart
   ---
-  duration_ms: 6.616886
+  duration_ms: 11.819726
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:71:1'
   failureType: 'testCodeFailure'
   error: |-
-    The input did not match the regular expression /import OptionsLadder/. Input:
+    The input did not match the regular expression /\.chart-workspace-main\s*\{/. Input:
     
-    "'use client';\n" +
-      '\n' +
-      "import dynamic from 'next/dynamic';\n" +
-      "import { useEffect, useMemo, useState } from 'react';\n" +
-      'import {\n' +
-      '  CHART_SERIES,\n' +
-      '  DEFAULT_VISIBLE_CONTEXT_LAYERS,\n' +
-      '  DEFAULT_VISIBLE_INDICATORS,\n' +
-      '  DEFAULT_VISIBLE_OVERLAYS,\n' +
-      '  DEFAULT_VISIBLE_SIGNALS,\n' +
-      '  INDICATOR_KEYS,\n' +
-      '  MOVING_AVERAGE_KEYS,\n' +
-      "} from '../../lib/chart/series-registry.js';\n" +
-      "import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';\n" +
-      "import ChartContextStrip from './chart-context-strip.js';\n" +
-      "import ChartToolbar from './chart-toolbar.js';\n" +
-      '\n' +
-      "const FinancialChart = dynamic(() => import('./financial-chart.js'), {\n" +
-      '  ssr: false,\n' +
-      '  loading: () => <ChartSkeleton copy="Chartmotorn laddas…" />,\n' +
-      '});\n' +
-      '\n' +
-      "function ChartSkeleton({ copy = 'Prishistoriken laddas…' }) {\n" +
-      '  return (\n' +
-      '    <div className="chart-workspace-skeleton" role="status" aria-live="polite">\n' +
-      '      <div className="chart-skeleton-legend" />\n' +
-      '      <div className="chart-skeleton-grid" />\n' +
-      '      <span>{copy}</span>\n' +
-      '    </div>\n' +
-      '  );\n' +
+    '.chart-page-shell {\n' +
+      '  width: min(100%, 1920px) !important;\n' +
+      '  padding-inline: clamp(14px, 2vw, 32px) !important;\n' +
       '}\n' +
       '\n' +
-      "function formatPrice(value, currency = 'USD') {\n" +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      "  return new Intl.NumberFormat('sv-SE', {\n" +
-      "    style: 'currency',\n" +
-      '    currency,\n' +
-      '    minimumFractionDigits: 2,\n' +
-      '    maximumFractionDigits: 2,\n' +
-      '  }).format(Number(value));\n' +
+      '.chart-workspace {\n' +
+      '  display: grid;\n' +
+      '  gap: 14px;\n' +
+      '  min-width: 0;\n' +
       '}\n' +
       '\n' +
-      'function formatSignedPercent(value) {\n' +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      '  const number = Number(value);\n' +
-      "  return `${number > 0 ? '+' : ''}${number.toFixed(2)}%`;\n" +
+      '.chart-workspace-header {\n' +
+      '  display: flex;\n' +
+      '  align-items: end;\n' +
+      '  justify-content: space-between;\n' +
+      '  gap: 24px;\n' +
+      '  padding: 2px 4px 0;\n' +
       '}\n' +
       '\n' +
-      'function formatDate(value) {\n' +
-      "  if (!value) return '—';\n" +
-      "  return new Intl.DateTimeFormat('sv-SE', {\n" +
-      "    dateStyle: 'medium',\n" +
-      "    timeZone: 'UTC',\n" +
-      '  }).format(new Date(`${value}T00:00:00Z`));\n' +
+      '.chart-workspace-header h1,\n' +
+      '.chart-workspace-header p {\n' +
+      '  margin: 0;\n' +
       '}\n' +
       '\n' +
-      'export default function ChartWorkspace({ constituents, initialPeriod, initialTicker }) {\n' +
-      '  const [ticker, setTicker] = useState(initialTicker);\n' +
-      '  const [period, setPeriod] = useState(initialPeriod);\n' +
-      '  const [visibleOverlays, setVisibleOverlays] = useState([...DEFAULT_VISIBLE_OVERLAYS]);\n' +
-      '  const [visibleIndicators, setVisibleIndicators] = useState([...DEFAULT_VISIBLE_INDICATORS]);\n' +
-      '  const [visibleSignals, setVisibleSignals] = useState([...DEFAULT_VISIBLE_SIGNALS]);\n' +
-      '  const [visibleContextLayers, setVisibleContextLayers] = useState([...DEFAULT_VISIBLE_CONTEXT_LAYERS]);\n' +
-      '  const [payload, setPayload] = useState(null);\n' +
-      "  const [status, setStatus] = useState('loading');\n" +
-      "  const [errorMessage, setErrorMessage] = useState('');\n" +
-      '  const [retryToken, setRetryToken] = useState(0);\n' +
-      '  const [resetToken, setResetToken] = useState(0);\n' +
+      '.chart-title-row {\n' +
+      '  display: flex;\n' +
+      '  align-items: baseline;\n' +
+      '  flex-wrap: wrap;\n' +
+      '  gap: 12px;\n' +
+      '}\n' +
       '\n' +
-      '  useEffect(() => {\n' +
-      '    const url = new URL(window.location.href);\n' +
-      "    url.searchParams.set('ticker', ticker);\n" +
-      "    url.searchParams.set('period', period);\n" +
-      "    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);\n" +
-      '  }, [period, ticker]);\n' +
+      '.chart-title-row h1 {\n' +
+      '  font-family: var(--font-mono);\n' +
+      '  font-size: clamp(2rem, 4vw, 3.75rem);\n' +
+      '  line-height: 0.95;\n' +
+      '  letter-spacing: -0.06em;\n' +
+      '}\n' +
       '\n' +
-      '  useEffect(() => {\n' +
-      '    const controller = new AbortController();\n' +
-      '    let active = true;\n' +
+      '.chart-company-name {\n' +
+      '  color: var(--text);\n' +
+      '  font-size: clamp(1rem, 1.5vw, 1.28rem);\n' +
+      '  font-weight: 700;\n' +
+      '}\n' +
       '\n' +
-      '    async function loadChartData() {\n' +
-      "      setStatus('loading');\n" +
-      "      setErrorMessage('');\n" +
-      '      setPayload(null);\n' +
+      '.chart-workspace-context {\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.82rem;\n' +
+      '  margin-top: 8px !important;\n' +
+      '}\n' +
       '\n' +
-      '      try {\n' +
-      '        const response = await fetch(\n' +
-      '          `/api/chart-data?ticker=${encodeURIComponent(ticker)}&period=${encodeURIComponent(period)}`,\n' +
-      '          { signal: controller.signal }\n' +
-      '        );\n' +
-      '        const result = await response.json();\n' +
+      '.chart-price-summary {\n' +
+      '  display: grid;\n' +
+      '  justify-items: end;\n' +
+      '  gap: 3px;\n' +
+      '  flex: 0 0 auto;\n' +
+      '}\n' +
       '\n' +
-      '        if (!response.ok) {\n' +
-      '          throw new Error(result?.error || `HTTP ${response.status}`);\n' +
-      '        }\n' +
-      '        if (!active) return;\n' +
+      '.chart-price-summary > strong {\n' +
+      '  font-family: var(--font-mono);\n' +
+      '  font-size: clamp(1.5rem, 2.7vw, 2.4rem);\n' +
+      '  letter-spacing: -0.05em;\n' +
+      '}\n' +
       '\n' +
-      '        setPayload(result);\n' +
-      "        setStatus(result?.bars?.length ? 'ready' : 'empty');\n" +
-      '      } catch (error) {\n' +
-      "        if (error?.name === 'AbortError' || !active) return;\n" +
-      "        console.error('Professional chart load failed:', error);\n" +
-      "        setErrorMessage(error?.message || 'Chartdatan kunde inte laddas.');\n" +
-      "        setStatus('error');\n" +
-      '      }\n' +
-      '    }\n' +
+      '.chart-price-summary > span {\n' +
+      '  font-size: 0.8rem;\n' +
+      '  font-weight: 700;\n' +
+      '}\n' +
       '\n' +
-      '    void loadChartData();\n' +
+      '.chart-toolbar {\n' +
+      '  display: flex;\n' +
+      '  align-items: end;\n' +
+      '  gap: 12px;\n' +
+      '  min-width: 0;\n' +
+      '  padding: 12px;\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  border-radius: 16px;\n' +
+      '  background: color-mix(in srgb, var(--card-strong) 92%, transparent);\n' +
+      '  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);\n' +
+      '}\n' +
       '\n' +
-      '    return () => {\n' +
-      '      active = false;\n' +
-      '      controller.abort();\n' +
-      '    };\n' +
-      '  }, [period, retryToken, ticker]);\n' +
+      '.chart-toolbar-field,\n' +
+      '.chart-toolbar-group {\n' +
+      '  display: grid;\n' +
+      '  gap: 6px;\n' +
+      '}\n' +
       '\n' +
-      '  const unavailableOverlays = useMemo(() => {\n' +
-      '    const bars = payload?.bars ?? [];\n' +
-      '    return MOVING_AVERAGE_KEYS.filter(\n' +
-      '      (key) => !bars.some((bar) => Number.isFinite(Number(bar[key])))\n' +
-      '    );\n' +
-      '  }, [payload]);\n' +
+      '.chart-toolbar-field > span,\n' +
+      '.chart-toolbar-group > span {\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.66rem;\n' +
+      '  font-weight: 800;\n' +
+      '  letter-spacing: 0.09em;\n' +
+      '  text-transform: uppercase;\n' +
+      '}\n' +
       '\n' +
-      '  const unavailableIndicators = useMemo(() => {\n' +
-      '    const bars = payload?.bars ?? [];\n' +
-      '    return INDICATOR_KEYS.filter((key) => {\n' +
-      '      const dataKey = CHART_SERIES[key].dataKey;\n' +
-      '      return !bars.some((bar) => Number.isFinite(Number(bar[dataKey])));\n' +
-      '    });\n' +
-      '  }, [payload]);\n' +
+      '.chart-toolbar-field {\n' +
+      '  min-width: min(310px, 28vw);\n' +
+      '}\n' +
       '\n' +
-      '  const unavailableSignals = useMemo(\n' +
-      '    () => signalControlsUnavailable(payload?.bars ?? []),\n' +
-      '    [payload]\n' +
-      '  );\n' +
+      '.chart-toolbar select {\n' +
+      '  min-height: 38px;\n' +
+      '  width: 100%;\n' +
+      '  padding: 0 34px 0 11px;\n' +
+      '  color: var(--text);\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  border-radius: 10px;\n' +
+      '  background: var(--bg-strong);\n' +
+      '  font-size: 0.82rem;\n' +
+      '  font-weight: 650;\n' +
+      '}\n' +
       '\n' +
-      '  const dailyTone = Number(payload?.dailyChangePct) > 0\n' +
-      "    ? 'positive'\n" +
-      '    : Number(payload?.dailyChangePct) < 0\n' +
-      "      ? 'danger'\n" +
-      "      : 'neutral';\n" +
+      '.chart-segmented-control,\n' +
+      '.chart-overlay-control {\n' +
+      '  display: flex;\n' +
+      '  align-items: center;\n' +
+      '  gap: 4px;\n' +
+      '  padding: 3px;\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  border-radius: 11px;\n' +
+      '  background: rgba(0, 0, 0, 0.14);\n' +
+      '}\n' +
       '\n' +
-      '  function toggleList(setter, unavailable, key) {\n' +
-      '    if (unavailable.includes(key)) return;\n' +
-      '    setter((current) => (\n' +
-      '      current.includes(key)\n' +
-      '        ? current.filter((item) => item !== key)\n' +
-      '        : [...current, key]\n' +
-      '    ));\n' +
+      '.chart-segmented-control button,\n' +
+      '.chart-overlay-control button,\n' +
+      '.chart-reset-button,\n' +
+      '.chart-workspace-message button {\n' +
+      '  min-height: 32px;\n' +
+      '  border: 0;\n' +
+      '  border-radius: 8px;\n' +
+      '  color: var(--muted);\n' +
+      '  background: transparent;\n' +
+      '  cursor: pointer;\n' +
+      '  font-size: 0.76rem;\n' +
+      '  font-weight: 750;\n' +
+      '  transition: background-color 130ms ease, color 130ms ease, border-color 130ms ease;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-segmented-control button {\n' +
+      '  min-width: 42px;\n' +
+      '  padding-inline: 9px;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-segmented-control button.is-active {\n' +
+      '  color: var(--text);\n' +
+      '  background: var(--surface-hover);\n' +
+      '  box-shadow: inset 0 0 0 1px var(--line);\n' +
+      '}\n' +
+      '\n' +
+      '.chart-toolbar-overlays {\n' +
+      '  min-width: 0;\n' +
+      '  flex: 1 1 auto;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-overlay-control {\n' +
+      '  flex-wrap: wrap;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-overlay-control button {\n' +
+      '  display: inline-flex;\n' +
+      '  align-items: center;\n' +
+      '  gap: 6px;\n' +
+      '  padding-inline: 9px;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-overlay-control button i {\n' +
+      '  width: 14px;\n' +
+      '  height: 2px;\n' +
+      '  border-radius: 999px;\n' +
+      '  opacity: 0.45;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-overlay-control button.is-active {\n' +
+      '  color: var(--text);\n' +
+      '  background: var(--surface-hover);\n' +
+      '}\n' +
+      '\n' +
+      '.chart-overlay-control button.is-active i {\n' +
+      '  opacity: 1;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-overlay-control button:disabled {\n' +
+      '  cursor: not-allowed;\n' +
+      '  opacity: 0.32;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-reset-button {\n' +
+      '  flex: 0 0 auto;\n' +
+      '  padding: 0 12px;\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  color: var(--text);\n' +
+      '  background: var(--bg-strong);\n' +
+      '}\n' +
+      '\n' +
+      '.chart-segmented-control button:hover:not(:disabled),\n' +
+      '.chart-overlay-control button:hover:not(:disabled),\n' +
+      '.chart-reset-button:hover,\n' +
+      '.chart-workspace-message button:hover {\n' +
+      '  color: var(--text);\n' +
+      '  background: var(--surface-hover);\n' +
+      '}\n' +
+      '\n' +
+      '.chart-toolbar button:focus-visible,\n' +
+      '.chart-toolbar select:focus-visible,\n' +
+      '.chart-workspace-message button:focus-visible,\n' +
+      '.chart-workspace-footer a:focus-visible {\n' +
+      '  outline: 2px solid var(--accent);\n' +
+      '  outline-offset: 2px;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-frame {\n' +
+      '  position: relative;\n' +
+      '  min-height: clamp(520px, 72vh, 860px);\n' +
+      '  overflow: hidden;\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  border-radius: 18px;\n' +
+      '  background: #0b0d12;\n' +
+      '  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);\n' +
+      '}\n' +
+      '\n' +
+      '[data-theme="light"] .chart-workspace-frame {\n' +
+      '  background: #ffffff;\n' +
+      '}\n' +
+      '\n' +
+      '.financial-chart-shell,\n' +
+      '.financial-chart-canvas,\n' +
+      '.chart-workspace-skeleton,\n' +
+      '.chart-workspace-message,\n' +
+      '.financial-chart-empty {\n' +
+      '  width: 100%;\n' +
+      '  min-height: clamp(520px, 72vh, 860px);\n' +
+      '}\n' +
+      '\n' +
+      '.financial-chart-shell {\n' +
+      '  position: relative;\n' +
+      '}\n' +
+      '\n' +
+      '.financial-chart-canvas {\n' +
+      '  position: absolute;\n' +
+      '  inset: 0;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-legend {\n' +
+      '  position: absolute;\n' +
+      '  z-index: 4;\n' +
+      '  top: 12px;\n' +
+      '  left: 12px;\n' +
+      '  max-width: calc(100% - 104px);\n' +
+      '  display: flex;\n' +
+      '  align-items: center;\n' +
+      '  gap: 14px;\n' +
+      '  padding: 8px 10px;\n' +
+      '  border: 1px solid rgba(255, 255, 255, 0.08);\n' +
+      '  border-radius: 10px;\n' +
+      '  color: #f4f4f5;\n' +
+      '  background: rgba(8, 11, 16, 0.82);\n' +
+      '  backdrop-filter: blur(12px);\n' +
+      '  pointer-events: none;\n' +
+      '}\n' +
+      '\n' +
+      '[data-theme="light"] .chart-crosshair-legend {\n' +
+      '  color: #0f172a;\n' +
+      '  border-color: rgba(15, 23, 42, 0.09);\n' +
+      '  background: rgba(255, 255, 255, 0.88);\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-date {\n' +
+      '  display: grid;\n' +
+      '  gap: 1px;\n' +
+      '  min-width: max-content;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-date span,\n' +
+      '.chart-crosshair-values dt {\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.58rem;\n' +
+      '  font-weight: 750;\n' +
+      '  letter-spacing: 0.04em;\n' +
+      '  text-transform: uppercase;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-date strong,\n' +
+      '.chart-crosshair-values dd {\n' +
+      '  font-family: var(--font-mono);\n' +
+      '  font-size: 0.7rem;\n' +
+      '  font-weight: 700;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-values {\n' +
+      '  display: flex;\n' +
+      '  align-items: center;\n' +
+      '  flex-wrap: wrap;\n' +
+      '  gap: 7px 13px;\n' +
+      '  margin: 0;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-values > div {\n' +
+      '  display: flex;\n' +
+      '  align-items: center;\n' +
+      '  gap: 4px;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-values dt {\n' +
+      '  display: inline-flex;\n' +
+      '  align-items: center;\n' +
+      '  gap: 4px;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-values dt i {\n' +
+      '  width: 10px;\n' +
+      '  height: 2px;\n' +
+      '  border-radius: 999px;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-crosshair-values dd {\n' +
+      '  margin: 0;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-skeleton {\n' +
+      '  position: relative;\n' +
+      '  display: grid;\n' +
+      '  place-items: center;\n' +
+      '  color: var(--muted);\n' +
+      '  background:\n' +
+      '    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.025), transparent),\n' +
+      '    #0b0d12;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-skeleton-grid {\n' +
+      '  position: absolute;\n' +
+      '  inset: 0;\n' +
+      '  opacity: 0.45;\n' +
+      '  background-image:\n' +
+      '    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),\n' +
+      '    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);\n' +
+      '  background-size: 100% 72px, 96px 100%;\n' +
+      '  animation: chart-skeleton-pulse 1.5s ease-in-out infinite alternate;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-skeleton-legend {\n' +
+      '  position: absolute;\n' +
+      '  z-index: 1;\n' +
+      '  top: 14px;\n' +
+      '  left: 14px;\n' +
+      '  width: min(520px, 72%);\n' +
+      '  height: 42px;\n' +
+      '  border-radius: 9px;\n' +
+      '  background: rgba(255, 255, 255, 0.06);\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-skeleton > span {\n' +
+      '  z-index: 1;\n' +
+      '  font-size: 0.82rem;\n' +
+      '}\n' +
+      '\n' +
+      '@keyframes chart-skeleton-pulse {\n' +
+      '  from { opacity: 0.32; }\n' +
+      '  to { opacity: 0.66; }\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-message,\n' +
+      '.financial-chart-empty {\n' +
+      '  display: grid;\n' +
+      '  place-content: center;\n' +
+      '  justify-items: center;\n' +
+      '  gap: 8px;\n' +
+      '  padding: 28px;\n' +
+      '  color: var(--muted);\n' +
+      '  text-align: center;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-message strong,\n' +
+      '.financial-chart-empty strong {\n' +
+      '  color: var(--text);\n' +
+      '  font-size: 1.08rem;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-message button {\n' +
+      '  margin-top: 8px;\n' +
+      '  padding-inline: 14px;\n' +
+      '  color: var(--text);\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  background: var(--bg-strong);\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-footer {\n' +
+      '  display: flex;\n' +
+      '  align-items: center;\n' +
+      '  justify-content: space-between;\n' +
+      '  flex-wrap: wrap;\n' +
+      '  gap: 8px 18px;\n' +
+      '  padding: 0 4px;\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.7rem;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-footer a {\n' +
+      '  color: var(--muted);\n' +
+      '  text-decoration: none;\n' +
+      '}\n' +
+      '\n' +
+      '.chart-workspace-footer a:hover {\n' +
+      '  color: var(--text);\n' +
+      '  text-decoration: underline;\n' +
+      '}\n' +
+      '\n' +
+      '@media (max-width: 1100px) {\n' +
+      '  .chart-toolbar {\n' +
+      '    align-items: stretch;\n' +
+      '    flex-wrap: wrap;\n' +
       '  }\n' +
       '\n' +
-      '  return (\n' +
-      '    <section className="chart-workspace" aria-labelledby="chart-workspace-title">\n' +
-      '      <header className="chart-workspace-header">\n' +
-      '        <div>\n' +
-      '          <p className="section-kicker">Professionell chart · Daily</p>\n' +
-      '          <div className="chart-title-row">\n' +
-      '            <h1 id="chart-workspace-title">{payload?.ticker ?? ticker}</h1>\n' +
-      `            <span className="chart-company-name">{payload?.companyName ?? 'Laddar bolagsdata…'}</span>\n` +
-      '          </div>\n' +
-      '          <p className="chart-workspace-context">\n' +
-      "            {payload?.sector ?? 'Sektor saknas'} · Justerade priser · Senaste data {formatDate(payload?.latestDate)}\n" +
-      '          </p>\n' +
-      '        </div>\n' +
+      '  .chart-toolbar-field {\n' +
+      '    min-width: min(100%, 360px);\n' +
+      '    flex: 1 1 280px;\n' +
+      '  }\n' +
       '\n' +
-      '        <div className="chart-price-summary" aria-label="Senaste prisutveckling">\n' +
-      '          <strong>{formatPrice(payload?.latestPrice, payload?.currency)}</strong>\n' +
-      '          <span className={`tone-${dailyTone}`}>\n' +
-      '            {formatSignedPercent(payload?.dailyChangePct)} senaste handelsdagen\n' +
-      '          </span>\n' +
-      '        </div>\n' +
-      '      </header>\n' +
+      '  .chart-toolbar-overlays {\n' +
+      '    order: 4;\n' +
+      '    flex-basis: 100%;\n' +
+      '  }\n' +
+      '}\n' +
       '\n' +
-      '      <ChartToolbar\n' +
-      '        constituents={constituents}\n' +
-      '        ticker={ticker}\n' +
-      '        period={period}\n' +
-      '        visibleContextLayers={visibleContextLayers}\n' +
-      '        visibleIndicators={visibleIndicators}\n' +
-      '        visibleOverlays={visibleOverlays}\n' +
-      '        visibleSignals={visibleSignals}\n' +
-      '        unavailableIndicators={unavailableIndicators}\n' +
-      '        unavailableOverlays={unavailableOverlays}\n' +
-      '        unavailableSignals={unavailableSignals}\n' +
-      '        onTickerChange={setTicker}\n' +
-      '        onPeriodChange={setPeriod}\n' +
-      '        onToggleContextLayer={(key) => toggleList(setVisibleContextLayers, [], key)}\n' +
-      '        onToggleIndicator={(key) => toggleList(setVisibleIndicators, unavailableIndicators, key)}\n' +
-      '        onToggleOverlay={(key) => toggleList(setVisibleOverlays, unavailableOverlays, key)}\n' +
-      '        onToggleSignal={(key) => toggleList(setVisibleSignals, unavailableSignals, key)}\n' +
-      '        onReset={() => setResetToken((value) => value + 1)}\n' +
-      '      />\n' +
+      '@media (max-width: 720px) {\n' +
+      '  .chart-page-shell {\n' +
+      '    padding-inline: 10px !important;\n' +
+      '  }\n' +
       '\n' +
-      "      {status === 'ready' && payload ? (\n" +
-      '        <ChartContextStrip\n' +
-      '          breadthContext={payload.breadthContext}\n' +
-      '          gexDexSnapshots={payload.gexDexSnapshots}\n' +
-      '          nextEarnings={payload.nextEarnings}\n' +
-      '          relativeStrengthContext={payload.relativeStrengthContext}\n' +
-      '          volatilityContext={payload.volatilityContext}\n' +
-      '        />\n' +
-      '      ) : null}\n' +
+      '  .chart-workspace-header {\n' +
+      '    align-items: start;\n' +
+      '  }\n' +
       '\n' +
-      '      <div className="chart-workspace-frame">\n' +
-      "        {status === 'loading' ? <ChartSkeleton /> : null}\n" +
+      '  .chart-price-summary {\n' +
+      '    justify-items: end;\n' +
+      '  }\n' +
       '\n' +
-      "        {status === 'error' ? (\n" +
-      '          <div className="chart-workspace-message" role="alert">\n' +
-      '            <strong>Charten kunde inte laddas</strong>\n' +
-      '            <span>{errorMessage}</span>\n' +
-      '            <button type="button" onClick={() => setRetryToken((value) => value + 1)}>\n' +
-      '              Försök igen\n' +
-      '            </button>\n' +
-      '          </div>\n' +
-      '        ) : null}\n' +
+      '  .chart-price-summary > strong {\n' +
+      '    font-size: 1.25rem;\n' +
+      '  }\n' +
       '\n' +
-      "        {status === 'empty' ? (\n" +
-      '          <div className="chart-workspace-message" role="status">\n' +
-      '            <strong>Ingen användbar prishistorik</strong>\n' +
-      '            <span>Välj en annan ticker eller period.</span>\n' +
-      '          </div>\n' +
-      '        ) : null}\n' +
+      '  .chart-company-name,\n' +
+      '  .chart-workspace-context,\n' +
+      '  .chart-price-summary > span {\n' +
+      '    font-size: 0.7rem;\n' +
+      '  }\n' +
       '\n' +
-      "        {status === 'ready' && payload ? (\n" +
-      '          <FinancialChart\n' +
-      '            bars={payload.bars}\n' +
-      '            currency={payload.currency}\n' +
-      '            earningsEvents={payload.earningsEvents}\n' +
-      '            gexDexSnapshots={payload.gexDexSnapshots}\n' +
-      '            period={payload.period}\n' +
-      '            resetToken={resetToken}\n' +
-      '            ticker={payload.ticker}\n' +
-      '            visibleContextLayers={visibleContextLayers}\n' +
-      '            visibleIndicators={visibleIndicators}\n' +
-      '            visibleOverlays={visibleOverlays}\n' +
-      '            visibleSignals={visibleSignals}\n' +
-      '          />\n' +
-      '        ) : null}\n' +
-      '      </div>\n' +
+      '  .chart-toolbar {\n' +
+      '    gap: 9px;\n' +
+      '    padding: 9px;\n' +
+      '  }\n' +
       '\n' +
-      '      <footer className="chart-workspace-footer">\n' +
-      '        <span>{payload?.bars?.length ?? 0} handelsdagar · {period}</span>\n' +
-      '        {unavailableOverlays.length ? (\n' +
-      '          <span>{unavailableOverlays.length} MA-serier saknar data i vald period</span>\n' +
-      '        ) : <span>Alla MA-serier tillgängliga</span>}\n' +
-      '        {unavailableIndicators.length === INDICATOR_KEYS.length\n' +
-      '          ? <span>RYD OBV saknar data i vald period</span>\n' +
-      '          : <span>RYD OBV tillgänglig</span>}\n' +
-      '        <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">\n' +
-      '          Charting by TradingView Lightweight Charts™\n' +
-      '        </a>\n' +
-      '      </footer>\n' +
-      '    </section>\n' +
-      '  );\n' +
+      '  .chart-toolbar-field,\n' +
+      '  .chart-toolbar-group,\n' +
+      '  .chart-reset-button {\n' +
+      '    width: 100%;\n' +
+      '  }\n' +
+      '\n' +
+      '  .chart-segmented-control {\n' +
+      '    width: 100%;\n' +
+      '  }\n' +
+      '\n' +
+      '  .chart-segmented-control button {\n' +
+      '    flex: 1 1 0;\n' +
+      '  }\n' +
+      '\n' +
+      '  .chart-reset-button {\n' +
+      '    min-height: 36px;\n' +
+      '  }\n' +
+      '\n' +
+      '  .chart-workspace-frame,\n' +
+      '  .financial-chart-shell,\n' +
+      '  .financial-chart-canvas,\n' +
+      '  .chart-workspace-skeleton,\n' +
+      '  .chart-workspace-message,\n' +
+      '  .financial-chart-empty {\n' +
+      '    min-height: 580px;\n' +
+      '  }\n' +
+      '\n' +
+      '  .chart-crosshair-legend {\n' +
+      '    right: 10px;\n' +
+      '    left: 10px;\n' +
+      '    max-width: none;\n' +
+      '    align-items: start;\n' +
+      '    flex-direction: column;\n' +
+      '    gap: 5px;\n' +
+      '  }\n' +
+      '\n' +
+      '  .chart-crosshair-values {\n' +
+      '    gap: 4px 10px;\n' +
+      '  }\n' +
+      '}\n' +
+      '\n' +
+      '@media (prefers-reduced-motion: reduce) {\n' +
+      '  .chart-skeleton-grid {\n' +
+      '    animation: none;\n' +
+      '  }\n' +
       '}\n'
     
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected:
   actual: |-
-    'use client';
-    
-    import dynamic from 'next/dynamic';
-    import { useEffect, useMemo, useState } from 'react';
-    import {
-      CHART_SERIES,
-      DEFAULT_VISIBLE_CONTEXT_LAYERS,
-      DEFAULT_VISIBLE_INDICATORS,
-      DEFAULT_VISIBLE_OVERLAYS,
-      DEFAULT_VISIBLE_SIGNALS,
-      INDICATOR_KEYS,
-      MOVING_AVERAGE_KEYS,
-    } from '../../lib/chart/series-registry.js';
-    import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';
-    import ChartContextStrip from './chart-context-strip.js';
-    import ChartToolbar from './chart-toolbar.js';
-    
-    const FinancialChart = dynamic(() => import('./financial-chart.js'), {
-      ssr: false,
-      loading: () => <ChartSkeleton copy="Chartmotorn laddas…" />,
-    });
-    
-    function ChartSkeleton({ copy = 'Prishistoriken laddas…' }) {
-      return (
-        <div className="chart-workspace-skeleton" role="status" aria-live="polite">
-          <div className="chart-skeleton-legend" />
-          <div className="chart-skeleton-grid" />
-          <span>{copy}</span>
-        </div>
-      );
+    .chart-page-shell {
+      width: min(100%, 1920px) !important;
+      padding-inline: clamp(14px, 2vw, 32px) !important;
     }
     
-    function formatPrice(value, currency = 'USD') {
-      if (!Number.isFinite(Number(value))) return '—';
-      return new Intl.NumberFormat('sv-SE', {
-        style: 'currency',
-        currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(Number(value));
+    .chart-workspace {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
     }
     
-    function formatSignedPercent(value) {
-      if (!Number.isFinite(Number(value))) return '—';
-      const number = Number(value);
-      return `${number > 0 ? '+' : ''}${number.toFixed(2)}%`;
+    .chart-workspace-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 2px 4px 0;
     }
     
-    function formatDate(value) {
-      if (!value) return '—';
-      return new Intl.DateTimeFormat('sv-SE', {
-        dateStyle: 'medium',
-        timeZone: 'UTC',
-      }).format(new Date(`${value}T00:00:00Z`));
+    .chart-workspace-header h1,
+    .chart-workspace-header p {
+      margin: 0;
     }
     
-    export default function ChartWorkspace({ constituents, initialPeriod, initialTicker }) {
-      const [ticker, setTicker] = useState(initialTicker);
-      const [period, setPeriod] = useState(initialPeriod);
-      const [visibleOverlays, setVisibleOverlays] = useState([...DEFAULT_VISIBLE_OVERLAYS]);
-      const [visibleIndicators, setVisibleIndicators] = useState([...DEFAULT_VISIBLE_INDICATORS]);
-      const [visibleSignals, setVisibleSignals] = useState([...DEFAULT_VISIBLE_SIGNALS]);
-      const [visibleContextLayers, setVisibleContextLayers] = useState([...DEFAULT_VISIBLE_CONTEXT_LAYERS]);
-      const [payload, setPayload] = useState(null);
-      const [status, setStatus] = useState('loading');
-      const [errorMessage, setErrorMessage] = useState('');
-      const [retryToken, setRetryToken] = useState(0);
-      const [resetToken, setResetToken] = useState(0);
+    .chart-title-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
     
-      useEffect(() => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('ticker', ticker);
-        url.searchParams.set('period', period);
-        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-      }, [period, ticker]);
+    .chart-title-row h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(2rem, 4vw, 3.75rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
     
-      useEffect(() => {
-        const controller = new AbortController();
-        let active = true;
+    .chart-company-name {
+      color: var(--text);
+      font-size: clamp(1rem, 1.5vw, 1.28rem);
+      font-weight: 700;
+    }
     
-        async function loadChartData() {
-          setStatus('loading');
-          setErrorMessage('');
-          setPayload(null);
+    .chart-workspace-context {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 8px !important;
+    }
     
-          try {
-            const response = await fetch(
-              `/api/chart-data?ticker=${encodeURIComponent(ticker)}&period=${encodeURIComponent(period)}`,
-              { signal: controller.signal }
-            );
-            const result = await response.json();
+    .chart-price-summary {
+      display: grid;
+      justify-items: end;
+      gap: 3px;
+      flex: 0 0 auto;
+    }
     
-            if (!response.ok) {
-              throw new Error(result?.error || `HTTP ${response.status}`);
-            }
-            if (!active) return;
+    .chart-price-summary > strong {
+      font-family: var(--font-mono);
+      font-size: clamp(1.5rem, 2.7vw, 2.4rem);
+      letter-spacing: -0.05em;
+    }
     
-            setPayload(result);
-            setStatus(result?.bars?.length ? 'ready' : 'empty');
-          } catch (error) {
-            if (error?.name === 'AbortError' || !active) return;
-            console.error('Professional chart load failed:', error);
-            setErrorMessage(error?.message || 'Chartdatan kunde inte laddas.');
-            setStatus('error');
-          }
-        }
+    .chart-price-summary > span {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
     
-        void loadChartData();
+    .chart-toolbar {
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--card-strong) 92%, transparent);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+    }
     
-        return () => {
-          active = false;
-          controller.abort();
-        };
-      }, [period, retryToken, ticker]);
+    .chart-toolbar-field,
+    .chart-toolbar-group {
+      display: grid;
+      gap: 6px;
+    }
     
-      const unavailableOverlays = useMemo(() => {
-        const bars = payload?.bars ?? [];
-        return MOVING_AVERAGE_KEYS.filter(
-          (key) => !bars.some((bar) => Number.isFinite(Number(bar[key])))
-        );
-      }, [payload]);
+    .chart-toolbar-field > span,
+    .chart-toolbar-group > span {
+      color: var(--muted);
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
     
-      const unavailableIndicators = useMemo(() => {
-        const bars = payload?.bars ?? [];
-        return INDICATOR_KEYS.filter((key) => {
-          const dataKey = CHART_SERIES[key].dataKey;
-          return !bars.some((bar) => Number.isFinite(Number(bar[dataKey])));
-        });
-      }, [payload]);
+    .chart-toolbar-field {
+      min-width: min(310px, 28vw);
+    }
     
-      const unavailableSignals = useMemo(
-        () => signalControlsUnavailable(payload?.bars ?? []),
-        [payload]
-      );
+    .chart-toolbar select {
+      min-height: 38px;
+      width: 100%;
+      padding: 0 34px 0 11px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg-strong);
+      font-size: 0.82rem;
+      font-weight: 650;
+    }
     
-      const dailyTone = Number(payload?.dailyChangePct) > 0
-        ? 'positive'
-        : Number(payload?.dailyChangePct) < 0
-          ? 'danger'
-          : 'neutral';
+    .chart-segmented-control,
+    .chart-overlay-control {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(0, 0, 0, 0.14);
+    }
     
-      function toggleList(setter, unavailable, key) {
-        if (unavailable.includes(key)) return;
-        setter((current) => (
-          current.includes(key)
-            ? current.filter((item) => item !== key)
-            : [...current, key]
-        ));
+    .chart-segmented-control button,
+    .chart-overlay-control button,
+    .chart-reset-button,
+    .chart-workspace-message button {
+      min-height: 32px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.76rem;
+      font-weight: 750;
+      transition: background-color 130ms ease, color 130ms ease, border-color 130ms ease;
+    }
+    
+    .chart-segmented-control button {
+      min-width: 42px;
+      padding-inline: 9px;
+    }
+    
+    .chart-segmented-control button.is-active {
+      color: var(--text);
+      background: var(--surface-hover);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    
+    .chart-toolbar-overlays {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    
+    .chart-overlay-control {
+      flex-wrap: wrap;
+    }
+    
+    .chart-overlay-control button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding-inline: 9px;
+    }
+    
+    .chart-overlay-control button i {
+      width: 14px;
+      height: 2px;
+      border-radius: 999px;
+      opacity: 0.45;
+    }
+    
+    .chart-overlay-control button.is-active {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+    
+    .chart-overlay-control button.is-active i {
+      opacity: 1;
+    }
+    
+    .chart-overlay-control button:disabled {
+      cursor: not-allowed;
+      opacity: 0.32;
+    }
+    
+    .chart-reset-button {
+      flex: 0 0 auto;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: var(--bg-strong);
+    }
+    
+    .chart-segmented-control button:hover:not(:disabled),
+    .chart-overlay-control button:hover:not(:disabled),
+    .chart-reset-button:hover,
+    .chart-workspace-message button:hover {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+    
+    .chart-toolbar button:focus-visible,
+    .chart-toolbar select:focus-visible,
+    .chart-workspace-message button:focus-visible,
+    .chart-workspace-footer a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    
+    .chart-workspace-frame {
+      position: relative;
+      min-height: clamp(520px, 72vh, 860px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #0b0d12;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
+    }
+    
+    [data-theme="light"] .chart-workspace-frame {
+      background: #ffffff;
+    }
+    
+    .financial-chart-shell,
+    .financial-chart-canvas,
+    .chart-workspace-skeleton,
+    .chart-workspace-message,
+    .financial-chart-empty {
+      width: 100%;
+      min-height: clamp(520px, 72vh, 860px);
+    }
+    
+    .financial-chart-shell {
+      position: relative;
+    }
+    
+    .financial-chart-canvas {
+      position: absolute;
+      inset: 0;
+    }
+    
+    .chart-crosshair-legend {
+      position: absolute;
+      z-index: 4;
+      top: 12px;
+      left: 12px;
+      max-width: calc(100% - 104px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      color: #f4f4f5;
+      background: rgba(8, 11, 16, 0.82);
+      backdrop-filter: blur(12px);
+      pointer-events: none;
+    }
+    
+    [data-theme="light"] .chart-crosshair-legend {
+      color: #0f172a;
+      border-color: rgba(15, 23, 42, 0.09);
+      background: rgba(255, 255, 255, 0.88);
+    }
+    
+    .chart-crosshair-date {
+      display: grid;
+      gap: 1px;
+      min-width: max-content;
+    }
+    
+    .chart-crosshair-date span,
+    .chart-crosshair-values dt {
+      color: var(--muted);
+      font-size: 0.58rem;
+      font-weight: 750;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    
+    .chart-crosshair-date strong,
+    .chart-crosshair-values dd {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    
+    .chart-crosshair-values {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px 13px;
+      margin: 0;
+    }
+    
+    .chart-crosshair-values > div {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .chart-crosshair-values dt {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .chart-crosshair-values dt i {
+      width: 10px;
+      height: 2px;
+      border-radius: 999px;
+    }
+    
+    .chart-crosshair-values dd {
+      margin: 0;
+    }
+    
+    .chart-workspace-skeleton {
+      position: relative;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background:
+        linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.025), transparent),
+        #0b0d12;
+    }
+    
+    .chart-skeleton-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.45;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+      background-size: 100% 72px, 96px 100%;
+      animation: chart-skeleton-pulse 1.5s ease-in-out infinite alternate;
+    }
+    
+    .chart-skeleton-legend {
+      position: absolute;
+      z-index: 1;
+      top: 14px;
+      left: 14px;
+      width: min(520px, 72%);
+      height: 42px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    
+    .chart-workspace-skeleton > span {
+      z-index: 1;
+      font-size: 0.82rem;
+    }
+    
+    @keyframes chart-skeleton-pulse {
+      from { opacity: 0.32; }
+      to { opacity: 0.66; }
+    }
+    
+    .chart-workspace-message,
+    .financial-chart-empty {
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      gap: 8px;
+      padding: 28px;
+      color: var(--muted);
+      text-align: center;
+    }
+    
+    .chart-workspace-message strong,
+    .financial-chart-empty strong {
+      color: var(--text);
+      font-size: 1.08rem;
+    }
+    
+    .chart-workspace-message button {
+      margin-top: 8px;
+      padding-inline: 14px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: var(--bg-strong);
+    }
+    
+    .chart-workspace-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      padding: 0 4px;
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+    
+    .chart-workspace-footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    
+    .chart-workspace-footer a:hover {
+      color: var(--text);
+      text-decoration: underline;
+    }
+    
+    @media (max-width: 1100px) {
+      .chart-toolbar {
+        align-items: stretch;
+        flex-wrap: wrap;
       }
     
-      return (
-        <section className="chart-workspace" aria-labelledby="chart-workspace-title">
-          <header className="chart-workspace-header">
-            <div>
-              <p className="section-kicker">Professionell chart · Daily</p>
-              <div className="chart-title-row">
-                <h1 id="chart-workspace-title">{payload?.ticker ?? ticker}</h1>
-                <span className="chart-company-name">{payload?.companyName ?? 'Laddar bolagsdata…'}</span>
-              </div>
-              <p className="chart-workspace-context">
-                {payload?.sector ?? 'Sektor saknas'} · Justerade priser · Senaste data {formatDate(payload?.latestDate)}
-              </p>
-            </div>
+      .chart-toolbar-field {
+        min-width: min(100%, 360px);
+        flex: 1 1 280px;
+      }
     
-            <div className="chart-price-summary" aria-label="Senaste prisutveckling">
-              <strong>{formatPrice(payload?.latestPrice, payload?.currency)}</strong>
-              <span className={`tone-${dailyTone}`}>
-                {formatSignedPercent(payload?.dailyChangePct)} senaste handelsdagen
-              </span>
-            </div>
-          </header>
+      .chart-toolbar-overlays {
+        order: 4;
+        flex-basis: 100%;
+      }
+    }
     
-          <ChartToolbar
-            constituents={constituents}
-            ticker={ticker}
-            period={period}
-            visibleContextLayers={visibleContextLayers}
-            visibleIndicators={visibleIndicators}
-            visibleOverlays={visibleOverlays}
-            visibleSignals={visibleSignals}
-            unavailableIndicators={unavailableIndicators}
-            unavailableOverlays={unavailableOverlays}
-            unavailableSignals={unavailableSignals}
-            onTickerChange={setTicker}
-            onPeriodChange={setPeriod}
-            onToggleContextLayer={(key) => toggleList(setVisibleContextLayers, [], key)}
-            onToggleIndicator={(key) => toggleList(setVisibleIndicators, unavailableIndicators, key)}
-            onToggleOverlay={(key) => toggleList(setVisibleOverlays, unavailableOverlays, key)}
-            onToggleSignal={(key) => toggleList(setVisibleSignals, unavailableSignals, key)}
-            onReset={() => setResetToken((value) => value + 1)}
-          />
+    @media (max-width: 720px) {
+      .chart-page-shell {
+        padding-inline: 10px !important;
+      }
     
-          {status === 'ready' && payload ? (
-            <ChartContextStrip
-              breadthContext={payload.breadthContext}
-              gexDexSnapshots={payload.gexDexSnapshots}
-              nextEarnings={payload.nextEarnings}
-              relativeStrengthContext={payload.relativeStrengthContext}
-              volatilityContext={payload.volatilityContext}
-            />
-          ) : null}
+      .chart-workspace-header {
+        align-items: start;
+      }
     
-          <div className="chart-workspace-frame">
-            {status === 'loading' ? <ChartSkeleton /> : null}
+      .chart-price-summary {
+        justify-items: end;
+      }
     
-            {status === 'error' ? (
-              <div className="chart-workspace-message" role="alert">
-                <strong>Charten kunde inte laddas</strong>
-                <span>{errorMessage}</span>
-                <button type="button" onClick={() => setRetryToken((value) => value + 1)}>
-                  Försök igen
-                </button>
-              </div>
-            ) : null}
+      .chart-price-summary > strong {
+        font-size: 1.25rem;
+      }
     
-            {status === 'empty' ? (
-              <div className="chart-workspace-message" role="status">
-                <strong>Ingen användbar prishistorik</strong>
-                <span>Välj en annan ticker eller period.</span>
-              </div>
-            ) : null}
+      .chart-company-name,
+      .chart-workspace-context,
+      .chart-price-summary > span {
+        font-size: 0.7rem;
+      }
     
-            {status === 'ready' && payload ? (
-              <FinancialChart
-                bars={payload.bars}
-                currency={payload.currency}
-                earningsEvents={payload.earningsEvents}
-                gexDexSnapshots={payload.gexDexSnapshots}
-                period={payload.period}
-                resetToken={resetToken}
-                ticker={payload.ticker}
-                visibleContextLayers={visibleContextLayers}
-                visibleIndicators={visibleIndicators}
-                visibleOverlays={visibleOverlays}
-                visibleSignals={visibleSignals}
-              />
-            ) : null}
-          </div>
+      .chart-toolbar {
+        gap: 9px;
+        padding: 9px;
+      }
     
-          <footer className="chart-workspace-footer">
-            <span>{payload?.bars?.length ?? 0} handelsdagar · {period}</span>
-            {unavailableOverlays.length ? (
-              <span>{unavailableOverlays.length} MA-serier saknar data i vald period</span>
-            ) : <span>Alla MA-serier tillgängliga</span>}
-            {unavailableIndicators.length === INDICATOR_KEYS.length
-              ? <span>RYD OBV saknar data i vald period</span>
-              : <span>RYD OBV tillgänglig</span>}
-            <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">
-              Charting by TradingView Lightweight Charts™
-            </a>
-          </footer>
-        </section>
-      );
+      .chart-toolbar-field,
+      .chart-toolbar-group,
+      .chart-reset-button {
+        width: 100%;
+      }
+    
+      .chart-segmented-control {
+        width: 100%;
+      }
+    
+      .chart-segmented-control button {
+        flex: 1 1 0;
+      }
+    
+      .chart-reset-button {
+        min-height: 36px;
+      }
+    
+      .chart-workspace-frame,
+      .financial-chart-shell,
+      .financial-chart-canvas,
+      .chart-workspace-skeleton,
+      .chart-workspace-message,
+      .financial-chart-empty {
+        min-height: 580px;
+      }
+    
+      .chart-crosshair-legend {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        align-items: start;
+        flex-direction: column;
+        gap: 5px;
+      }
+    
+      .chart-crosshair-values {
+        gap: 4px 10px;
+      }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .chart-skeleton-grid {
+        animation: none;
+      }
     }
     
   operator: 'match'
   stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:78:10)
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:90:10)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -568,4 +1052,4 @@ not ok 4 - workspace renders a responsive Options Ladder beside the existing cha
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 57.806234
+# duration_ms 81.163102
