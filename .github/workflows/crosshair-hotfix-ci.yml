@@ -1,0 +1,51 @@
+name: Crosshair Legend Hotfix CI
+
+on:
+  push:
+    branches:
+      - codex/verify-crosshair-hotfix
+    paths-ignore:
+      - .crosshair-hotfix-ci-result
+      - .crosshair-hotfix-ci-log
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/verify-crosshair-hotfix
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Verify
+        id: verify
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            npm ci
+            echo '===== focused regression ====='
+            node --test tests/chart-crosshair-legend-contract.test.js
+            echo '===== complete Node test suite ====='
+            node --test tests/*.test.js
+            echo '===== Next.js production build ====='
+            npm run build
+          } 2>&1 | tee .crosshair-hotfix-ci-log
+      - name: Publish result
+        if: always()
+        env:
+          OUTCOME: ${{ steps.verify.outcome }}
+          VERIFIED_SHA: ${{ github.sha }}
+        run: |
+          printf 'result=%s\nverified_sha=%s\n' "$OUTCOME" "$VERIFIED_SHA" > .crosshair-hotfix-ci-result
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .crosshair-hotfix-ci-result .crosshair-hotfix-ci-log
+          git commit -m "ci: record crosshair hotfix verification" || exit 0
+          git push origin HEAD:codex/verify-crosshair-hotfix
