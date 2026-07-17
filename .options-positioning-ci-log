@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 9s
+added 43 packages, and audited 44 packages in 8s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,100 +15,37 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.403534
+  duration_ms: 1.318806
   type: 'test'
   ...
 # Subtest: strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
-not ok 2 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
+ok 2 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
   ---
-  duration_ms: 2.446561
+  duration_ms: 2.968491
   type: 'test'
-  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:26:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + 'undefined'
-    - 'function'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'function'
-  actual: 'undefined'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:28:10)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: all provider strikes are shown when each side stays within the thirty-row cap
-not ok 3 - all provider strikes are shown when each side stays within the thirty-row cap
+ok 3 - all provider strikes are shown when each side stays within the thirty-row cap
   ---
-  duration_ms: 0.554882
+  duration_ms: 0.317042
   type: 'test'
-  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:51:1'
-  failureType: 'testCodeFailure'
-  error: 'module.selectOptionsPositioningStrikes is not a function'
-  code: 'ERR_TEST_FAILURE'
-  name: 'TypeError'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:54:27)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: options positioning model builds centered GEX and DEX bars with key-level annotations
-not ok 4 - options positioning model builds centered GEX and DEX bars with key-level annotations
+ok 4 - options positioning model builds centered GEX and DEX bars with key-level annotations
   ---
-  duration_ms: 0.620745
+  duration_ms: 0.952552
   type: 'test'
-  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:58:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + 'undefined'
-    - 'function'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'function'
-  actual: 'undefined'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:60:10)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: key-level history remains available for hover and keyboard tooltips
-not ok 5 - key-level history remains available for hover and keyboard tooltips
+ok 5 - key-level history remains available for hover and keyboard tooltips
   ---
-  duration_ms: 0.500619
+  duration_ms: 8.126907
   type: 'test'
-  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:100:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + 'undefined'
-    - 'function'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'function'
-  actual: 'undefined'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:102:10)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: workspace renders Options Positioning strike bars instead of the old ladder table
 not ok 6 - workspace renders Options Positioning strike bars instead of the old ladder table
   ---
-  duration_ms: 15.822778
+  duration_ms: 12.770781
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:115:1'
   failureType: 'testCodeFailure'
@@ -658,9 +595,9 @@ not ok 6 - workspace renders Options Positioning strike bars instead of the old 
 1..6
 # tests 6
 # suites 0
-# pass 1
-# fail 5
+# pass 5
+# fail 1
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 82.645659
+# duration_ms 88.180115
