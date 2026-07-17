@@ -14,13 +14,13 @@ TAP version 13
 # Subtest: fetchAndStoreGexDexSnapshots preserves successful symbols when one source request fails
 ok 1 - fetchAndStoreGexDexSnapshots preserves successful symbols when one source request fails
   ---
-  duration_ms: 1.314095
+  duration_ms: 1.56186
   type: 'test'
   ...
 # Subtest: fetchAndStoreGexDexSnapshots respects bounded concurrency and preserves result order
 not ok 2 - fetchAndStoreGexDexSnapshots respects bounded concurrency and preserves result order
   ---
-  duration_ms: 62.070471
+  duration_ms: 61.759031
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/gex-dex-fetcher.test.js:24:1'
   failureType: 'testCodeFailure'
@@ -42,7 +42,7 @@ not ok 2 - fetchAndStoreGexDexSnapshots respects bounded concurrency and preserv
 # Subtest: GEX DEX fetch combines SPY and QQQ with a dynamic top-30 volume universe
 not ok 3 - GEX DEX fetch combines SPY and QQQ with a dynamic top-30 volume universe
   ---
-  duration_ms: 1.567133
+  duration_ms: 1.538434
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/gex-dex-top-volume-watchlist.test.js:14:1'
   failureType: 'testCodeFailure'
@@ -221,4 +221,4 @@ not ok 3 - GEX DEX fetch combines SPY and QQQ with a dynamic top-30 volume unive
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 112.481016
+# duration_ms 120.286062
