@@ -1,9 +1,10 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import {
-  buildOptionsLadderHistory,
-  buildOptionsLadderModel,
-} from '../../lib/chart/options-ladder.js';
+  buildOptionsPositioningLevelHistory,
+  buildOptionsPositioningModel,
+} from '../../lib/chart/options-positioning.js';
 
 function formatNumber(value, digits = 2) {
   if (!Number.isFinite(Number(value))) return '—';
@@ -21,14 +22,13 @@ function formatCompact(value) {
   }).format(Number(value));
 }
 
-function formatSigned(value, digits, suffix = '') {
+function formatSigned(value, digits = 2) {
   if (!Number.isFinite(Number(value))) return '—';
-  const normalized = Math.abs(Number(value)) < (0.5 * (10 ** -digits)) ? 0 : Number(value);
-  return `${new Intl.NumberFormat('sv-SE', {
+  return new Intl.NumberFormat('sv-SE', {
     signDisplay: 'always',
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
-  }).format(normalized)}${suffix}`;
+  }).format(Number(value));
 }
 
 function formatHistoryDate(value) {
@@ -41,131 +41,227 @@ function formatHistoryDate(value) {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
-function LevelHistoryTooltip({ history, row }) {
-  const tooltipId = `options-ladder-history-${row.key}`;
+function formatTimestamp(value) {
+  if (!value) return '—';
+  return new Intl.DateTimeFormat('sv-SE', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'America/New_York',
+  }).format(new Date(value));
+}
 
-  if (!history.length) {
-    return <span className="options-ladder-badge">{row.label}</span>;
-  }
+function KeyLevelBadge({ annotation, history = [], scope }) {
+  const tooltipId = `options-positioning-${scope}-${annotation.key}-${String(annotation.value).replace('.', '-')}`;
+  const badge = (
+    <span
+      className="options-positioning-level-badge"
+      style={{ '--level-color': annotation.color }}
+      title={`${annotation.label}: ${formatNumber(annotation.value)}`}
+    >
+      {annotation.label}
+      {!annotation.exact ? <small>{formatNumber(annotation.value)}</small> : null}
+    </span>
+  );
+
+  if (!history.length) return badge;
 
   return (
-    <div className="options-ladder-history-cell">
+    <span className="options-positioning-tooltip-wrap">
       <button
         type="button"
-        className="options-ladder-history-trigger"
+        className="options-positioning-tooltip-trigger"
         aria-describedby={tooltipId}
-        aria-label={`${row.label}: visa de senaste ${history.length} nivåerna`}
+        aria-label={`${annotation.label}: visa de senaste ${history.length} nivåerna`}
       >
-        <span className="options-ladder-badge">{row.label}</span>
+        {badge}
       </button>
-
-      <div
-        id={tooltipId}
-        className="options-ladder-history-tooltip"
-        role="tooltip"
-        style={{ '--options-level-color': row.color }}
-      >
-        <header className="options-ladder-history-header">
-          <span className="options-ladder-history-swatch" aria-hidden="true" />
-          <div>
-            <strong>{row.label}</strong>
-            <span>Senaste 10 nivåerna</span>
-          </div>
-        </header>
-
-        <div className="options-ladder-history-columns" aria-hidden="true">
-          <span>Datum</span>
-          <span>Nivå</span>
-          <span>Δ</span>
-        </div>
-
-        <ol className="options-ladder-history-list">
+      <span id={tooltipId} className="options-positioning-history-tooltip" role="tooltip">
+        <strong>{annotation.label} · senaste 10</strong>
+        <span className="options-positioning-history-head" aria-hidden="true">
+          <span>Datum</span><span>Nivå</span><span>Δ</span>
+        </span>
+        <span className="options-positioning-history-list">
           {history.map((item, index) => (
-            <li
-              key={`${row.key}-${item.sourceTimestamp ?? item.date}-${index}`}
-              className={index === 0 ? 'is-latest' : undefined}
-            >
+            <span key={`${annotation.key}-${item.sourceTimestamp ?? item.date}-${index}`} className={index === 0 ? 'is-latest' : undefined}>
               <time dateTime={item.date}>{formatHistoryDate(item.date)}</time>
-              <strong>{formatNumber(item.value)}</strong>
-              <span>{formatSigned(item.delta, 2)}</span>
-            </li>
+              <b>{formatNumber(item.value)}</b>
+              <em>{formatSigned(item.delta)}</em>
+            </span>
           ))}
-        </ol>
+        </span>
+      </span>
+    </span>
+  );
+}
+
+function ExposureChart({
+  annotations,
+  historyByKey,
+  metricKey,
+  pctKey,
+  rows,
+  scope,
+  spotStrike,
+  title,
+  toneKey,
+}) {
+  return (
+    <section className="options-positioning-chart" aria-label={`${title} per strike`}>
+      <header>
+        <strong>{title} per strike</strong>
+        <span>{title === 'GEX' ? 'Net GEX' : 'Net DEX'}</span>
+      </header>
+      <div className="options-positioning-axis" aria-hidden="true">
+        <span>−max</span><span>0</span><span>+max</span>
       </div>
-    </div>
+      <div className="options-positioning-rows">
+        {rows.map((row) => {
+          const levelAnnotations = annotations.get(row.strike) ?? [];
+          const isSpot = row.strike === spotStrike;
+          const value = row[metricKey];
+          const tone = row[toneKey];
+          const width = Math.max(0, Math.min(50, Number(row[pctKey] ?? 0) / 2));
+          return (
+            <div
+              className={`options-positioning-row${isSpot ? ' is-spot' : ''}`}
+              key={`${scope}-${row.strike}`}
+              aria-label={`${title} strike ${formatNumber(row.strike)}: ${formatCompact(value)}`}
+            >
+              <div className="options-positioning-strike-cell">
+                <strong>{formatNumber(row.strike)}</strong>
+                <span className="options-positioning-row-labels">
+                  {isSpot ? <span className="options-positioning-spot-badge">Spot</span> : null}
+                  {levelAnnotations.map((annotation) => (
+                    <KeyLevelBadge
+                      annotation={annotation}
+                      history={historyByKey[annotation.key] ?? []}
+                      key={`${scope}-${row.strike}-${annotation.key}`}
+                      scope={scope}
+                    />
+                  ))}
+                </span>
+              </div>
+              <div className="options-positioning-bar-track" aria-hidden="true">
+                <span className="options-positioning-bar-zero" />
+                <i
+                  className={`options-positioning-bar tone-${tone} ${Number(value) < 0 ? 'is-negative' : 'is-positive'}`}
+                  style={{ width: `${width}%` }}
+                />
+              </div>
+              <strong className={`options-positioning-value tone-${tone}`}>{formatCompact(value)}</strong>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
 export default function OptionsLadder({ latestPrice, snapshots = [] }) {
-  const snapshot = snapshots.at(-1) ?? null;
-  const model = buildOptionsLadderModel({ latestPrice, snapshot });
-  const historyByKey = buildOptionsLadderHistory({ snapshots, limit: 10 });
-  const sourceTitle = model.sourceTimestamp
-    ? `Senaste providersnapshot ${new Intl.DateTimeFormat('sv-SE', {
-      dateStyle: 'medium', timeStyle: 'short',
-    }).format(new Date(model.sourceTimestamp))}`
-    : 'Ingen providersnapshot för vald ticker.';
+  const [ticker, setTicker] = useState('');
+  const [strikePayload, setStrikePayload] = useState({ strikes: [] });
+  const [strikeStatus, setStrikeStatus] = useState('loading');
+
+  useEffect(() => {
+    const nextTicker = new URLSearchParams(window.location.search).get('ticker')?.trim().toUpperCase() ?? '';
+    setTicker(nextTicker);
+  }, [snapshots]);
+
+  useEffect(() => {
+    if (!ticker) return undefined;
+    const controller = new AbortController();
+    let active = true;
+    setStrikeStatus('loading');
+
+    fetch(`/api/gex-dex-strikes?ticker=${encodeURIComponent(ticker)}`, { signal: controller.signal })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result?.error || `HTTP ${response.status}`);
+        if (!active) return;
+        setStrikePayload(result);
+        setStrikeStatus('ready');
+      })
+      .catch((error) => {
+        if (!active || error?.name === 'AbortError') return;
+        console.warn('Options positioning strikes unavailable:', error?.message ?? error);
+        setStrikePayload({ strikes: [] });
+        setStrikeStatus('error');
+      });
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [ticker]);
+
+  const model = useMemo(() => buildOptionsPositioningModel({
+    latestPrice: strikePayload.spotPrice ?? latestPrice,
+    snapshots,
+    strikes: strikePayload.strikes ?? [],
+    maxPerSide: 30,
+  }), [latestPrice, snapshots, strikePayload]);
+  const historyByKey = useMemo(
+    () => buildOptionsPositioningLevelHistory({ snapshots, limit: 10 }),
+    [snapshots]
+  );
 
   return (
-    <aside className="options-ladder" aria-label="Options Ladder">
-      <header className="options-ladder-header">
-        <h2>Options Ladder</h2>
-        <span className="options-ladder-info" title={sourceTitle} aria-label={sourceTitle}>ⓘ</span>
+    <aside className="options-positioning" aria-label="Optionspositionering">
+      <header className="options-positioning-header">
+        <div>
+          <h2>Optionspositionering</h2>
+          <span>{ticker || 'Vald ticker'}</span>
+        </div>
+        <strong className={`tone-${model.state.tone}`}>{model.state.label}</strong>
       </header>
 
-      <section className="options-ladder-overview" aria-label="Lägesöversikt">
-        <span className="options-ladder-kicker">Lägesöversikt</span>
-        <strong className={`options-ladder-state tone-${model.state.tone}`}>{model.state.label}</strong>
-        <div className="options-ladder-net-grid">
-          <div>
-            <span>Net GEX</span>
-            <strong className={Number(model.netGex) < 0 ? 'tone-danger' : Number(model.netGex) > 0 ? 'tone-positive' : 'tone-neutral'}>
-              {formatCompact(model.netGex)}
-            </strong>
-          </div>
-          <div>
-            <span>Net DEX</span>
-            <strong className={Number(model.netDex) < 0 ? 'tone-danger' : Number(model.netDex) > 0 ? 'tone-positive' : 'tone-neutral'}>
-              {formatCompact(model.netDex)}
-            </strong>
-          </div>
-        </div>
+      <section className="options-positioning-summary" aria-label="Optionsöversikt">
+        <div><span>Spot</span><strong>{formatNumber(model.spotPrice)}</strong></div>
+        <div><span>Net GEX</span><strong className={Number(model.netGex) < 0 ? 'tone-danger' : 'tone-positive'}>{formatCompact(model.netGex)}</strong></div>
+        <div><span>Net DEX</span><strong className={Number(model.netDex) < 0 ? 'tone-danger' : 'tone-positive'}>{formatCompact(model.netDex)}</strong></div>
       </section>
 
-      {model.rows.length ? (
-        <table className="options-ladder-table">
-          <thead>
-            <tr>
-              <th>Nivå</th>
-              <th>Typ</th>
-              <th>Avstånd</th>
-            </tr>
-          </thead>
-          <tbody>
-            {model.rows.map((row) => (
-              <tr key={row.key} style={{ '--options-level-color': row.color }}>
-                <td>{formatNumber(row.price)}</td>
-                <td>
-                  <LevelHistoryTooltip history={historyByKey[row.key] ?? []} row={row} />
-                </td>
-                <td>
-                  <strong>{formatSigned(row.distancePct, 1, '%')}</strong>
-                  <span>{formatSigned(row.distanceValue, 2)}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className="options-ladder-empty">
-          <strong>Inga optionsnivåer</strong>
-          <span>Snapshotdata saknas för vald ticker.</span>
-        </div>
-      )}
+      <div className="options-positioning-scroll">
+        {strikeStatus === 'loading' ? (
+          <div className="options-positioning-message">Strike-datan laddas…</div>
+        ) : null}
+        {strikeStatus === 'error' ? (
+          <div className="options-positioning-message">Strike-datan är tillfälligt otillgänglig.</div>
+        ) : null}
+        {strikeStatus === 'ready' && model.rows.length ? (
+          <>
+            <ExposureChart
+              annotations={model.gexAnnotations}
+              historyByKey={historyByKey}
+              metricKey="netGex"
+              pctKey="gexPct"
+              rows={model.rows}
+              scope="gex"
+              spotStrike={model.spotStrike}
+              title="GEX"
+              toneKey="gexTone"
+            />
+            <ExposureChart
+              annotations={model.dexAnnotations}
+              historyByKey={historyByKey}
+              metricKey="netDex"
+              pctKey="dexPct"
+              rows={model.rows}
+              scope="dex"
+              spotStrike={model.spotStrike}
+              title="DEX"
+              toneKey="dexTone"
+            />
+          </>
+        ) : null}
+        {strikeStatus === 'ready' && !model.rows.length ? (
+          <div className="options-positioning-message">Inga strike-nivåer finns i senaste snapshoten.</div>
+        ) : null}
+      </div>
 
-      <footer className="options-ladder-footer">
-        <span aria-hidden="true">ⓘ</span>
-        <span>Avstånd i % relativt aktuell kurs ({formatNumber(latestPrice)})</span>
+      <footer className="options-positioning-footer">
+        <span>Uppdaterad {formatTimestamp(model.sourceTimestamp)} New York</span>
+        <span>{model.dataQuality ? `GammaLens · ${model.dataQuality}` : 'GammaLens'}</span>
       </footer>
     </aside>
   );
