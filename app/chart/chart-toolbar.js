@@ -35,6 +35,14 @@ function ToggleButtons({ keys, unavailableKeys = [], visibleKeys, onToggle }) {
   });
 }
 
+function TickerOptions({ items }) {
+  return items.map((item) => (
+    <option key={item.ticker} value={item.ticker}>
+      {item.ticker} · {item.company_name}
+    </option>
+  ));
+}
+
 export default function ChartToolbar({
   constituents,
   onPeriodChange,
@@ -54,6 +62,9 @@ export default function ChartToolbar({
   visibleOverlays,
   visibleSignals,
 }) {
+  const featuredTickers = constituents.filter((item) => item.featured);
+  const remainingTickers = constituents.filter((item) => !item.featured);
+
   return (
     <div className="chart-toolbar" aria-label="Chartkontroller">
       <label className="chart-toolbar-field" htmlFor="chart-ticker">
@@ -63,11 +74,12 @@ export default function ChartToolbar({
           value={ticker}
           onChange={(event) => onTickerChange(event.target.value)}
         >
-          {constituents.map((item) => (
-            <option key={item.ticker} value={item.ticker}>
-              {item.ticker} · {item.company_name}
-            </option>
-          ))}
+          <optgroup label="Prioriterade GEX/DEX">
+            <TickerOptions items={featuredTickers} />
+          </optgroup>
+          <optgroup label="Övriga S&P 500">
+            <TickerOptions items={remainingTickers} />
+          </optgroup>
         </select>
       </label>
 
