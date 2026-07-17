@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 8s
+added 43 packages, and audited 44 packages in 9s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,70 +15,43 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.32406
+  duration_ms: 1.260217
   type: 'test'
   ...
 # Subtest: options ladder uses the latest snapshot and sorts available levels from highest to lowest
 ok 2 - options ladder uses the latest snapshot and sorts available levels from highest to lowest
   ---
-  duration_ms: 2.356937
+  duration_ms: 2.114238
   type: 'test'
   ...
 # Subtest: options ladder fails open when no provider snapshot exists
 ok 3 - options ladder fails open when no provider snapshot exists
   ---
-  duration_ms: 0.319856
+  duration_ms: 0.294919
   type: 'test'
   ...
 # Subtest: options ladder history returns the newest ten dated observations per level
-not ok 4 - options ladder history returns the newest ten dated observations per level
+ok 4 - options ladder history returns the newest ten dated observations per level
   ---
-  duration_ms: 1.245513
+  duration_ms: 8.628568
   type: 'test'
-  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:71:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    Expected values to be strictly equal:
-    + actual - expected
-    
-    + 'undefined'
-    - 'function'
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 'function'
-  actual: 'undefined'
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:73:10)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: options ladder history ignores invalid dates and missing values
-not ok 5 - options ladder history ignores invalid dates and missing values
+ok 5 - options ladder history ignores invalid dates and missing values
   ---
-  duration_ms: 0.317262
+  duration_ms: 0.434537
   type: 'test'
-  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:101:1'
-  failureType: 'testCodeFailure'
-  error: 'module.buildOptionsLadderHistory is not a function'
-  code: 'ERR_TEST_FAILURE'
-  name: 'TypeError'
-  stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:103:26)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
 # Subtest: workspace renders a responsive Options Ladder beside the existing chart
 ok 6 - workspace renders a responsive Options Ladder beside the existing chart
   ---
-  duration_ms: 11.021189
+  duration_ms: 7.553317
   type: 'test'
   ...
 # Subtest: each options level exposes an accessible ten-observation history tooltip
 not ok 7 - each options level exposes an accessible ten-observation history tooltip
   ---
-  duration_ms: 2.750392
+  duration_ms: 3.988344
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:144:1'
   failureType: 'testCodeFailure'
@@ -302,9 +275,9 @@ not ok 7 - each options level exposes an accessible ten-observation history tool
 1..7
 # tests 7
 # suites 0
-# pass 4
-# fail 3
+# pass 6
+# fail 1
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 89.358991
+# duration_ms 89.233671
