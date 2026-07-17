@@ -68,6 +68,54 @@ test('options ladder fails open when no provider snapshot exists', async () => {
   });
 });
 
+test('options ladder history returns the newest ten dated observations per level', async () => {
+  const module = await loadOptionsLadderModule();
+  assert.equal(typeof module.buildOptionsLadderHistory, 'function');
+
+  const snapshots = Array.from({ length: 12 }, (_, index) => {
+    const day = String(index + 1).padStart(2, '0');
+    return {
+      date: `2026-07-${day}`,
+      sourceTimestamp: `2026-07-${day}T12:00:00.000Z`,
+      callWall: 198 + index,
+      putWall: index === 11 ? null : 180 + index,
+    };
+  });
+
+  const history = module.buildOptionsLadderHistory({ snapshots, limit: 10 });
+
+  assert.equal(history.callWall.length, 10);
+  assert.deepEqual(history.callWall[0], {
+    date: '2026-07-12',
+    sourceTimestamp: '2026-07-12T12:00:00.000Z',
+    value: 209,
+    delta: 1,
+  });
+  assert.equal(history.callWall.at(-1).date, '2026-07-03');
+  assert.equal(history.callWall.at(-1).value, 200);
+  assert.equal(history.callWall.at(-1).delta, 1);
+  assert.equal(history.putWall[0].date, '2026-07-11');
+  assert.equal(history.putWall.every((item) => Number.isFinite(item.value)), true);
+});
+
+test('options ladder history ignores invalid dates and missing values', async () => {
+  const module = await loadOptionsLadderModule();
+  const history = module.buildOptionsLadderHistory({
+    snapshots: [
+      { date: 'invalid', callWall: 201 },
+      { date: '2026-07-15', callWall: null },
+      { date: '2026-07-16', callWall: 202 },
+    ],
+  });
+
+  assert.deepEqual(history.callWall, [{
+    date: '2026-07-16',
+    sourceTimestamp: null,
+    value: 202,
+    delta: null,
+  }]);
+});
+
 test('workspace renders a responsive Options Ladder beside the existing chart', async () => {
   const [workspace, component, css] = await Promise.all([
     readFile(new URL('../app/chart/chart-workspace.js', import.meta.url), 'utf8'),
@@ -91,4 +139,24 @@ test('workspace renders a responsive Options Ladder beside the existing chart', 
   assert.match(css, /grid-template-columns:/);
   assert.match(css, /\.options-ladder\s*\{/);
   assert.match(css, /@media \(max-width: 1180px\)/);
+});
+
+test('each options level exposes an accessible ten-observation history tooltip', async () => {
+  const [component, css] = await Promise.all([
+    readFile(new URL('../app/chart/options-ladder.js', import.meta.url), 'utf8'),
+    readFile(new URL('../app/chart/options-ladder.css', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(component, /buildOptionsLadderHistory/);
+  assert.match(component, /options-ladder-history-trigger/);
+  assert.match(component, /role="tooltip"/);
+  assert.match(component, /Senaste 10 nivåerna/);
+  assert.match(component, /aria-describedby=/);
+  assert.match(component, /historyByKey\[row\.key\]/);
+
+  assert.match(css, /\.options-ladder-history-tooltip\s*\{/);
+  assert.match(css, /right:\s*calc\(100% \+ 12px\)/);
+  assert.match(css, /:hover[\s\S]*\.options-ladder-history-tooltip/);
+  assert.match(css, /:focus-within[\s\S]*\.options-ladder-history-tooltip/);
+  assert.match(css, /@media \(max-width: 720px\)/);
 });
