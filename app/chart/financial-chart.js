@@ -367,7 +367,13 @@ export default function FinancialChart({
 
   return (
     <div className="financial-chart-shell">
-      <CrosshairLegend point={legendPoint} currency={currency} />
+      <CrosshairLegend
+        point={legendPoint}
+        currency={currency}
+        visibleIndicators={visibleIndicators}
+        visibleOverlays={visibleOverlays}
+        visibleSignals={visibleSignals}
+      />
       <div ref={containerRef} className="financial-chart-canvas" />
     </div>
   );
