@@ -1,0 +1,47 @@
+name: Chart Featured Tickers CI
+
+on:
+  push:
+    branches:
+      - codex/chart-featured-tickers
+    paths-ignore:
+      - .chart-featured-tickers-ci-result
+      - .chart-featured-tickers-ci-log
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/chart-featured-tickers
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Verify
+        id: verify
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            npm ci
+            echo '===== focused test ====='
+            node --test tests/chart-featured-tickers.test.js
+          } 2>&1 | tee .chart-featured-tickers-ci-log
+      - name: Publish result
+        if: always()
+        env:
+          OUTCOME: ${{ steps.verify.outcome }}
+          VERIFIED_SHA: ${{ github.sha }}
+        run: |
+          printf 'result=%s\nverified_sha=%s\n' "$OUTCOME" "$VERIFIED_SHA" > .chart-featured-tickers-ci-result
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .chart-featured-tickers-ci-result .chart-featured-tickers-ci-log
+          git commit -m "ci: record featured ticker verification" || exit 0
+          git push origin HEAD:codex/chart-featured-tickers
