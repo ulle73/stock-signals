@@ -16,11 +16,14 @@ env:
   NODE_ENV: production
   NEXT_TELEMETRY_DISABLED: '1'
   GEX_DEX_TICKERS: 'SPY,QQQ'
+  GEX_DEX_TOP_VOLUME_LIMIT: '30'
+  GEX_DEX_TOP_VOLUME_LOOKBACK: '20'
+  GEX_DEX_FETCH_CONCURRENCY: '4'
 
 jobs:
   fetch-and-calculate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:

@@ -23,17 +23,24 @@ It deliberately does not emit a buy, sell, order, alert, or backtest strategy.
 GET https://gammalens-api.onrender.com/api/gex/{ticker}
 ```
 
-Default watchlist:
+The scheduled watchlist contains:
 
-```text
-SPY,QQQ
-```
+- configured base tickers, normally `SPY,QQQ`,
+- the 30 active S&P 500 stocks with the highest average share volume over their latest 20 stored sessions.
 
-Override it with:
+The stock selection is recalculated from `stock_daily_prices` before every scheduled fetch, so the liquid-stock universe updates automatically rather than relying on a stale hard-coded list.
+
+Configuration:
 
 ```powershell
-$env:GEX_DEX_TICKERS="SPY,QQQ,NVDA"; npm run fetch:gex-dex
+$env:GEX_DEX_TICKERS="SPY,QQQ"
+$env:GEX_DEX_TOP_VOLUME_LIMIT="30"
+$env:GEX_DEX_TOP_VOLUME_LOOKBACK="20"
+$env:GEX_DEX_FETCH_CONCURRENCY="4"
+npm run fetch:gex-dex
 ```
+
+Configured tickers are placed first and duplicates are removed. A provider failure for one stock is recorded as a partial failure and does not discard successful snapshots for the remaining tickers.
 
 ## Storage
 
@@ -65,6 +72,6 @@ The dedicated `gex-dex-snapshots.yml` workflow runs these steps independently of
 ## Limits and validation
 
 - GammaLens reports a provider model, not observable dealer inventory. Treat levels as zones and context, not deterministic support/resistance.
-- The provider API is the v1 dependency; no source SLA, raw chain, or historical replay contract is assumed by this implementation.
+- The provider API is the v1 dependency; no source SLA, raw chain, ticker-coverage guarantee, or historical replay contract is assumed by this implementation.
 - Stored snapshots create future point-in-time history, but no historical GEX/DEX claim should be made before enough snapshots exist.
 - The dashboard explicitly displays provider freshness. A stale snapshot yields `unknown`, never a directional state.

@@ -2,6 +2,10 @@ import { closePool } from '../lib/db.js';
 import { ensureEnvLoaded } from '../lib/env.js';
 import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
 import { upsertGexDexSnapshot } from '../lib/repositories/gex-dex-snapshots.js';
+import {
+  getTopVolumeGexDexTickers,
+  mergeGexDexTickerUniverse,
+} from '../lib/repositories/gex-dex-universe.js';
 import { fetchGammaLensGexDex, resolveGammaLensGexDexTickers } from '../lib/sources/gammalens-gex-dex.js';
 import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
 import { fetchAndStoreGexDexSnapshots } from '../lib/utils/gex-dex-fetcher.js';
@@ -26,11 +30,20 @@ async function run() {
   const fetchRunId = await startFetchRun(JOB_NAME);
   fetchRunGuard.setRunId(fetchRunId);
 
-  const tickers = resolveGammaLensGexDexTickers(process.env.GEX_DEX_TICKERS);
+  const configuredTickers = resolveGammaLensGexDexTickers(process.env.GEX_DEX_TICKERS);
+  let topVolumeTickers = [];
+  let tickers = configuredTickers;
 
   try {
+    topVolumeTickers = await getTopVolumeGexDexTickers({
+      limit: process.env.GEX_DEX_TOP_VOLUME_LIMIT,
+      lookbackSessions: process.env.GEX_DEX_TOP_VOLUME_LOOKBACK,
+    });
+    tickers = mergeGexDexTickerUniverse(configuredTickers, topVolumeTickers);
+
     const result = await fetchAndStoreGexDexSnapshots({
       tickers,
+      concurrency: process.env.GEX_DEX_FETCH_CONCURRENCY,
       fetchSnapshot: fetchGammaLensGexDex,
       storeSnapshot: upsertGexDexSnapshot,
     });
@@ -44,6 +57,8 @@ async function run() {
       failedItems: result.failedItems.length,
       errorMessage: status === 'failure' ? 'No GammaLens GEX/DEX snapshots could be fetched.' : null,
       metadata: {
+        configuredTickers,
+        topVolumeTickers,
         tickers,
         snapshotIds: result.snapshotIds,
         failedItems: result.failedItems,
@@ -54,11 +69,19 @@ async function run() {
       throw new Error('No GammaLens GEX/DEX snapshots could be fetched.');
     }
 
-    console.log(`Fetched GEX/DEX snapshots for ${result.successfulItems}/${tickers.length} tickers.`);
+    console.log(
+      `Fetched GEX/DEX snapshots for ${result.successfulItems}/${tickers.length} tickers `
+      + `(${configuredTickers.length} configured + ${topVolumeTickers.length} top-volume before deduplication).`
+    );
   } catch (error) {
     await fetchRunGuard.finish('failure', {
       errorMessage: error.message,
-      metadata: { tickers, stack: error.stack },
+      metadata: {
+        configuredTickers,
+        topVolumeTickers,
+        tickers,
+        stack: error.stack,
+      },
     });
     throw error;
   }

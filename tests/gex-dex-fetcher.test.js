@@ -20,3 +20,25 @@ test('fetchAndStoreGexDexSnapshots preserves successful symbols when one source 
   assert.deepEqual(result.failedItems, [{ ticker: 'QQQ', error: 'source unavailable' }]);
   assert.deepEqual(stored, [{ snapshot: { ticker: 'SPY' }, strikes: [{ strike: 100 }] }]);
 });
+
+test('fetchAndStoreGexDexSnapshots respects bounded concurrency and preserves result order', async () => {
+  let inFlight = 0;
+  let maxInFlight = 0;
+  const tickers = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+  const result = await fetchAndStoreGexDexSnapshots({
+    tickers,
+    concurrency: 3,
+    fetchSnapshot: async (ticker) => {
+      inFlight += 1;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      inFlight -= 1;
+      return { snapshot: { ticker }, strikes: [] };
+    },
+    storeSnapshot: async (snapshot) => snapshot.ticker,
+  });
+
+  assert.equal(maxInFlight, 3);
+  assert.deepEqual(result.snapshotIds, tickers.map((ticker) => ({ ticker, snapshotId: ticker })));
+});
