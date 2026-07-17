@@ -30,7 +30,7 @@ function formatDate(value) {
 }
 
 export default function CrosshairLegend({
-  currency = 'USD', point, visibleIndicators = [], visibleOverlays, visibleSignals = [],
+  currency = 'USD', point, visibleIndicators = [], visibleOverlays = [], visibleSignals = [],
 }) {
   const overlays = visibleOverlays.filter((key) => Number.isFinite(Number(point?.[key])));
   const showZscore = visibleIndicators.includes('rydObvZscore') && Number.isFinite(Number(point?.ryd_obv_zscore_80));
