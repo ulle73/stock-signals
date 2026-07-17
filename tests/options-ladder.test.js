@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { GEX_DEX_LEVEL_DEFINITIONS } from '../lib/chart/gex-dex-levels.js';
 
-async function loadOptionsLadderModule() {
+async function loadPositioningModule() {
   try {
-    return await import('../lib/chart/options-ladder.js');
+    return await import('../lib/chart/options-positioning.js');
   } catch {
     return {};
   }
@@ -23,140 +23,117 @@ test('only Gamma Flip belongs to the default GEX/DEX chart group', () => {
   assert.deepEqual(extraKeys, ['callWall', 'putWall', 'dexResistance', 'dexSupport', 'volTrigger']);
 });
 
-test('options ladder uses the latest snapshot and sorts available levels from highest to lowest', async () => {
-  const module = await loadOptionsLadderModule();
-  assert.equal(typeof module.buildOptionsLadderModel, 'function');
+test('strike selection keeps at most thirty rows on each side of spot and preserves distant key levels', async () => {
+  const module = await loadPositioningModule();
+  assert.equal(typeof module.selectOptionsPositioningStrikes, 'function');
 
-  const model = module.buildOptionsLadderModel({
-    latestPrice: 750.72,
-    snapshot: {
-      sourceTimestamp: '2026-07-17T12:00:00.000Z',
+  const strikes = [
+    ...Array.from({ length: 40 }, (_, index) => ({ strike: 60 + index, net_gex: index, net_dex: index })),
+    ...Array.from({ length: 40 }, (_, index) => ({ strike: 101 + index, net_gex: index, net_dex: index })),
+  ];
+  const selected = module.selectOptionsPositioningStrikes({
+    strikes,
+    spotPrice: 100,
+    maxPerSide: 30,
+    keyLevels: { putWall: 60, gammaFlip: 75, callWall: 140, dexSupport: 65, dexResistance: 135 },
+  });
+
+  assert.equal(selected.filter((row) => row.strike < 100).length, 30);
+  assert.equal(selected.filter((row) => row.strike > 100).length, 30);
+  assert.equal(selected.length, 60);
+  assert.equal(selected.some((row) => row.strike === 60), true);
+  assert.equal(selected.some((row) => row.strike === 140), true);
+  assert.equal(selected.some((row) => row.strike === 99), true);
+  assert.equal(selected.some((row) => row.strike === 101), true);
+  assert.deepEqual(selected.map((row) => row.strike), [...selected.map((row) => row.strike)].sort((a, b) => a - b));
+});
+
+test('all provider strikes are shown when each side stays within the thirty-row cap', async () => {
+  const module = await loadPositioningModule();
+  const strikes = [90, 95, 100, 105, 110].map((strike) => ({ strike, net_gex: strike, net_dex: -strike }));
+  const selected = module.selectOptionsPositioningStrikes({ strikes, spotPrice: 100, maxPerSide: 30 });
+  assert.deepEqual(selected.map((row) => row.strike), [90, 95, 100, 105, 110]);
+});
+
+test('options positioning model builds centered GEX and DEX bars with key-level annotations', async () => {
+  const module = await loadPositioningModule();
+  assert.equal(typeof module.buildOptionsPositioningModel, 'function');
+
+  const model = module.buildOptionsPositioningModel({
+    latestPrice: 333.85,
+    snapshots: [{
+      sourceTimestamp: '2026-07-17T22:07:54.770Z',
       sourceStatus: 'active',
       stale: false,
-      netGex: -685300000,
-      netDex: 10100000,
-      dexResistance: 760,
-      callWall: 750,
-      gammaFlip: 748,
-      putWall: 740,
-      dexSupport: 730,
-      volTrigger: null,
-    },
-  });
-
-  assert.deepEqual(model.rows.map((row) => row.key), [
-    'dexResistance', 'callWall', 'gammaFlip', 'putWall', 'dexSupport',
-  ]);
-  assert.equal(model.state.label, 'Negativ gamma');
-  assert.equal(model.state.tone, 'danger');
-  assert.equal(model.rows[0].distanceValue, 9.28);
-  assert.equal(model.rows[0].distancePct, 1.24);
-  assert.equal(model.rows[2].distanceValue, -2.72);
-  assert.equal(model.rows[2].distancePct, -0.36);
-});
-
-test('options ladder fails open when no provider snapshot exists', async () => {
-  const module = await loadOptionsLadderModule();
-  assert.equal(typeof module.buildOptionsLadderModel, 'function');
-
-  assert.deepEqual(module.buildOptionsLadderModel({ latestPrice: 100, snapshot: null }), {
-    state: { label: 'Ingen GEX/DEX-data', tone: 'neutral' },
-    netGex: null,
-    netDex: null,
-    sourceTimestamp: null,
-    rows: [],
-  });
-});
-
-test('options ladder history returns the newest ten dated observations per level', async () => {
-  const module = await loadOptionsLadderModule();
-  assert.equal(typeof module.buildOptionsLadderHistory, 'function');
-
-  const snapshots = Array.from({ length: 12 }, (_, index) => {
-    const day = String(index + 1).padStart(2, '0');
-    return {
-      date: `2026-07-${day}`,
-      sourceTimestamp: `2026-07-${day}T12:00:00.000Z`,
-      callWall: 198 + index,
-      putWall: index === 11 ? null : 180 + index,
-    };
-  });
-
-  const history = module.buildOptionsLadderHistory({ snapshots, limit: 10 });
-
-  assert.equal(history.callWall.length, 10);
-  assert.deepEqual(history.callWall[0], {
-    date: '2026-07-12',
-    sourceTimestamp: '2026-07-12T12:00:00.000Z',
-    value: 209,
-    delta: 1,
-  });
-  assert.equal(history.callWall.at(-1).date, '2026-07-03');
-  assert.equal(history.callWall.at(-1).value, 200);
-  assert.equal(history.callWall.at(-1).delta, 1);
-  assert.equal(history.putWall[0].date, '2026-07-11');
-  assert.equal(history.putWall.every((item) => Number.isFinite(item.value)), true);
-});
-
-test('options ladder history ignores invalid dates and missing values', async () => {
-  const module = await loadOptionsLadderModule();
-  const history = module.buildOptionsLadderHistory({
-    snapshots: [
-      { date: 'invalid', callWall: 201 },
-      { date: '2026-07-15', callWall: null },
-      { date: '2026-07-16', callWall: 202 },
+      spotPrice: 333.85,
+      netGex: 5_200_000,
+      netDex: 1_600_000,
+      callWall: 335,
+      putWall: 325,
+      gammaFlip: 312.5,
+      dexResistance: 340,
+      dexSupport: 330,
+      volTrigger: 338,
+    }],
+    strikes: [
+      { strike: '312.5', net_gex: '-100', net_dex: '-50' },
+      { strike: '325', net_gex: '-20', net_dex: '30' },
+      { strike: '330', net_gex: '40', net_dex: '80' },
+      { strike: '335', net_gex: '150', net_dex: '100' },
+      { strike: '338', net_gex: '90', net_dex: '120' },
+      { strike: '340', net_gex: '110', net_dex: '160' },
     ],
   });
 
-  assert.deepEqual(history.callWall, [{
-    date: '2026-07-16',
-    sourceTimestamp: null,
-    value: 202,
-    delta: null,
-  }]);
+  assert.equal(model.state.label, 'Positiv gamma');
+  assert.equal(model.rows.length, 6);
+  assert.equal(model.rows.find((row) => row.strike === 335).gexPct, 100);
+  assert.equal(model.rows.find((row) => row.strike === 340).dexPct, 100);
+  assert.deepEqual(model.gexAnnotations.get(335).map((item) => item.key), ['callWall']);
+  assert.deepEqual(model.gexAnnotations.get(325).map((item) => item.key), ['putWall']);
+  assert.deepEqual(model.gexAnnotations.get(312.5).map((item) => item.key), ['gammaFlip']);
+  assert.deepEqual(model.dexAnnotations.get(340).map((item) => item.key), ['dexResistance']);
+  assert.deepEqual(model.dexAnnotations.get(330).map((item) => item.key), ['dexSupport']);
+  assert.equal(model.spotStrike, 335);
 });
 
-test('workspace renders a responsive Options Ladder beside the existing chart', async () => {
-  const [workspace, component, css] = await Promise.all([
+test('key-level history remains available for hover and keyboard tooltips', async () => {
+  const module = await loadPositioningModule();
+  assert.equal(typeof module.buildOptionsPositioningLevelHistory, 'function');
+  const snapshots = Array.from({ length: 12 }, (_, index) => ({
+    date: `2026-07-${String(index + 1).padStart(2, '0')}`,
+    sourceTimestamp: `2026-07-${String(index + 1).padStart(2, '0')}T12:00:00.000Z`,
+    callWall: 200 + index,
+  }));
+  const history = module.buildOptionsPositioningLevelHistory({ snapshots, limit: 10 });
+  assert.equal(history.callWall.length, 10);
+  assert.equal(history.callWall[0].value, 211);
+  assert.equal(history.callWall[0].delta, 1);
+  assert.equal(history.callWall.at(-1).value, 202);
+});
+
+test('workspace renders Options Positioning strike bars instead of the old ladder table', async () => {
+  const [workspace, component, css, layout, repository] = await Promise.all([
     readFile(new URL('../app/chart/chart-workspace.js', import.meta.url), 'utf8'),
-    readFile(new URL('../app/chart/options-ladder.js', import.meta.url), 'utf8').catch(() => ''),
-    readFile(new URL('../app/chart/options-ladder.css', import.meta.url), 'utf8').catch(() => ''),
+    readFile(new URL('../app/chart/options-positioning.js', import.meta.url), 'utf8').catch(() => ''),
+    readFile(new URL('../app/chart/options-positioning.css', import.meta.url), 'utf8').catch(() => ''),
+    readFile(new URL('../app/layout.js', import.meta.url), 'utf8'),
+    readFile(new URL('../lib/repositories/chart-data.js', import.meta.url), 'utf8'),
   ]);
 
-  assert.match(workspace, /import OptionsLadder/);
-  assert.match(workspace, /className="chart-workspace-main"/);
-  assert.match(workspace, /<OptionsLadder/);
-  assert.match(workspace, /latestPrice=\{payload\.latestPrice\}/);
-  assert.match(workspace, /snapshots=\{payload\.gexDexSnapshots\}/);
-
-  assert.match(component, /Options Ladder/);
-  assert.match(component, /Lägesöversikt/);
-  assert.match(component, /Net GEX/);
-  assert.match(component, /Net DEX/);
-  assert.match(component, /Avstånd i % relativt aktuell kurs/);
-
-  assert.match(css, /\.chart-workspace-main\s*\{/);
-  assert.match(css, /grid-template-columns:/);
-  assert.match(css, /\.options-ladder\s*\{/);
-  assert.match(css, /@media \(max-width: 1180px\)/);
-});
-
-test('each options level exposes an accessible ten-observation history tooltip', async () => {
-  const [component, css] = await Promise.all([
-    readFile(new URL('../app/chart/options-ladder.js', import.meta.url), 'utf8'),
-    readFile(new URL('../app/chart/options-ladder.css', import.meta.url), 'utf8'),
-  ]);
-
-  assert.match(component, /buildOptionsLadderHistory/);
-  assert.match(component, /options-ladder-history-trigger/);
+  assert.match(workspace, /import OptionsPositioning/);
+  assert.match(workspace, /<OptionsPositioning/);
+  assert.match(workspace, /strikes=\{payload\.gexDexStrikes\}/);
+  assert.match(component, /Optionspositionering/i);
+  assert.match(component, /GEX per strike/);
+  assert.match(component, /DEX per strike/);
+  assert.doesNotMatch(component, /options-ladder-table/);
   assert.match(component, /role="tooltip"/);
-  assert.match(component, /Senaste 10 nivåerna/);
-  assert.match(component, /aria-describedby=/);
-  assert.match(component, /historyByKey\[row\.key\]/);
-
-  assert.match(css, /\.options-ladder-history-tooltip\s*\{/);
-  assert.match(css, /right:\s*calc\(100% \+ 12px\)/);
-  assert.match(css, /:hover[\s\S]*\.options-ladder-history-tooltip/);
-  assert.match(css, /:focus-within[\s\S]*\.options-ladder-history-tooltip/);
-  assert.match(css, /@media \(max-width: 720px\)/);
+  assert.match(css, /\.options-positioning-bar-zero/);
+  assert.match(css, /\.is-negative/);
+  assert.match(css, /overflow-y:\s*auto/);
+  assert.match(css, /@media \(max-width: 1180px\)/);
+  assert.match(layout, /options-positioning\.css/);
+  assert.match(repository, /from gex_dex_strike_snapshots/);
+  assert.match(repository, /gexDexStrikes:/);
 });
