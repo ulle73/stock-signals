@@ -4,14 +4,15 @@ import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 import {
   CHART_SERIES,
+  DEFAULT_VISIBLE_CONTEXT_LAYERS,
   DEFAULT_VISIBLE_INDICATORS,
   DEFAULT_VISIBLE_OVERLAYS,
   DEFAULT_VISIBLE_SIGNALS,
   INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
-  SIGNAL_KEYS,
 } from '../../lib/chart/series-registry.js';
 import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';
+import ChartContextStrip from './chart-context-strip.js';
 import ChartToolbar from './chart-toolbar.js';
 
 const FinancialChart = dynamic(() => import('./financial-chart.js'), {
@@ -59,6 +60,7 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
   const [visibleOverlays, setVisibleOverlays] = useState([...DEFAULT_VISIBLE_OVERLAYS]);
   const [visibleIndicators, setVisibleIndicators] = useState([...DEFAULT_VISIBLE_INDICATORS]);
   const [visibleSignals, setVisibleSignals] = useState([...DEFAULT_VISIBLE_SIGNALS]);
+  const [visibleContextLayers, setVisibleContextLayers] = useState([...DEFAULT_VISIBLE_CONTEXT_LAYERS]);
   const [payload, setPayload] = useState(null);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -172,6 +174,7 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
         constituents={constituents}
         ticker={ticker}
         period={period}
+        visibleContextLayers={visibleContextLayers}
         visibleIndicators={visibleIndicators}
         visibleOverlays={visibleOverlays}
         visibleSignals={visibleSignals}
@@ -180,11 +183,22 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
         unavailableSignals={unavailableSignals}
         onTickerChange={setTicker}
         onPeriodChange={setPeriod}
+        onToggleContextLayer={(key) => toggleList(setVisibleContextLayers, [], key)}
         onToggleIndicator={(key) => toggleList(setVisibleIndicators, unavailableIndicators, key)}
         onToggleOverlay={(key) => toggleList(setVisibleOverlays, unavailableOverlays, key)}
         onToggleSignal={(key) => toggleList(setVisibleSignals, unavailableSignals, key)}
         onReset={() => setResetToken((value) => value + 1)}
       />
+
+      {status === 'ready' && payload ? (
+        <ChartContextStrip
+          breadthContext={payload.breadthContext}
+          gexDexSnapshots={payload.gexDexSnapshots}
+          nextEarnings={payload.nextEarnings}
+          relativeStrengthContext={payload.relativeStrengthContext}
+          volatilityContext={payload.volatilityContext}
+        />
+      ) : null}
 
       <div className="chart-workspace-frame">
         {status === 'loading' ? <ChartSkeleton /> : null}
@@ -210,9 +224,12 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
           <FinancialChart
             bars={payload.bars}
             currency={payload.currency}
+            earningsEvents={payload.earningsEvents}
+            gexDexSnapshots={payload.gexDexSnapshots}
             period={payload.period}
             resetToken={resetToken}
             ticker={payload.ticker}
+            visibleContextLayers={visibleContextLayers}
             visibleIndicators={visibleIndicators}
             visibleOverlays={visibleOverlays}
             visibleSignals={visibleSignals}

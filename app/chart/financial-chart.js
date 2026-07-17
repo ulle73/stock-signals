@@ -9,6 +9,7 @@ import {
   HistogramSeries,
   LineSeries,
   LineStyle,
+  LineType,
 } from 'lightweight-charts';
 import {
   getCandlestickSeriesOptions,
@@ -30,6 +31,8 @@ import { buildTfSyncAnchorData, buildTfSyncMarkers } from '../../lib/chart/tf-sy
 import { buildPlceAnchorData, buildPlceMarkers } from '../../lib/chart/plce-volume-markers.js';
 import { buildCvolAnchorData, buildCvolMarkers } from '../../lib/chart/cvol-markers.js';
 import { buildYieldAnchorData, buildYieldMarkers } from '../../lib/chart/yield-2y-10y-markers.js';
+import { buildEarningsAnchorData, buildEarningsMarkers } from '../../lib/chart/earnings-markers.js';
+import { buildGexDexLevelData, GEX_DEX_LEVEL_DEFINITIONS } from '../../lib/chart/gex-dex-levels.js';
 import CrosshairLegend from './crosshair-legend.js';
 
 function themeName() {
@@ -74,9 +77,35 @@ function addMarkerLayer(chart, series, { key, pane = 0, anchorData, markers, vis
   if (!anchorData.length || !markers.length) return null;
   const markerSeries = chart.addSeries(LineSeries, invisibleMarkerSeriesOptions(visible), pane);
   markerSeries.setData(anchorData);
-  createSeriesMarkers(markerSeries, markers);
+  createSeriesMarkers(markerSeries, markers, { autoScale: false });
   series[key] = markerSeries;
   return markerSeries;
+}
+
+function addGexDexLevels(chart, series, snapshots, latestBarDate, visibleContextLayers) {
+  const dataByLevel = buildGexDexLevelData(snapshots, latestBarDate);
+  const latestSnapshot = snapshots.at(-1) ?? null;
+  const stale = Boolean(latestSnapshot?.stale || latestSnapshot?.sourceStatus !== 'active');
+
+  for (const [key, definition] of Object.entries(GEX_DEX_LEVEL_DEFINITIONS)) {
+    const data = dataByLevel[key] ?? [];
+    if (!data.some((point) => Number.isFinite(Number(point.value)))) continue;
+    const visibilityKey = definition.group === 'main' ? 'gexDex' : 'gexDexMore';
+    const levelSeries = chart.addSeries(LineSeries, {
+      color: definition.color,
+      lineWidth: 1,
+      lineStyle: stale || definition.dashed ? LineStyle.Dashed : LineStyle.Solid,
+      lineType: LineType.WithSteps,
+      pointMarkersVisible: false,
+      priceLineVisible: false,
+      lastValueVisible: true,
+      crosshairMarkerVisible: false,
+      title: definition.label,
+      visible: visibleContextLayers.includes(visibilityKey),
+    }, 0);
+    levelSeries.setData(data);
+    series[`gexDex_${key}`] = levelSeries;
+  }
 }
 
 function rydLevelOptions(level, currentTheme) {
@@ -143,8 +172,8 @@ function crosshairPoint(param, series, barsByTime) {
 }
 
 export default function FinancialChart({
-  bars, currency = 'USD', period, resetToken, ticker,
-  visibleIndicators, visibleOverlays, visibleSignals,
+  bars, currency = 'USD', earningsEvents = [], gexDexSnapshots = [], period, resetToken, ticker,
+  visibleContextLayers, visibleIndicators, visibleOverlays, visibleSignals,
 }) {
   const containerRef = useRef(null);
   const chartRef = useRef(null);
@@ -193,6 +222,8 @@ export default function FinancialChart({
       series[key] = lineSeries;
     }
 
+    addGexDexLevels(chart, series, gexDexSnapshots, latestPoint?.time, visibleContextLayers);
+
     addMarkerLayer(chart, series, {
       key: 'tfSync', pane: 0,
       anchorData: buildTfSyncAnchorData(bars), markers: buildTfSyncMarkers(bars),
@@ -213,6 +244,11 @@ export default function FinancialChart({
       anchorData: buildYieldAnchorData(bars), markers: buildYieldMarkers(bars),
       visible: visibleSignals.includes('yield2y10y'),
     });
+    addMarkerLayer(chart, series, {
+      key: 'earnings', pane: 0,
+      anchorData: buildEarningsAnchorData(bars, earningsEvents), markers: buildEarningsMarkers(earningsEvents),
+      visible: visibleContextLayers.includes('earnings'),
+    });
 
     let rydWatermark = null;
     if (rydZscoreData.length) {
@@ -230,7 +266,7 @@ export default function FinancialChart({
       if (rydMarkerAnchorData.length) {
         const markerAnchorSeries = chart.addSeries(LineSeries, invisibleMarkerSeriesOptions(zscoreVisible), definition.pane);
         markerAnchorSeries.setData(rydMarkerAnchorData);
-        createSeriesMarkers(markerAnchorSeries, buildRydObvMarkers(bars));
+        createSeriesMarkers(markerAnchorSeries, buildRydObvMarkers(bars), { autoScale: false });
         series.rydObvMarkerAnchor = markerAnchorSeries;
       }
     }
@@ -302,7 +338,7 @@ export default function FinancialChart({
       chartRef.current = null;
       overlaySeriesRef.current = {};
     };
-  }, [bars, barsByTime, latestPoint, period, ticker]);
+  }, [bars, barsByTime, earningsEvents, gexDexSnapshots, latestPoint, period, ticker]);
 
   useEffect(() => {
     for (const key of MOVING_AVERAGE_KEYS) overlaySeriesRef.current[key]?.applyOptions({ visible: visibleOverlays.includes(key) });
@@ -321,6 +357,14 @@ export default function FinancialChart({
     for (const key of SIGNAL_KEYS) overlaySeriesRef.current[key]?.applyOptions({ visible: visibleSignals.includes(key) });
   }, [visibleSignals]);
 
+  useEffect(() => {
+    for (const [key, definition] of Object.entries(GEX_DEX_LEVEL_DEFINITIONS)) {
+      const visibilityKey = definition.group === 'main' ? 'gexDex' : 'gexDexMore';
+      overlaySeriesRef.current[`gexDex_${key}`]?.applyOptions({ visible: visibleContextLayers.includes(visibilityKey) });
+    }
+    overlaySeriesRef.current.earnings?.applyOptions({ visible: visibleContextLayers.includes('earnings') });
+  }, [visibleContextLayers]);
+
   useEffect(() => chartRef.current?.timeScale().fitContent(), [resetToken]);
 
   if (!bars.length) {
@@ -330,7 +374,7 @@ export default function FinancialChart({
   return (
     <div className="financial-chart-shell">
       <CrosshairLegend currency={currency} point={legendPoint ?? latestPoint} visibleIndicators={visibleIndicators} visibleOverlays={visibleOverlays} visibleSignals={visibleSignals} />
-      <div ref={containerRef} className="financial-chart-canvas" role="img" aria-label={`${ticker} daglig prisgraf för perioden ${period} med candlesticks, volym, glidande medelvärden, RYD OBV och signalsymboler`} />
+      <div ref={containerRef} className="financial-chart-canvas" role="img" aria-label={`${ticker} daglig prisgraf för perioden ${period} med candlesticks, volym, glidande medelvärden, RYD OBV, GEX/DEX-nivåer och signalsymboler`} />
     </div>
   );
 }

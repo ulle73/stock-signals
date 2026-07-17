@@ -3,6 +3,7 @@
 import { CHART_PERIODS } from '../../lib/chart/chart-periods.js';
 import {
   CHART_SERIES,
+  CONTEXT_LAYER_KEYS,
   INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
   SIGNAL_KEYS,
@@ -12,7 +13,7 @@ function periodLabel(period) {
   return period === 'ALL' ? 'All' : period;
 }
 
-function ToggleButtons({ keys, unavailableKeys, visibleKeys, onToggle }) {
+function ToggleButtons({ keys, unavailableKeys = [], visibleKeys, onToggle }) {
   return keys.map((key) => {
     const unavailable = unavailableKeys.includes(key);
     const active = visibleKeys.includes(key);
@@ -39,6 +40,7 @@ export default function ChartToolbar({
   onPeriodChange,
   onReset,
   onTickerChange,
+  onToggleContextLayer,
   onToggleIndicator,
   onToggleOverlay,
   onToggleSignal,
@@ -47,6 +49,7 @@ export default function ChartToolbar({
   unavailableIndicators,
   unavailableOverlays,
   unavailableSignals,
+  visibleContextLayers,
   visibleIndicators,
   visibleOverlays,
   visibleSignals,
@@ -117,6 +120,17 @@ export default function ChartToolbar({
             unavailableKeys={unavailableSignals}
             visibleKeys={visibleSignals}
             onToggle={onToggleSignal}
+          />
+        </div>
+      </div>
+
+      <div className="chart-toolbar-group chart-toolbar-context" role="group" aria-label="Kontextlager">
+        <span>Kontext</span>
+        <div className="chart-overlay-control">
+          <ToggleButtons
+            keys={CONTEXT_LAYER_KEYS}
+            visibleKeys={visibleContextLayers}
+            onToggle={onToggleContextLayer}
           />
         </div>
       </div>
