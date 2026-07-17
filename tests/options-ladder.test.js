@@ -121,8 +121,8 @@ test('chart renders isolated Options Positioning strike bars instead of the old 
   ]);
 
   assert.match(component, /Optionspositionering/i);
-  assert.match(component, /GEX per strike/);
-  assert.match(component, /DEX per strike/);
+  assert.match(component, /title="GEX"/);
+  assert.match(component, /title="DEX"/);
   assert.match(component, /\/api\/gex-dex-strikes/);
   assert.doesNotMatch(component, /options-ladder-table/);
   assert.match(component, /role="tooltip"/);
