@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 9s
+added 43 packages, and audited 44 packages in 8s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,260 +15,588 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.260217
+  duration_ms: 1.280386
   type: 'test'
   ...
 # Subtest: options ladder uses the latest snapshot and sorts available levels from highest to lowest
 ok 2 - options ladder uses the latest snapshot and sorts available levels from highest to lowest
   ---
-  duration_ms: 2.114238
+  duration_ms: 2.223891
   type: 'test'
   ...
 # Subtest: options ladder fails open when no provider snapshot exists
 ok 3 - options ladder fails open when no provider snapshot exists
   ---
-  duration_ms: 0.294919
+  duration_ms: 0.303602
   type: 'test'
   ...
 # Subtest: options ladder history returns the newest ten dated observations per level
 ok 4 - options ladder history returns the newest ten dated observations per level
   ---
-  duration_ms: 8.628568
+  duration_ms: 8.510369
   type: 'test'
   ...
 # Subtest: options ladder history ignores invalid dates and missing values
 ok 5 - options ladder history ignores invalid dates and missing values
   ---
-  duration_ms: 0.434537
+  duration_ms: 0.45665
   type: 'test'
   ...
 # Subtest: workspace renders a responsive Options Ladder beside the existing chart
 ok 6 - workspace renders a responsive Options Ladder beside the existing chart
   ---
-  duration_ms: 7.553317
+  duration_ms: 7.617029
   type: 'test'
   ...
 # Subtest: each options level exposes an accessible ten-observation history tooltip
 not ok 7 - each options level exposes an accessible ten-observation history tooltip
   ---
-  duration_ms: 3.988344
+  duration_ms: 3.305431
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:144:1'
   failureType: 'testCodeFailure'
   error: |-
-    The input did not match the regular expression /buildOptionsLadderHistory/. Input:
+    The input did not match the regular expression /\.options-ladder-history-tooltip\s*\{/. Input:
     
-    "'use client';\n" +
-      '\n' +
-      "import { buildOptionsLadderModel } from '../../lib/chart/options-ladder.js';\n" +
-      '\n' +
-      'function formatNumber(value, digits = 2) {\n' +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      "  return Number(value).toLocaleString('sv-SE', {\n" +
-      '    minimumFractionDigits: digits,\n' +
-      '    maximumFractionDigits: digits,\n' +
-      '  });\n' +
+    '.chart-workspace-main {\n' +
+      '  display: grid;\n' +
+      '  grid-template-columns: minmax(0, 1fr) auto;\n' +
+      '  align-items: stretch;\n' +
+      '  gap: 12px;\n' +
+      '  min-width: 0;\n' +
       '}\n' +
       '\n' +
-      'function formatCompact(value) {\n' +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      "  return new Intl.NumberFormat('sv-SE', {\n" +
-      "    notation: 'compact',\n" +
-      '    maximumFractionDigits: 1,\n' +
-      '  }).format(Number(value));\n' +
+      '.chart-workspace-main > .chart-workspace-frame {\n' +
+      '  min-width: 0;\n' +
       '}\n' +
       '\n' +
-      "function formatSigned(value, digits, suffix = '') {\n" +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      '  const normalized = Math.abs(Number(value)) < (0.5 * (10 ** -digits)) ? 0 : Number(value);\n' +
-      "  return `${new Intl.NumberFormat('sv-SE', {\n" +
-      "    signDisplay: 'always',\n" +
-      '    minimumFractionDigits: digits,\n' +
-      '    maximumFractionDigits: digits,\n' +
-      '  }).format(normalized)}${suffix}`;\n' +
+      '.options-ladder {\n' +
+      '  width: clamp(282px, 20vw, 330px);\n' +
+      '  min-height: clamp(520px, 72vh, 860px);\n' +
+      '  display: flex;\n' +
+      '  flex-direction: column;\n' +
+      '  gap: 12px;\n' +
+      '  padding: 14px;\n' +
+      '  overflow: hidden;\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  border-radius: 18px;\n' +
+      '  color: var(--text);\n' +
+      '  background:\n' +
+      '    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 38%),\n' +
+      '    color-mix(in srgb, var(--card-strong) 95%, #080b10);\n' +
+      '  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.22);\n' +
       '}\n' +
       '\n' +
-      'export default function OptionsLadder({ latestPrice, snapshots = [] }) {\n' +
-      '  const snapshot = snapshots.at(-1) ?? null;\n' +
-      '  const model = buildOptionsLadderModel({ latestPrice, snapshot });\n' +
-      '  const sourceTitle = model.sourceTimestamp\n' +
-      "    ? `Senaste providersnapshot ${new Intl.DateTimeFormat('sv-SE', {\n" +
-      "      dateStyle: 'medium', timeStyle: 'short',\n" +
-      '    }).format(new Date(model.sourceTimestamp))}`\n' +
-      "    : 'Ingen providersnapshot för vald ticker.';\n" +
+      '.options-ladder-header {\n' +
+      '  display: flex;\n' +
+      '  align-items: center;\n' +
+      '  gap: 7px;\n' +
+      '  padding: 1px 2px 0;\n' +
+      '}\n' +
       '\n' +
-      '  return (\n' +
-      '    <aside className="options-ladder" aria-label="Options Ladder">\n' +
-      '      <header className="options-ladder-header">\n' +
-      '        <h2>Options Ladder</h2>\n' +
-      '        <span className="options-ladder-info" title={sourceTitle} aria-label={sourceTitle}>ⓘ</span>\n' +
-      '      </header>\n' +
+      '.options-ladder-header h2 {\n' +
+      '  margin: 0;\n' +
+      '  font-size: 0.88rem;\n' +
+      '  font-weight: 800;\n' +
+      '  letter-spacing: 0.02em;\n' +
+      '  text-transform: uppercase;\n' +
+      '}\n' +
       '\n' +
-      '      <section className="options-ladder-overview" aria-label="Lägesöversikt">\n' +
-      '        <span className="options-ladder-kicker">Lägesöversikt</span>\n' +
-      '        <strong className={`options-ladder-state tone-${model.state.tone}`}>{model.state.label}</strong>\n' +
-      '        <div className="options-ladder-net-grid">\n' +
-      '          <div>\n' +
-      '            <span>Net GEX</span>\n' +
-      "            <strong className={Number(model.netGex) < 0 ? 'tone-danger' : Number(model.netGex) > 0 ? 'tone-positive' : 'tone-neutral'}>\n" +
-      '              {formatCompact(model.netGex)}\n' +
-      '            </strong>\n' +
-      '          </div>\n' +
-      '          <div>\n' +
-      '            <span>Net DEX</span>\n' +
-      "            <strong className={Number(model.netDex) < 0 ? 'tone-danger' : Number(model.netDex) > 0 ? 'tone-positive' : 'tone-neutral'}>\n" +
-      '              {formatCompact(model.netDex)}\n' +
-      '            </strong>\n' +
-      '          </div>\n' +
-      '        </div>\n' +
-      '      </section>\n' +
+      '.options-ladder-info {\n' +
+      '  color: var(--muted);\n' +
+      '  cursor: help;\n' +
+      '  font-size: 0.72rem;\n' +
+      '  line-height: 1;\n' +
+      '}\n' +
       '\n' +
-      '      {model.rows.length ? (\n' +
-      '        <table className="options-ladder-table">\n' +
-      '          <thead>\n' +
-      '            <tr>\n' +
-      '              <th>Nivå</th>\n' +
-      '              <th>Typ</th>\n' +
-      '              <th>Avstånd</th>\n' +
-      '            </tr>\n' +
-      '          </thead>\n' +
-      '          <tbody>\n' +
-      '            {model.rows.map((row) => (\n' +
-      "              <tr key={row.key} style={{ '--options-level-color': row.color }}>\n" +
-      '                <td>{formatNumber(row.price)}</td>\n' +
-      '                <td><span className="options-ladder-badge">{row.label}</span></td>\n' +
-      '                <td>\n' +
-      "                  <strong>{formatSigned(row.distancePct, 1, '%')}</strong>\n" +
-      '                  <span>{formatSigned(row.distanceValue, 2)}</span>\n' +
-      '                </td>\n' +
-      '              </tr>\n' +
-      '            ))}\n' +
-      '          </tbody>\n' +
-      '        </table>\n' +
-      '      ) : (\n' +
-      '        <div className="options-ladder-empty">\n' +
-      '          <strong>Inga optionsnivåer</strong>\n' +
-      '          <span>Snapshotdata saknas för vald ticker.</span>\n' +
-      '        </div>\n' +
-      '      )}\n' +
+      '.options-ladder-overview {\n' +
+      '  display: grid;\n' +
+      '  gap: 7px;\n' +
+      '  padding: 13px;\n' +
+      '  border: 1px solid var(--line);\n' +
+      '  border-radius: 11px;\n' +
+      '  background: color-mix(in srgb, var(--bg-strong) 88%, transparent);\n' +
+      '}\n' +
       '\n' +
-      '      <footer className="options-ladder-footer">\n' +
-      '        <span aria-hidden="true">ⓘ</span>\n' +
-      '        <span>Avstånd i % relativt aktuell kurs ({formatNumber(latestPrice)})</span>\n' +
-      '      </footer>\n' +
-      '    </aside>\n' +
-      '  );\n' +
+      '.options-ladder-kicker,\n' +
+      '.options-ladder-table thead th {\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.62rem;\n' +
+      '  font-weight: 800;\n' +
+      '  letter-spacing: 0.075em;\n' +
+      '  text-transform: uppercase;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-state {\n' +
+      '  padding-bottom: 9px;\n' +
+      '  border-bottom: 1px solid var(--line);\n' +
+      '  font-size: 1rem;\n' +
+      '  line-height: 1.15;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-net-grid {\n' +
+      '  display: grid;\n' +
+      '  grid-template-columns: repeat(2, minmax(0, 1fr));\n' +
+      '  gap: 0;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-net-grid > div {\n' +
+      '  display: grid;\n' +
+      '  gap: 3px;\n' +
+      '  min-width: 0;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-net-grid > div + div {\n' +
+      '  padding-left: 12px;\n' +
+      '  border-left: 1px solid var(--line);\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-net-grid span {\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.68rem;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-net-grid strong {\n' +
+      '  overflow: hidden;\n' +
+      '  font-family: var(--font-mono);\n' +
+      '  font-size: 0.78rem;\n' +
+      '  text-overflow: ellipsis;\n' +
+      '  white-space: nowrap;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table {\n' +
+      '  width: 100%;\n' +
+      '  table-layout: fixed;\n' +
+      '  border-collapse: separate;\n' +
+      '  border-spacing: 0 6px;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table thead th {\n' +
+      '  padding: 0 9px 2px;\n' +
+      '  text-align: left;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table thead th:first-child {\n' +
+      '  width: 28%;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table thead th:nth-child(2) {\n' +
+      '  width: 43%;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table thead th:last-child {\n' +
+      '  width: 29%;\n' +
+      '  text-align: right;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table tbody tr {\n' +
+      '  --options-level-color: var(--muted);\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table tbody td {\n' +
+      '  min-width: 0;\n' +
+      '  padding: 9px 9px;\n' +
+      '  border-top: 1px solid var(--line);\n' +
+      '  border-bottom: 1px solid var(--line);\n' +
+      '  background: color-mix(in srgb, var(--bg-strong) 82%, transparent);\n' +
+      '  font-size: 0.72rem;\n' +
+      '  vertical-align: middle;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table tbody td:first-child {\n' +
+      '  border-left: 1px solid var(--line);\n' +
+      '  border-radius: 10px 0 0 10px;\n' +
+      '  box-shadow: inset 2px 0 var(--options-level-color);\n' +
+      '  font-family: var(--font-mono);\n' +
+      '  font-weight: 750;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table tbody td:last-child {\n' +
+      '  display: grid;\n' +
+      '  justify-items: end;\n' +
+      '  gap: 2px;\n' +
+      '  border-right: 1px solid var(--line);\n' +
+      '  border-radius: 0 10px 10px 0;\n' +
+      '  font-family: var(--font-mono);\n' +
+      '  text-align: right;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table tbody td:last-child strong {\n' +
+      '  color: var(--text);\n' +
+      '  font-size: 0.7rem;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-table tbody td:last-child span {\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.63rem;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-badge {\n' +
+      '  display: inline-flex;\n' +
+      '  max-width: 100%;\n' +
+      '  align-items: center;\n' +
+      '  padding: 4px 7px;\n' +
+      '  overflow: hidden;\n' +
+      '  border: 1px solid color-mix(in srgb, var(--options-level-color) 68%, var(--line));\n' +
+      '  border-radius: 5px;\n' +
+      '  color: #f8fafc;\n' +
+      '  background: color-mix(in srgb, var(--options-level-color) 72%, #111827);\n' +
+      '  font-size: 0.65rem;\n' +
+      '  font-weight: 750;\n' +
+      '  line-height: 1;\n' +
+      '  text-overflow: ellipsis;\n' +
+      '  white-space: nowrap;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-empty {\n' +
+      '  display: grid;\n' +
+      '  place-content: center;\n' +
+      '  gap: 5px;\n' +
+      '  min-height: 180px;\n' +
+      '  padding: 20px;\n' +
+      '  border: 1px dashed var(--line);\n' +
+      '  border-radius: 11px;\n' +
+      '  color: var(--muted);\n' +
+      '  text-align: center;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-empty strong {\n' +
+      '  color: var(--text);\n' +
+      '  font-size: 0.82rem;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-empty span {\n' +
+      '  font-size: 0.7rem;\n' +
+      '}\n' +
+      '\n' +
+      '.options-ladder-footer {\n' +
+      '  display: flex;\n' +
+      '  align-items: flex-start;\n' +
+      '  gap: 7px;\n' +
+      '  margin-top: auto;\n' +
+      '  padding: 4px 3px 0;\n' +
+      '  color: var(--muted);\n' +
+      '  font-size: 0.64rem;\n' +
+      '  line-height: 1.35;\n' +
+      '}\n' +
+      '\n' +
+      '[data-theme="light"] .options-ladder {\n' +
+      '  background:\n' +
+      '    linear-gradient(180deg, rgba(15, 23, 42, 0.018), transparent 38%),\n' +
+      '    #ffffff;\n' +
+      '  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.1);\n' +
+      '}\n' +
+      '\n' +
+      '[data-theme="light"] .options-ladder-badge {\n' +
+      '  color: #ffffff;\n' +
+      '  background: color-mix(in srgb, var(--options-level-color) 78%, #1e293b);\n' +
+      '}\n' +
+      '\n' +
+      '@media (max-width: 1180px) {\n' +
+      '  .chart-workspace-main {\n' +
+      '    grid-template-columns: minmax(0, 1fr);\n' +
+      '  }\n' +
+      '\n' +
+      '  .options-ladder {\n' +
+      '    width: 100%;\n' +
+      '    min-height: auto;\n' +
+      '  }\n' +
+      '\n' +
+      '  .options-ladder-table tbody td {\n' +
+      '    padding-block: 10px;\n' +
+      '  }\n' +
+      '}\n' +
+      '\n' +
+      '@media (max-width: 520px) {\n' +
+      '  .options-ladder {\n' +
+      '    padding: 11px;\n' +
+      '    border-radius: 14px;\n' +
+      '  }\n' +
+      '\n' +
+      '  .options-ladder-table thead th,\n' +
+      '  .options-ladder-table tbody td {\n' +
+      '    padding-inline: 7px;\n' +
+      '  }\n' +
+      '\n' +
+      '  .options-ladder-badge {\n' +
+      '    padding-inline: 5px;\n' +
+      '    font-size: 0.6rem;\n' +
+      '  }\n' +
       '}\n'
     
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected:
   actual: |-
-    'use client';
-    
-    import { buildOptionsLadderModel } from '../../lib/chart/options-ladder.js';
-    
-    function formatNumber(value, digits = 2) {
-      if (!Number.isFinite(Number(value))) return '—';
-      return Number(value).toLocaleString('sv-SE', {
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits,
-      });
+    .chart-workspace-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      gap: 12px;
+      min-width: 0;
     }
     
-    function formatCompact(value) {
-      if (!Number.isFinite(Number(value))) return '—';
-      return new Intl.NumberFormat('sv-SE', {
-        notation: 'compact',
-        maximumFractionDigits: 1,
-      }).format(Number(value));
+    .chart-workspace-main > .chart-workspace-frame {
+      min-width: 0;
     }
     
-    function formatSigned(value, digits, suffix = '') {
-      if (!Number.isFinite(Number(value))) return '—';
-      const normalized = Math.abs(Number(value)) < (0.5 * (10 ** -digits)) ? 0 : Number(value);
-      return `${new Intl.NumberFormat('sv-SE', {
-        signDisplay: 'always',
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits,
-      }).format(normalized)}${suffix}`;
+    .options-ladder {
+      width: clamp(282px, 20vw, 330px);
+      min-height: clamp(520px, 72vh, 860px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 38%),
+        color-mix(in srgb, var(--card-strong) 95%, #080b10);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.22);
     }
     
-    export default function OptionsLadder({ latestPrice, snapshots = [] }) {
-      const snapshot = snapshots.at(-1) ?? null;
-      const model = buildOptionsLadderModel({ latestPrice, snapshot });
-      const sourceTitle = model.sourceTimestamp
-        ? `Senaste providersnapshot ${new Intl.DateTimeFormat('sv-SE', {
-          dateStyle: 'medium', timeStyle: 'short',
-        }).format(new Date(model.sourceTimestamp))}`
-        : 'Ingen providersnapshot för vald ticker.';
+    .options-ladder-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 1px 2px 0;
+    }
     
-      return (
-        <aside className="options-ladder" aria-label="Options Ladder">
-          <header className="options-ladder-header">
-            <h2>Options Ladder</h2>
-            <span className="options-ladder-info" title={sourceTitle} aria-label={sourceTitle}>ⓘ</span>
-          </header>
+    .options-ladder-header h2 {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
     
-          <section className="options-ladder-overview" aria-label="Lägesöversikt">
-            <span className="options-ladder-kicker">Lägesöversikt</span>
-            <strong className={`options-ladder-state tone-${model.state.tone}`}>{model.state.label}</strong>
-            <div className="options-ladder-net-grid">
-              <div>
-                <span>Net GEX</span>
-                <strong className={Number(model.netGex) < 0 ? 'tone-danger' : Number(model.netGex) > 0 ? 'tone-positive' : 'tone-neutral'}>
-                  {formatCompact(model.netGex)}
-                </strong>
-              </div>
-              <div>
-                <span>Net DEX</span>
-                <strong className={Number(model.netDex) < 0 ? 'tone-danger' : Number(model.netDex) > 0 ? 'tone-positive' : 'tone-neutral'}>
-                  {formatCompact(model.netDex)}
-                </strong>
-              </div>
-            </div>
-          </section>
+    .options-ladder-info {
+      color: var(--muted);
+      cursor: help;
+      font-size: 0.72rem;
+      line-height: 1;
+    }
     
-          {model.rows.length ? (
-            <table className="options-ladder-table">
-              <thead>
-                <tr>
-                  <th>Nivå</th>
-                  <th>Typ</th>
-                  <th>Avstånd</th>
-                </tr>
-              </thead>
-              <tbody>
-                {model.rows.map((row) => (
-                  <tr key={row.key} style={{ '--options-level-color': row.color }}>
-                    <td>{formatNumber(row.price)}</td>
-                    <td><span className="options-ladder-badge">{row.label}</span></td>
-                    <td>
-                      <strong>{formatSigned(row.distancePct, 1, '%')}</strong>
-                      <span>{formatSigned(row.distanceValue, 2)}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="options-ladder-empty">
-              <strong>Inga optionsnivåer</strong>
-              <span>Snapshotdata saknas för vald ticker.</span>
-            </div>
-          )}
+    .options-ladder-overview {
+      display: grid;
+      gap: 7px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: color-mix(in srgb, var(--bg-strong) 88%, transparent);
+    }
     
-          <footer className="options-ladder-footer">
-            <span aria-hidden="true">ⓘ</span>
-            <span>Avstånd i % relativt aktuell kurs ({formatNumber(latestPrice)})</span>
-          </footer>
-        </aside>
-      );
+    .options-ladder-kicker,
+    .options-ladder-table thead th {
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.075em;
+      text-transform: uppercase;
+    }
+    
+    .options-ladder-state {
+      padding-bottom: 9px;
+      border-bottom: 1px solid var(--line);
+      font-size: 1rem;
+      line-height: 1.15;
+    }
+    
+    .options-ladder-net-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0;
+    }
+    
+    .options-ladder-net-grid > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    
+    .options-ladder-net-grid > div + div {
+      padding-left: 12px;
+      border-left: 1px solid var(--line);
+    }
+    
+    .options-ladder-net-grid span {
+      color: var(--muted);
+      font-size: 0.68rem;
+    }
+    
+    .options-ladder-net-grid strong {
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .options-ladder-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 0 6px;
+    }
+    
+    .options-ladder-table thead th {
+      padding: 0 9px 2px;
+      text-align: left;
+    }
+    
+    .options-ladder-table thead th:first-child {
+      width: 28%;
+    }
+    
+    .options-ladder-table thead th:nth-child(2) {
+      width: 43%;
+    }
+    
+    .options-ladder-table thead th:last-child {
+      width: 29%;
+      text-align: right;
+    }
+    
+    .options-ladder-table tbody tr {
+      --options-level-color: var(--muted);
+    }
+    
+    .options-ladder-table tbody td {
+      min-width: 0;
+      padding: 9px 9px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg-strong) 82%, transparent);
+      font-size: 0.72rem;
+      vertical-align: middle;
+    }
+    
+    .options-ladder-table tbody td:first-child {
+      border-left: 1px solid var(--line);
+      border-radius: 10px 0 0 10px;
+      box-shadow: inset 2px 0 var(--options-level-color);
+      font-family: var(--font-mono);
+      font-weight: 750;
+    }
+    
+    .options-ladder-table tbody td:last-child {
+      display: grid;
+      justify-items: end;
+      gap: 2px;
+      border-right: 1px solid var(--line);
+      border-radius: 0 10px 10px 0;
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+    
+    .options-ladder-table tbody td:last-child strong {
+      color: var(--text);
+      font-size: 0.7rem;
+    }
+    
+    .options-ladder-table tbody td:last-child span {
+      color: var(--muted);
+      font-size: 0.63rem;
+    }
+    
+    .options-ladder-badge {
+      display: inline-flex;
+      max-width: 100%;
+      align-items: center;
+      padding: 4px 7px;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--options-level-color) 68%, var(--line));
+      border-radius: 5px;
+      color: #f8fafc;
+      background: color-mix(in srgb, var(--options-level-color) 72%, #111827);
+      font-size: 0.65rem;
+      font-weight: 750;
+      line-height: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .options-ladder-empty {
+      display: grid;
+      place-content: center;
+      gap: 5px;
+      min-height: 180px;
+      padding: 20px;
+      border: 1px dashed var(--line);
+      border-radius: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+    
+    .options-ladder-empty strong {
+      color: var(--text);
+      font-size: 0.82rem;
+    }
+    
+    .options-ladder-empty span {
+      font-size: 0.7rem;
+    }
+    
+    .options-ladder-footer {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin-top: auto;
+      padding: 4px 3px 0;
+      color: var(--muted);
+      font-size: 0.64rem;
+      line-height: 1.35;
+    }
+    
+    [data-theme="light"] .options-ladder {
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.018), transparent 38%),
+        #ffffff;
+      box-shadow: 0 18px 48px rgba(15, 23, 42, 0.1);
+    }
+    
+    [data-theme="light"] .options-ladder-badge {
+      color: #ffffff;
+      background: color-mix(in srgb, var(--options-level-color) 78%, #1e293b);
+    }
+    
+    @media (max-width: 1180px) {
+      .chart-workspace-main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    
+      .options-ladder {
+        width: 100%;
+        min-height: auto;
+      }
+    
+      .options-ladder-table tbody td {
+        padding-block: 10px;
+      }
+    }
+    
+    @media (max-width: 520px) {
+      .options-ladder {
+        padding: 11px;
+        border-radius: 14px;
+      }
+    
+      .options-ladder-table thead th,
+      .options-ladder-table tbody td {
+        padding-inline: 7px;
+      }
+    
+      .options-ladder-badge {
+        padding-inline: 5px;
+        font-size: 0.6rem;
+      }
     }
     
   operator: 'match'
   stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:150:10)
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:157:10)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -280,4 +608,4 @@ not ok 7 - each options level exposes an accessible ten-observation history tool
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 89.233671
+# duration_ms 93.39388
