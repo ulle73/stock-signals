@@ -72,7 +72,7 @@ test('workspace renders a responsive Options Ladder beside the existing chart', 
   const [workspace, component, css] = await Promise.all([
     readFile(new URL('../app/chart/chart-workspace.js', import.meta.url), 'utf8'),
     readFile(new URL('../app/chart/options-ladder.js', import.meta.url), 'utf8').catch(() => ''),
-    readFile(new URL('../app/chart/chart.css', import.meta.url), 'utf8'),
+    readFile(new URL('../app/chart/options-ladder.css', import.meta.url), 'utf8').catch(() => ''),
   ]);
 
   assert.match(workspace, /import OptionsLadder/);
