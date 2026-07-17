@@ -112,28 +112,25 @@ test('key-level history remains available for hover and keyboard tooltips', asyn
   assert.equal(history.callWall.at(-1).value, 202);
 });
 
-test('workspace renders Options Positioning strike bars instead of the old ladder table', async () => {
-  const [workspace, component, css, layout, repository] = await Promise.all([
-    readFile(new URL('../app/chart/chart-workspace.js', import.meta.url), 'utf8'),
-    readFile(new URL('../app/chart/options-positioning.js', import.meta.url), 'utf8').catch(() => ''),
-    readFile(new URL('../app/chart/options-positioning.css', import.meta.url), 'utf8').catch(() => ''),
-    readFile(new URL('../app/layout.js', import.meta.url), 'utf8'),
-    readFile(new URL('../lib/repositories/chart-data.js', import.meta.url), 'utf8'),
+test('chart renders isolated Options Positioning strike bars instead of the old ladder table', async () => {
+  const [component, css, route, repository] = await Promise.all([
+    readFile(new URL('../app/chart/options-ladder.js', import.meta.url), 'utf8'),
+    readFile(new URL('../app/chart/options-ladder.css', import.meta.url), 'utf8'),
+    readFile(new URL('../app/api/gex-dex-strikes/route.js', import.meta.url), 'utf8').catch(() => ''),
+    readFile(new URL('../lib/repositories/gex-dex-chart-strikes.js', import.meta.url), 'utf8').catch(() => ''),
   ]);
 
-  assert.match(workspace, /import OptionsPositioning/);
-  assert.match(workspace, /<OptionsPositioning/);
-  assert.match(workspace, /strikes=\{payload\.gexDexStrikes\}/);
   assert.match(component, /Optionspositionering/i);
   assert.match(component, /GEX per strike/);
   assert.match(component, /DEX per strike/);
+  assert.match(component, /\/api\/gex-dex-strikes/);
   assert.doesNotMatch(component, /options-ladder-table/);
   assert.match(component, /role="tooltip"/);
   assert.match(css, /\.options-positioning-bar-zero/);
   assert.match(css, /\.is-negative/);
   assert.match(css, /overflow-y:\s*auto/);
   assert.match(css, /@media \(max-width: 1180px\)/);
-  assert.match(layout, /options-positioning\.css/);
+  assert.match(route, /getLatestGexDexStrikeSnapshot/);
   assert.match(repository, /from gex_dex_strike_snapshots/);
-  assert.match(repository, /gexDexStrikes:/);
+  assert.match(repository, /limit 1/);
 });
