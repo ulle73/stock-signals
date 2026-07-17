@@ -14,7 +14,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,7 +30,17 @@ jobs:
           set -o pipefail
           {
             npm ci
-            node --test tests/gex-dex-top-volume-watchlist.test.js tests/gex-dex-fetcher.test.js
+            echo '===== focused GEX DEX tests ====='
+            node --test \
+              tests/gex-dex-top-volume-watchlist.test.js \
+              tests/gex-dex-universe.test.js \
+              tests/gex-dex-fetcher.test.js \
+              tests/gammalens-gex-dex.test.js \
+              tests/gex-dex-snapshots.test.js
+            echo '===== complete Node test suite ====='
+            node --test tests/*.test.js
+            echo '===== Next.js production build ====='
+            npm run build
           } 2>&1 | tee .gex-dex-top-volume-ci-log
       - name: Publish result
         if: always()
