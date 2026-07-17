@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 6s
+added 43 packages, and audited 44 packages in 9s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,19 +15,19 @@ TAP version 13
 # Subtest: chart ticker options pin SPY and QQQ before the shared top-volume universe
 ok 1 - chart ticker options pin SPY and QQQ before the shared top-volume universe
   ---
-  duration_ms: 7.379865
+  duration_ms: 9.276891
   type: 'test'
   ...
 # Subtest: chart benchmark definitions identify SPY and QQQ as benchmark price sources
 ok 2 - chart benchmark definitions identify SPY and QQQ as benchmark price sources
   ---
-  duration_ms: 0.193017
+  duration_ms: 0.232646
   type: 'test'
   ...
 # Subtest: chart page, chart data and daily fetch use the shared benchmark universe
 not ok 3 - chart page, chart data and daily fetch use the shared benchmark universe
   ---
-  duration_ms: 7.577409
+  duration_ms: 7.996072
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/chart-featured-tickers.test.js:43:1'
   failureType: 'testCodeFailure'
@@ -689,4 +689,4 @@ not ok 3 - chart page, chart data and daily fetch use the shared benchmark unive
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 61.996282
+# duration_ms 74.145932
