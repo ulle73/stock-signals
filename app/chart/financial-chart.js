@@ -97,7 +97,9 @@ function addGexDexLevels(chart, series, snapshots, latestBarDate, visibleContext
       lineStyle: stale || definition.dashed ? LineStyle.Dashed : LineStyle.Solid,
       lineType: LineType.WithSteps,
       pointMarkersVisible: false,
-      priceLineVisible: false,
+      priceLineVisible: data.length === 1,
+      priceLineWidth: 1,
+      priceLineStyle: stale || definition.dashed ? LineStyle.Dashed : LineStyle.Solid,
       lastValueVisible: true,
       crosshairMarkerVisible: false,
       title: definition.label,
@@ -329,52 +331,44 @@ export default function FinancialChart({
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     return () => {
-      if (animationFrameRef.current !== null) cancelAnimationFrame(animationFrameRef.current);
       themeObserver.disconnect();
       resizeObserver.disconnect();
       chart.unsubscribeCrosshairMove(handleCrosshairMove);
+      if (animationFrameRef.current !== null) cancelAnimationFrame(animationFrameRef.current);
       rydWatermark?.detach();
       chart.remove();
       chartRef.current = null;
       overlaySeriesRef.current = {};
     };
-  }, [bars, barsByTime, earningsEvents, gexDexSnapshots, latestPoint, period, ticker]);
+  }, [
+    bars, earningsEvents, gexDexSnapshots, latestPoint, period, resetToken, ticker,
+    visibleContextLayers, visibleIndicators, visibleOverlays, visibleSignals,
+  ]);
 
   useEffect(() => {
-    for (const key of MOVING_AVERAGE_KEYS) overlaySeriesRef.current[key]?.applyOptions({ visible: visibleOverlays.includes(key) });
-  }, [visibleOverlays]);
-
-  useEffect(() => {
-    const zscoreVisible = visibleIndicators.includes('rydObvZscore');
-    const rawVisible = visibleIndicators.includes('rydObvRaw') && Boolean(overlaySeriesRef.current.rydObvRaw);
-    overlaySeriesRef.current.rydObvZscore?.applyOptions({ visible: zscoreVisible });
-    overlaySeriesRef.current.rydObvMarkerAnchor?.applyOptions({ visible: zscoreVisible });
-    overlaySeriesRef.current.rydObvRaw?.applyOptions({ visible: rawVisible });
-    chartRef.current?.applyOptions({ leftPriceScale: { visible: rawVisible } });
-  }, [visibleIndicators]);
-
-  useEffect(() => {
-    for (const key of SIGNAL_KEYS) overlaySeriesRef.current[key]?.applyOptions({ visible: visibleSignals.includes(key) });
-  }, [visibleSignals]);
-
-  useEffect(() => {
+    const series = overlaySeriesRef.current;
+    for (const key of MOVING_AVERAGE_KEYS) series[key]?.applyOptions({ visible: visibleOverlays.includes(key) });
+    for (const key of SIGNAL_KEYS) series[key]?.applyOptions({ visible: visibleSignals.includes(key) });
+    series.rydObvZscore?.applyOptions({ visible: visibleIndicators.includes('rydObvZscore') });
+    series.rydObvMarkerAnchor?.applyOptions({ visible: visibleIndicators.includes('rydObvZscore') });
+    series.rydObvRaw?.applyOptions({ visible: visibleIndicators.includes('rydObvRaw') });
     for (const [key, definition] of Object.entries(GEX_DEX_LEVEL_DEFINITIONS)) {
       const visibilityKey = definition.group === 'main' ? 'gexDex' : 'gexDexMore';
-      overlaySeriesRef.current[`gexDex_${key}`]?.applyOptions({ visible: visibleContextLayers.includes(visibilityKey) });
+      series[`gexDex_${key}`]?.applyOptions({ visible: visibleContextLayers.includes(visibilityKey) });
     }
-    overlaySeriesRef.current.earnings?.applyOptions({ visible: visibleContextLayers.includes('earnings') });
-  }, [visibleContextLayers]);
+    series.earnings?.applyOptions({ visible: visibleContextLayers.includes('earnings') });
+  }, [visibleContextLayers, visibleIndicators, visibleOverlays, visibleSignals]);
 
-  useEffect(() => chartRef.current?.timeScale().fitContent(), [resetToken]);
-
-  if (!bars.length) {
-    return <div className="financial-chart-empty" role="status"><strong>Ingen användbar prishistorik</strong><span>Den valda tickern och perioden saknar kompletta OHLC-rader.</span></div>;
-  }
+  useEffect(() => {
+    const handleTheme = () => chartRef.current?.applyOptions(getChartTheme(themeName()));
+    window.addEventListener('marketsignals:theme', handleTheme);
+    return () => window.removeEventListener('marketsignals:theme', handleTheme);
+  }, []);
 
   return (
     <div className="financial-chart-shell">
-      <CrosshairLegend currency={currency} point={legendPoint ?? latestPoint} visibleIndicators={visibleIndicators} visibleOverlays={visibleOverlays} visibleSignals={visibleSignals} />
-      <div ref={containerRef} className="financial-chart-canvas" role="img" aria-label={`${ticker} daglig prisgraf för perioden ${period} med candlesticks, volym, glidande medelvärden, RYD OBV, GEX/DEX-nivåer och signalsymboler`} />
+      <CrosshairLegend point={legendPoint} currency={currency} />
+      <div ref={containerRef} className="financial-chart-canvas" />
     </div>
   );
 }

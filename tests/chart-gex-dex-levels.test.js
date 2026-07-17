@@ -19,6 +19,16 @@ test('GEX levels begin at the first real snapshot and extend only forward', () =
   assert.equal(data.callWall.some((point) => point.time < '2026-07-10'), false);
 });
 
+test('a fresh snapshot after the latest price bar anchors at the latest real candle', () => {
+  const data = buildGexDexLevelData([
+    { date: '2026-07-17', callWall: 500, putWall: 480, gammaFlip: 470 },
+  ], '2026-07-16');
+
+  assert.deepEqual(data.callWall, [{ time: '2026-07-16', value: 500 }]);
+  assert.deepEqual(data.putWall, [{ time: '2026-07-16', value: 480 }]);
+  assert.deepEqual(data.gammaFlip, [{ time: '2026-07-16', value: 470 }]);
+});
+
 test('missing provider values break the line instead of inventing continuity', () => {
   const data = buildGexDexLevelData([
     { date: '2026-07-10', gammaFlip: 290 },
