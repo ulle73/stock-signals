@@ -1,0 +1,310 @@
+
+added 43 packages, and audited 44 packages in 8s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+===== focused tests =====
+TAP version 13
+# Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
+ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
+  ---
+  duration_ms: 1.32406
+  type: 'test'
+  ...
+# Subtest: options ladder uses the latest snapshot and sorts available levels from highest to lowest
+ok 2 - options ladder uses the latest snapshot and sorts available levels from highest to lowest
+  ---
+  duration_ms: 2.356937
+  type: 'test'
+  ...
+# Subtest: options ladder fails open when no provider snapshot exists
+ok 3 - options ladder fails open when no provider snapshot exists
+  ---
+  duration_ms: 0.319856
+  type: 'test'
+  ...
+# Subtest: options ladder history returns the newest ten dated observations per level
+not ok 4 - options ladder history returns the newest ten dated observations per level
+  ---
+  duration_ms: 1.245513
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:71:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:73:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: options ladder history ignores invalid dates and missing values
+not ok 5 - options ladder history ignores invalid dates and missing values
+  ---
+  duration_ms: 0.317262
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:101:1'
+  failureType: 'testCodeFailure'
+  error: 'module.buildOptionsLadderHistory is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:103:26)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: workspace renders a responsive Options Ladder beside the existing chart
+ok 6 - workspace renders a responsive Options Ladder beside the existing chart
+  ---
+  duration_ms: 11.021189
+  type: 'test'
+  ...
+# Subtest: each options level exposes an accessible ten-observation history tooltip
+not ok 7 - each options level exposes an accessible ten-observation history tooltip
+  ---
+  duration_ms: 2.750392
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:144:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /buildOptionsLadderHistory/. Input:
+    
+    "'use client';\n" +
+      '\n' +
+      "import { buildOptionsLadderModel } from '../../lib/chart/options-ladder.js';\n" +
+      '\n' +
+      'function formatNumber(value, digits = 2) {\n' +
+      "  if (!Number.isFinite(Number(value))) return '—';\n" +
+      "  return Number(value).toLocaleString('sv-SE', {\n" +
+      '    minimumFractionDigits: digits,\n' +
+      '    maximumFractionDigits: digits,\n' +
+      '  });\n' +
+      '}\n' +
+      '\n' +
+      'function formatCompact(value) {\n' +
+      "  if (!Number.isFinite(Number(value))) return '—';\n" +
+      "  return new Intl.NumberFormat('sv-SE', {\n" +
+      "    notation: 'compact',\n" +
+      '    maximumFractionDigits: 1,\n' +
+      '  }).format(Number(value));\n' +
+      '}\n' +
+      '\n' +
+      "function formatSigned(value, digits, suffix = '') {\n" +
+      "  if (!Number.isFinite(Number(value))) return '—';\n" +
+      '  const normalized = Math.abs(Number(value)) < (0.5 * (10 ** -digits)) ? 0 : Number(value);\n' +
+      "  return `${new Intl.NumberFormat('sv-SE', {\n" +
+      "    signDisplay: 'always',\n" +
+      '    minimumFractionDigits: digits,\n' +
+      '    maximumFractionDigits: digits,\n' +
+      '  }).format(normalized)}${suffix}`;\n' +
+      '}\n' +
+      '\n' +
+      'export default function OptionsLadder({ latestPrice, snapshots = [] }) {\n' +
+      '  const snapshot = snapshots.at(-1) ?? null;\n' +
+      '  const model = buildOptionsLadderModel({ latestPrice, snapshot });\n' +
+      '  const sourceTitle = model.sourceTimestamp\n' +
+      "    ? `Senaste providersnapshot ${new Intl.DateTimeFormat('sv-SE', {\n" +
+      "      dateStyle: 'medium', timeStyle: 'short',\n" +
+      '    }).format(new Date(model.sourceTimestamp))}`\n' +
+      "    : 'Ingen providersnapshot för vald ticker.';\n" +
+      '\n' +
+      '  return (\n' +
+      '    <aside className="options-ladder" aria-label="Options Ladder">\n' +
+      '      <header className="options-ladder-header">\n' +
+      '        <h2>Options Ladder</h2>\n' +
+      '        <span className="options-ladder-info" title={sourceTitle} aria-label={sourceTitle}>ⓘ</span>\n' +
+      '      </header>\n' +
+      '\n' +
+      '      <section className="options-ladder-overview" aria-label="Lägesöversikt">\n' +
+      '        <span className="options-ladder-kicker">Lägesöversikt</span>\n' +
+      '        <strong className={`options-ladder-state tone-${model.state.tone}`}>{model.state.label}</strong>\n' +
+      '        <div className="options-ladder-net-grid">\n' +
+      '          <div>\n' +
+      '            <span>Net GEX</span>\n' +
+      "            <strong className={Number(model.netGex) < 0 ? 'tone-danger' : Number(model.netGex) > 0 ? 'tone-positive' : 'tone-neutral'}>\n" +
+      '              {formatCompact(model.netGex)}\n' +
+      '            </strong>\n' +
+      '          </div>\n' +
+      '          <div>\n' +
+      '            <span>Net DEX</span>\n' +
+      "            <strong className={Number(model.netDex) < 0 ? 'tone-danger' : Number(model.netDex) > 0 ? 'tone-positive' : 'tone-neutral'}>\n" +
+      '              {formatCompact(model.netDex)}\n' +
+      '            </strong>\n' +
+      '          </div>\n' +
+      '        </div>\n' +
+      '      </section>\n' +
+      '\n' +
+      '      {model.rows.length ? (\n' +
+      '        <table className="options-ladder-table">\n' +
+      '          <thead>\n' +
+      '            <tr>\n' +
+      '              <th>Nivå</th>\n' +
+      '              <th>Typ</th>\n' +
+      '              <th>Avstånd</th>\n' +
+      '            </tr>\n' +
+      '          </thead>\n' +
+      '          <tbody>\n' +
+      '            {model.rows.map((row) => (\n' +
+      "              <tr key={row.key} style={{ '--options-level-color': row.color }}>\n" +
+      '                <td>{formatNumber(row.price)}</td>\n' +
+      '                <td><span className="options-ladder-badge">{row.label}</span></td>\n' +
+      '                <td>\n' +
+      "                  <strong>{formatSigned(row.distancePct, 1, '%')}</strong>\n" +
+      '                  <span>{formatSigned(row.distanceValue, 2)}</span>\n' +
+      '                </td>\n' +
+      '              </tr>\n' +
+      '            ))}\n' +
+      '          </tbody>\n' +
+      '        </table>\n' +
+      '      ) : (\n' +
+      '        <div className="options-ladder-empty">\n' +
+      '          <strong>Inga optionsnivåer</strong>\n' +
+      '          <span>Snapshotdata saknas för vald ticker.</span>\n' +
+      '        </div>\n' +
+      '      )}\n' +
+      '\n' +
+      '      <footer className="options-ladder-footer">\n' +
+      '        <span aria-hidden="true">ⓘ</span>\n' +
+      '        <span>Avstånd i % relativt aktuell kurs ({formatNumber(latestPrice)})</span>\n' +
+      '      </footer>\n' +
+      '    </aside>\n' +
+      '  );\n' +
+      '}\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    'use client';
+    
+    import { buildOptionsLadderModel } from '../../lib/chart/options-ladder.js';
+    
+    function formatNumber(value, digits = 2) {
+      if (!Number.isFinite(Number(value))) return '—';
+      return Number(value).toLocaleString('sv-SE', {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      });
+    }
+    
+    function formatCompact(value) {
+      if (!Number.isFinite(Number(value))) return '—';
+      return new Intl.NumberFormat('sv-SE', {
+        notation: 'compact',
+        maximumFractionDigits: 1,
+      }).format(Number(value));
+    }
+    
+    function formatSigned(value, digits, suffix = '') {
+      if (!Number.isFinite(Number(value))) return '—';
+      const normalized = Math.abs(Number(value)) < (0.5 * (10 ** -digits)) ? 0 : Number(value);
+      return `${new Intl.NumberFormat('sv-SE', {
+        signDisplay: 'always',
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }).format(normalized)}${suffix}`;
+    }
+    
+    export default function OptionsLadder({ latestPrice, snapshots = [] }) {
+      const snapshot = snapshots.at(-1) ?? null;
+      const model = buildOptionsLadderModel({ latestPrice, snapshot });
+      const sourceTitle = model.sourceTimestamp
+        ? `Senaste providersnapshot ${new Intl.DateTimeFormat('sv-SE', {
+          dateStyle: 'medium', timeStyle: 'short',
+        }).format(new Date(model.sourceTimestamp))}`
+        : 'Ingen providersnapshot för vald ticker.';
+    
+      return (
+        <aside className="options-ladder" aria-label="Options Ladder">
+          <header className="options-ladder-header">
+            <h2>Options Ladder</h2>
+            <span className="options-ladder-info" title={sourceTitle} aria-label={sourceTitle}>ⓘ</span>
+          </header>
+    
+          <section className="options-ladder-overview" aria-label="Lägesöversikt">
+            <span className="options-ladder-kicker">Lägesöversikt</span>
+            <strong className={`options-ladder-state tone-${model.state.tone}`}>{model.state.label}</strong>
+            <div className="options-ladder-net-grid">
+              <div>
+                <span>Net GEX</span>
+                <strong className={Number(model.netGex) < 0 ? 'tone-danger' : Number(model.netGex) > 0 ? 'tone-positive' : 'tone-neutral'}>
+                  {formatCompact(model.netGex)}
+                </strong>
+              </div>
+              <div>
+                <span>Net DEX</span>
+                <strong className={Number(model.netDex) < 0 ? 'tone-danger' : Number(model.netDex) > 0 ? 'tone-positive' : 'tone-neutral'}>
+                  {formatCompact(model.netDex)}
+                </strong>
+              </div>
+            </div>
+          </section>
+    
+          {model.rows.length ? (
+            <table className="options-ladder-table">
+              <thead>
+                <tr>
+                  <th>Nivå</th>
+                  <th>Typ</th>
+                  <th>Avstånd</th>
+                </tr>
+              </thead>
+              <tbody>
+                {model.rows.map((row) => (
+                  <tr key={row.key} style={{ '--options-level-color': row.color }}>
+                    <td>{formatNumber(row.price)}</td>
+                    <td><span className="options-ladder-badge">{row.label}</span></td>
+                    <td>
+                      <strong>{formatSigned(row.distancePct, 1, '%')}</strong>
+                      <span>{formatSigned(row.distanceValue, 2)}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="options-ladder-empty">
+              <strong>Inga optionsnivåer</strong>
+              <span>Snapshotdata saknas för vald ticker.</span>
+            </div>
+          )}
+    
+          <footer className="options-ladder-footer">
+            <span aria-hidden="true">ⓘ</span>
+            <span>Avstånd i % relativt aktuell kurs ({formatNumber(latestPrice)})</span>
+          </footer>
+        </aside>
+      );
+    }
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:150:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 4
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 89.358991
