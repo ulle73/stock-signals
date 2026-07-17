@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 7s
+added 43 packages, and audited 44 packages in 9s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,13 +15,13 @@ TAP version 13
 # Subtest: GEX levels begin at the first real snapshot and extend only forward
 ok 1 - GEX levels begin at the first real snapshot and extend only forward
   ---
-  duration_ms: 6.93491
+  duration_ms: 9.134286
   type: 'test'
   ...
 # Subtest: a fresh snapshot after the latest price bar anchors at the latest real candle
 not ok 2 - a fresh snapshot after the latest price bar anchors at the latest real candle
   ---
-  duration_ms: 1.075482
+  duration_ms: 1.433169
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/chart-gex-dex-levels.test.js:22:1'
   failureType: 'testCodeFailure'
@@ -57,13 +57,13 @@ not ok 2 - a fresh snapshot after the latest price bar anchors at the latest rea
 # Subtest: missing provider values break the line instead of inventing continuity
 ok 3 - missing provider values break the line instead of inventing continuity
   ---
-  duration_ms: 0.823509
+  duration_ms: 1.221078
   type: 'test'
   ...
 # Subtest: main and more groups are detected independently
 ok 4 - main and more groups are detected independently
   ---
-  duration_ms: 0.231432
+  duration_ms: 0.277768
   type: 'test'
   ...
 1..4
@@ -74,4 +74,4 @@ ok 4 - main and more groups are detected independently
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 54.680547
+# duration_ms 76.842121
