@@ -1,0 +1,224 @@
+
+added 43 packages, and audited 44 packages in 8s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+TAP version 13
+# Subtest: fetchAndStoreGexDexSnapshots preserves successful symbols when one source request fails
+ok 1 - fetchAndStoreGexDexSnapshots preserves successful symbols when one source request fails
+  ---
+  duration_ms: 1.314095
+  type: 'test'
+  ...
+# Subtest: fetchAndStoreGexDexSnapshots respects bounded concurrency and preserves result order
+not ok 2 - fetchAndStoreGexDexSnapshots respects bounded concurrency and preserves result order
+  ---
+  duration_ms: 62.070471
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/gex-dex-fetcher.test.js:24:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    1 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/gex-dex-fetcher.test.js:42:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: GEX DEX fetch combines SPY and QQQ with a dynamic top-30 volume universe
+not ok 3 - GEX DEX fetch combines SPY and QQQ with a dynamic top-30 volume universe
+  ---
+  duration_ms: 1.567133
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/gex-dex-top-volume-watchlist.test.js:14:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /getTopVolumeGexDexTickers/. Input:
+    
+    "import { closePool } from '../lib/db.js';\n" +
+      "import { ensureEnvLoaded } from '../lib/env.js';\n" +
+      "import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';\n" +
+      "import { upsertGexDexSnapshot } from '../lib/repositories/gex-dex-snapshots.js';\n" +
+      "import { fetchGammaLensGexDex, resolveGammaLensGexDexTickers } from '../lib/sources/gammalens-gex-dex.js';\n" +
+      "import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';\n" +
+      "import { fetchAndStoreGexDexSnapshots } from '../lib/utils/gex-dex-fetcher.js';\n" +
+      '\n' +
+      'ensureEnvLoaded();\n' +
+      '\n' +
+      "const JOB_NAME = 'fetch_gex_dex';\n" +
+      'const fetchRunGuard = createFetchRunGuard({\n' +
+      '  finishRun: finishFetchRun,\n' +
+      '  closePool,\n' +
+      '  setExitCode(code) {\n' +
+      '    process.exitCode = code;\n' +
+      '  },\n' +
+      '});\n' +
+      '\n' +
+      'const unregisterSignalHandlers = fetchRunGuard.register(process);\n' +
+      '\n' +
+      'async function run() {\n' +
+      "  await failRunningFetchRuns(JOB_NAME, 'fetch-gex-dex interrupted before completion', {\n" +
+      '    recoveredBy: JOB_NAME,\n' +
+      '  });\n' +
+      '  const fetchRunId = await startFetchRun(JOB_NAME);\n' +
+      '  fetchRunGuard.setRunId(fetchRunId);\n' +
+      '\n' +
+      '  const tickers = resolveGammaLensGexDexTickers(process.env.GEX_DEX_TICKERS);\n' +
+      '\n' +
+      '  try {\n' +
+      '    const result = await fetchAndStoreGexDexSnapshots({\n' +
+      '      tickers,\n' +
+      '      fetchSnapshot: fetchGammaLensGexDex,\n' +
+      '      storeSnapshot: upsertGexDexSnapshot,\n' +
+      '    });\n' +
+      '    const status = result.failedItems.length\n' +
+      "      ? result.successfulItems ? 'partial_success' : 'failure'\n" +
+      "      : 'success';\n" +
+      '\n' +
+      '    await fetchRunGuard.finish(status, {\n' +
+      '      totalItems: tickers.length,\n' +
+      '      successfulItems: result.successfulItems,\n' +
+      '      failedItems: result.failedItems.length,\n' +
+      "      errorMessage: status === 'failure' ? 'No GammaLens GEX/DEX snapshots could be fetched.' : null,\n" +
+      '      metadata: {\n' +
+      '        tickers,\n' +
+      '        snapshotIds: result.snapshotIds,\n' +
+      '        failedItems: result.failedItems,\n' +
+      '      },\n' +
+      '    });\n' +
+      '\n' +
+      "    if (status === 'failure') {\n" +
+      "      throw new Error('No GammaLens GEX/DEX snapshots could be fetched.');\n" +
+      '    }\n' +
+      '\n' +
+      '    console.log(`Fetched GEX/DEX snapshots for ${result.successfulItems}/${tickers.length} tickers.`);\n' +
+      '  } catch (error) {\n' +
+      "    await fetchRunGuard.finish('failure', {\n" +
+      '      errorMessage: error.message,\n' +
+      '      metadata: { tickers, stack: error.stack },\n' +
+      '    });\n' +
+      '    throw error;\n' +
+      '  }\n' +
+      '}\n' +
+      '\n' +
+      'run()\n' +
+      '  .catch((error) => {\n' +
+      "    console.error('fetch-gex-dex failed:', error);\n" +
+      '    process.exitCode = 1;\n' +
+      '  })\n' +
+      '  .finally(async () => {\n' +
+      '    unregisterSignalHandlers();\n' +
+      '    await closePool();\n' +
+      '  });\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    import { closePool } from '../lib/db.js';
+    import { ensureEnvLoaded } from '../lib/env.js';
+    import { failRunningFetchRuns, finishFetchRun, startFetchRun } from '../lib/repositories/fetch-runs.js';
+    import { upsertGexDexSnapshot } from '../lib/repositories/gex-dex-snapshots.js';
+    import { fetchGammaLensGexDex, resolveGammaLensGexDexTickers } from '../lib/sources/gammalens-gex-dex.js';
+    import { createFetchRunGuard } from '../lib/utils/fetch-run-guard.js';
+    import { fetchAndStoreGexDexSnapshots } from '../lib/utils/gex-dex-fetcher.js';
+    
+    ensureEnvLoaded();
+    
+    const JOB_NAME = 'fetch_gex_dex';
+    const fetchRunGuard = createFetchRunGuard({
+      finishRun: finishFetchRun,
+      closePool,
+      setExitCode(code) {
+        process.exitCode = code;
+      },
+    });
+    
+    const unregisterSignalHandlers = fetchRunGuard.register(process);
+    
+    async function run() {
+      await failRunningFetchRuns(JOB_NAME, 'fetch-gex-dex interrupted before completion', {
+        recoveredBy: JOB_NAME,
+      });
+      const fetchRunId = await startFetchRun(JOB_NAME);
+      fetchRunGuard.setRunId(fetchRunId);
+    
+      const tickers = resolveGammaLensGexDexTickers(process.env.GEX_DEX_TICKERS);
+    
+      try {
+        const result = await fetchAndStoreGexDexSnapshots({
+          tickers,
+          fetchSnapshot: fetchGammaLensGexDex,
+          storeSnapshot: upsertGexDexSnapshot,
+        });
+        const status = result.failedItems.length
+          ? result.successfulItems ? 'partial_success' : 'failure'
+          : 'success';
+    
+        await fetchRunGuard.finish(status, {
+          totalItems: tickers.length,
+          successfulItems: result.successfulItems,
+          failedItems: result.failedItems.length,
+          errorMessage: status === 'failure' ? 'No GammaLens GEX/DEX snapshots could be fetched.' : null,
+          metadata: {
+            tickers,
+            snapshotIds: result.snapshotIds,
+            failedItems: result.failedItems,
+          },
+        });
+    
+        if (status === 'failure') {
+          throw new Error('No GammaLens GEX/DEX snapshots could be fetched.');
+        }
+    
+        console.log(`Fetched GEX/DEX snapshots for ${result.successfulItems}/${tickers.length} tickers.`);
+      } catch (error) {
+        await fetchRunGuard.finish('failure', {
+          errorMessage: error.message,
+          metadata: { tickers, stack: error.stack },
+        });
+        throw error;
+      }
+    }
+    
+    run()
+      .catch((error) => {
+        console.error('fetch-gex-dex failed:', error);
+        process.exitCode = 1;
+      })
+      .finally(async () => {
+        unregisterSignalHandlers();
+        await closePool();
+      });
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/gex-dex-top-volume-watchlist.test.js:15:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 112.481016
