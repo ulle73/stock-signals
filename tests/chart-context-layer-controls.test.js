@@ -26,3 +26,7 @@ test('financial chart uses step lines and independent context visibility', () =>
   assert.match(chart, /definition\.group === 'main' \? 'gexDex' : 'gexDexMore'/);
   assert.match(chart, /visibleContextLayers\.includes\('earnings'\)/);
 });
+
+test('a single fresh GEX snapshot renders as a visible current price level', () => {
+  assert.match(chart, /priceLineVisible: data\.length === 1/);
+});
