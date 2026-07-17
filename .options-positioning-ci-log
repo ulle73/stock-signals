@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 8s
+added 43 packages, and audited 44 packages in 7s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,305 +15,213 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.318806
+  duration_ms: 1.267703
   type: 'test'
   ...
 # Subtest: strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
 ok 2 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
   ---
-  duration_ms: 2.968491
+  duration_ms: 2.93058
   type: 'test'
   ...
 # Subtest: all provider strikes are shown when each side stays within the thirty-row cap
 ok 3 - all provider strikes are shown when each side stays within the thirty-row cap
   ---
-  duration_ms: 0.317042
+  duration_ms: 0.29271
   type: 'test'
   ...
 # Subtest: options positioning model builds centered GEX and DEX bars with key-level annotations
 ok 4 - options positioning model builds centered GEX and DEX bars with key-level annotations
   ---
-  duration_ms: 0.952552
+  duration_ms: 0.909215
   type: 'test'
   ...
 # Subtest: key-level history remains available for hover and keyboard tooltips
 ok 5 - key-level history remains available for hover and keyboard tooltips
   ---
-  duration_ms: 8.126907
+  duration_ms: 8.300481
   type: 'test'
   ...
-# Subtest: workspace renders Options Positioning strike bars instead of the old ladder table
-not ok 6 - workspace renders Options Positioning strike bars instead of the old ladder table
+# Subtest: chart renders isolated Options Positioning strike bars instead of the old ladder table
+not ok 6 - chart renders isolated Options Positioning strike bars instead of the old ladder table
   ---
-  duration_ms: 12.770781
+  duration_ms: 13.152475
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:115:1'
   failureType: 'testCodeFailure'
   error: |-
-    The input did not match the regular expression /import OptionsPositioning/. Input:
+    The input did not match the regular expression /Optionspositionering/i. Input:
     
     "'use client';\n" +
       '\n' +
-      "import dynamic from 'next/dynamic';\n" +
-      "import { useEffect, useMemo, useState } from 'react';\n" +
       'import {\n' +
-      '  CHART_SERIES,\n' +
-      '  DEFAULT_VISIBLE_CONTEXT_LAYERS,\n' +
-      '  DEFAULT_VISIBLE_INDICATORS,\n' +
-      '  DEFAULT_VISIBLE_OVERLAYS,\n' +
-      '  DEFAULT_VISIBLE_SIGNALS,\n' +
-      '  INDICATOR_KEYS,\n' +
-      '  MOVING_AVERAGE_KEYS,\n' +
-      "} from '../../lib/chart/series-registry.js';\n" +
-      "import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';\n" +
-      "import ChartContextStrip from './chart-context-strip.js';\n" +
-      "import ChartToolbar from './chart-toolbar.js';\n" +
-      "import OptionsLadder from './options-ladder.js';\n" +
+      '  buildOptionsLadderHistory,\n' +
+      '  buildOptionsLadderModel,\n' +
+      "} from '../../lib/chart/options-ladder.js';\n" +
       '\n' +
-      "const FinancialChart = dynamic(() => import('./financial-chart.js'), {\n" +
-      '  ssr: false,\n' +
-      '  loading: () => <ChartSkeleton copy="Chartmotorn laddas…" />,\n' +
-      '});\n' +
-      '\n' +
-      "function ChartSkeleton({ copy = 'Prishistoriken laddas…' }) {\n" +
-      '  return (\n' +
-      '    <div className="chart-workspace-skeleton" role="status" aria-live="polite">\n' +
-      '      <div className="chart-skeleton-legend" />\n' +
-      '      <div className="chart-skeleton-grid" />\n' +
-      '      <span>{copy}</span>\n' +
-      '    </div>\n' +
-      '  );\n' +
+      'function formatNumber(value, digits = 2) {\n' +
+      "  if (!Number.isFinite(Number(value))) return '—';\n" +
+      "  return Number(value).toLocaleString('sv-SE', {\n" +
+      '    minimumFractionDigits: digits,\n' +
+      '    maximumFractionDigits: digits,\n' +
+      '  });\n' +
       '}\n' +
       '\n' +
-      "function formatPrice(value, currency = 'USD') {\n" +
+      'function formatCompact(value) {\n' +
       "  if (!Number.isFinite(Number(value))) return '—';\n" +
       "  return new Intl.NumberFormat('sv-SE', {\n" +
-      "    style: 'currency',\n" +
-      '    currency,\n' +
-      '    minimumFractionDigits: 2,\n' +
-      '    maximumFractionDigits: 2,\n' +
+      "    notation: 'compact',\n" +
+      '    maximumFractionDigits: 1,\n' +
       '  }).format(Number(value));\n' +
       '}\n' +
       '\n' +
-      'function formatSignedPercent(value) {\n' +
+      "function formatSigned(value, digits, suffix = '') {\n" +
       "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      '  const number = Number(value);\n' +
-      "  return `${number > 0 ? '+' : ''}${number.toFixed(2)}%`;\n" +
+      '  const normalized = Math.abs(Number(value)) < (0.5 * (10 ** -digits)) ? 0 : Number(value);\n' +
+      "  return `${new Intl.NumberFormat('sv-SE', {\n" +
+      "    signDisplay: 'always',\n" +
+      '    minimumFractionDigits: digits,\n' +
+      '    maximumFractionDigits: digits,\n' +
+      '  }).format(normalized)}${suffix}`;\n' +
       '}\n' +
       '\n' +
-      'function formatDate(value) {\n' +
+      'function formatHistoryDate(value) {\n' +
       "  if (!value) return '—';\n" +
       "  return new Intl.DateTimeFormat('sv-SE', {\n" +
-      "    dateStyle: 'medium',\n" +
+      "    day: 'numeric',\n" +
+      "    month: 'short',\n" +
+      "    year: 'numeric',\n" +
       "    timeZone: 'UTC',\n" +
       '  }).format(new Date(`${value}T00:00:00Z`));\n' +
       '}\n' +
       '\n' +
-      'export default function ChartWorkspace({ constituents, initialPeriod, initialTicker }) {\n' +
-      '  const [ticker, setTicker] = useState(initialTicker);\n' +
-      '  const [period, setPeriod] = useState(initialPeriod);\n' +
-      '  const [visibleOverlays, setVisibleOverlays] = useState([...DEFAULT_VISIBLE_OVERLAYS]);\n' +
-      '  const [visibleIndicators, setVisibleIndicators] = useState([...DEFAULT_VISIBLE_INDICATORS]);\n' +
-      '  const [visibleSignals, setVisibleSignals] = useState([...DEFAULT_VISIBLE_SIGNALS]);\n' +
-      '  const [visibleContextLayers, setVisibleContextLayers] = useState([...DEFAULT_VISIBLE_CONTEXT_LAYERS]);\n' +
-      '  const [payload, setPayload] = useState(null);\n' +
-      "  const [status, setStatus] = useState('loading');\n" +
-      "  const [errorMessage, setErrorMessage] = useState('');\n" +
-      '  const [retryToken, setRetryToken] = useState(0);\n' +
-      '  const [resetToken, setResetToken] = useState(0);\n' +
+      'function LevelHistoryTooltip({ history, row }) {\n' +
+      '  const tooltipId = `options-ladder-history-${row.key}`;\n' +
       '\n' +
-      '  useEffect(() => {\n' +
-      '    const url = new URL(window.location.href);\n' +
-      "    url.searchParams.set('ticker', ticker);\n" +
-      "    url.searchParams.set('period', period);\n" +
-      "    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);\n" +
-      '  }, [period, ticker]);\n' +
-      '\n' +
-      '  useEffect(() => {\n' +
-      '    const controller = new AbortController();\n' +
-      '    let active = true;\n' +
-      '\n' +
-      '    async function loadChartData() {\n' +
-      "      setStatus('loading');\n" +
-      "      setErrorMessage('');\n" +
-      '      setPayload(null);\n' +
-      '\n' +
-      '      try {\n' +
-      '        const response = await fetch(\n' +
-      '          `/api/chart-data?ticker=${encodeURIComponent(ticker)}&period=${encodeURIComponent(period)}`,\n' +
-      '          { signal: controller.signal }\n' +
-      '        );\n' +
-      '        const result = await response.json();\n' +
-      '\n' +
-      '        if (!response.ok) {\n' +
-      '          throw new Error(result?.error || `HTTP ${response.status}`);\n' +
-      '        }\n' +
-      '        if (!active) return;\n' +
-      '\n' +
-      '        setPayload(result);\n' +
-      "        setStatus(result?.bars?.length ? 'ready' : 'empty');\n" +
-      '      } catch (error) {\n' +
-      "        if (error?.name === 'AbortError' || !active) return;\n" +
-      "        console.error('Professional chart load failed:', error);\n" +
-      "        setErrorMessage(error?.message || 'Chartdatan kunde inte laddas.');\n" +
-      "        setStatus('error');\n" +
-      '      }\n' +
-      '    }\n' +
-      '\n' +
-      '    void loadChartData();\n' +
-      '\n' +
-      '    return () => {\n' +
-      '      active = false;\n' +
-      '      controller.abort();\n' +
-      '    };\n' +
-      '  }, [period, retryToken, ticker]);\n' +
-      '\n' +
-      '  const unavailableOverlays = useMemo(() => {\n' +
-      '    const bars = payload?.bars ?? [];\n' +
-      '    return MOVING_AVERAGE_KEYS.filter(\n' +
-      '      (key) => !bars.some((bar) => Number.isFinite(Number(bar[key])))\n' +
-      '    );\n' +
-      '  }, [payload]);\n' +
-      '\n' +
-      '  const unavailableIndicators = useMemo(() => {\n' +
-      '    const bars = payload?.bars ?? [];\n' +
-      '    return INDICATOR_KEYS.filter((key) => {\n' +
-      '      const dataKey = CHART_SERIES[key].dataKey;\n' +
-      '      return !bars.some((bar) => Number.isFinite(Number(bar[dataKey])));\n' +
-      '    });\n' +
-      '  }, [payload]);\n' +
-      '\n' +
-      '  const unavailableSignals = useMemo(\n' +
-      '    () => signalControlsUnavailable(payload?.bars ?? []),\n' +
-      '    [payload]\n' +
-      '  );\n' +
-      '\n' +
-      '  const dailyTone = Number(payload?.dailyChangePct) > 0\n' +
-      "    ? 'positive'\n" +
-      '    : Number(payload?.dailyChangePct) < 0\n' +
-      "      ? 'danger'\n" +
-      "      : 'neutral';\n" +
-      '\n' +
-      '  function toggleList(setter, unavailable, key) {\n' +
-      '    if (unavailable.includes(key)) return;\n' +
-      '    setter((current) => (\n' +
-      '      current.includes(key)\n' +
-      '        ? current.filter((item) => item !== key)\n' +
-      '        : [...current, key]\n' +
-      '    ));\n' +
+      '  if (!history.length) {\n' +
+      '    return <span className="options-ladder-badge">{row.label}</span>;\n' +
       '  }\n' +
       '\n' +
       '  return (\n' +
-      '    <section className="chart-workspace" aria-labelledby="chart-workspace-title">\n' +
-      '      <header className="chart-workspace-header">\n' +
-      '        <div>\n' +
-      '          <p className="section-kicker">Professionell chart · Daily</p>\n' +
-      '          <div className="chart-title-row">\n' +
-      '            <h1 id="chart-workspace-title">{payload?.ticker ?? ticker}</h1>\n' +
-      `            <span className="chart-company-name">{payload?.companyName ?? 'Laddar bolagsdata…'}</span>\n` +
+      '    <div className="options-ladder-history-cell">\n' +
+      '      <button\n' +
+      '        type="button"\n' +
+      '        className="options-ladder-history-trigger"\n' +
+      '        aria-describedby={tooltipId}\n' +
+      '        aria-label={`${row.label}: visa de senaste ${history.length} nivåerna`}\n' +
+      '      >\n' +
+      '        <span className="options-ladder-badge">{row.label}</span>\n' +
+      '      </button>\n' +
+      '\n' +
+      '      <div\n' +
+      '        id={tooltipId}\n' +
+      '        className="options-ladder-history-tooltip"\n' +
+      '        role="tooltip"\n' +
+      "        style={{ '--options-level-color': row.color }}\n" +
+      '      >\n' +
+      '        <header className="options-ladder-history-header">\n' +
+      '          <span className="options-ladder-history-swatch" aria-hidden="true" />\n' +
+      '          <div>\n' +
+      '            <strong>{row.label}</strong>\n' +
+      '            <span>Senaste 10 nivåerna</span>\n' +
       '          </div>\n' +
-      '          <p className="chart-workspace-context">\n' +
-      "            {payload?.sector ?? 'Sektor saknas'} · Justerade priser · Senaste data {formatDate(payload?.latestDate)}\n" +
-      '          </p>\n' +
+      '        </header>\n' +
+      '\n' +
+      '        <div className="options-ladder-history-columns" aria-hidden="true">\n' +
+      '          <span>Datum</span>\n' +
+      '          <span>Nivå</span>\n' +
+      '          <span>Δ</span>\n' +
       '        </div>\n' +
       '\n' +
-      '        <div className="chart-price-summary" aria-label="Senaste prisutveckling">\n' +
-      '          <strong>{formatPrice(payload?.latestPrice, payload?.currency)}</strong>\n' +
-      '          <span className={`tone-${dailyTone}`}>\n' +
-      '            {formatSignedPercent(payload?.dailyChangePct)} senaste handelsdagen\n' +
-      '          </span>\n' +
-      '        </div>\n' +
+      '        <ol className="options-ladder-history-list">\n' +
+      '          {history.map((item, index) => (\n' +
+      '            <li\n' +
+      '              key={`${row.key}-${item.sourceTimestamp ?? item.date}-${index}`}\n' +
+      "              className={index === 0 ? 'is-latest' : undefined}\n" +
+      '            >\n' +
+      '              <time dateTime={item.date}>{formatHistoryDate(item.date)}</time>\n' +
+      '              <strong>{formatNumber(item.value)}</strong>\n' +
+      '              <span>{formatSigned(item.delta, 2)}</span>\n' +
+      '            </li>\n' +
+      '          ))}\n' +
+      '        </ol>\n' +
+      '      </div>\n' +
+      '    </div>\n' +
+      '  );\n' +
+      '}\n' +
+      '\n' +
+      'export default function OptionsLadder({ latestPrice, snapshots = [] }) {\n' +
+      '  const snapshot = snapshots.at(-1) ?? null;\n' +
+      '  const model = buildOptionsLadderModel({ latestPrice, snapshot });\n' +
+      '  const historyByKey = buildOptionsLadderHistory({ snapshots, limit: 10 });\n' +
+      '  const sourceTitle = model.sourceTimestamp\n' +
+      "    ? `Senaste providersnapshot ${new Intl.DateTimeFormat('sv-SE', {\n" +
+      "      dateStyle: 'medium', timeStyle: 'short',\n" +
+      '    }).format(new Date(model.sourceTimestamp))}`\n' +
+      "    : 'Ingen providersnapshot för vald ticker.';\n" +
+      '\n' +
+      '  return (\n' +
+      '    <aside className="options-ladder" aria-label="Options Ladder">\n' +
+      '      <header className="options-ladder-header">\n' +
+      '        <h2>Options Ladder</h2>\n' +
+      '        <span className="options-ladder-info" title={sourceTitle} aria-label={sourceTitle}>ⓘ</span>\n' +
       '      </header>\n' +
       '\n' +
-      '      <ChartToolbar\n' +
-      '        constituents={constituents}\n' +
-      '        ticker={ticker}\n' +
-      '        period={period}\n' +
-      '        visibleContextLayers={visibleContextLayers}\n' +
-      '        visibleIndicators={visibleIndicators}\n' +
-      '        visibleOverlays={visibleOverlays}\n' +
-      '        visibleSignals={visibleSignals}\n' +
-      '        unavailableIndicators={unavailableIndicators}\n' +
-      '        unavailableOverlays={unavailableOverlays}\n' +
-      '        unavailableSignals={unavailableSignals}\n' +
-      '        onTickerChange={setTicker}\n' +
-      '        onPeriodChange={setPeriod}\n' +
-      '        onToggleContextLayer={(key) => toggleList(setVisibleContextLayers, [], key)}\n' +
-      '        onToggleIndicator={(key) => toggleList(setVisibleIndicators, unavailableIndicators, key)}\n' +
-      '        onToggleOverlay={(key) => toggleList(setVisibleOverlays, unavailableOverlays, key)}\n' +
-      '        onToggleSignal={(key) => toggleList(setVisibleSignals, unavailableSignals, key)}\n' +
-      '        onReset={() => setResetToken((value) => value + 1)}\n' +
-      '      />\n' +
-      '\n' +
-      "      {status === 'ready' && payload ? (\n" +
-      '        <ChartContextStrip\n' +
-      '          breadthContext={payload.breadthContext}\n' +
-      '          gexDexSnapshots={payload.gexDexSnapshots}\n' +
-      '          nextEarnings={payload.nextEarnings}\n' +
-      '          relativeStrengthContext={payload.relativeStrengthContext}\n' +
-      '          volatilityContext={payload.volatilityContext}\n' +
-      '        />\n' +
-      '      ) : null}\n' +
-      '\n' +
-      '      <div className="chart-workspace-main">\n' +
-      '        <div className="chart-workspace-frame">\n' +
-      "          {status === 'loading' ? <ChartSkeleton /> : null}\n" +
-      '\n' +
-      "          {status === 'error' ? (\n" +
-      '            <div className="chart-workspace-message" role="alert">\n' +
-      '              <strong>Charten kunde inte laddas</strong>\n' +
-      '              <span>{errorMessage}</span>\n' +
-      '              <button type="button" onClick={() => setRetryToken((value) => value + 1)}>\n' +
-      '                Försök igen\n' +
-      '              </button>\n' +
-      '            </div>\n' +
-      '          ) : null}\n' +
-      '\n' +
-      "          {status === 'empty' ? (\n" +
-      '            <div className="chart-workspace-message" role="status">\n' +
-      '              <strong>Ingen användbar prishistorik</strong>\n' +
-      '              <span>Välj en annan ticker eller period.</span>\n' +
-      '            </div>\n' +
-      '          ) : null}\n' +
-      '\n' +
-      "          {status === 'ready' && payload ? (\n" +
-      '            <FinancialChart\n' +
-      '              bars={payload.bars}\n' +
-      '              currency={payload.currency}\n' +
-      '              earningsEvents={payload.earningsEvents}\n' +
-      '              gexDexSnapshots={payload.gexDexSnapshots}\n' +
-      '              period={payload.period}\n' +
-      '              resetToken={resetToken}\n' +
-      '              ticker={payload.ticker}\n' +
-      '              visibleContextLayers={visibleContextLayers}\n' +
-      '              visibleIndicators={visibleIndicators}\n' +
-      '              visibleOverlays={visibleOverlays}\n' +
-      '              visibleSignals={visibleSignals}\n' +
-      '            />\n' +
-      '          ) : null}\n' +
+      '      <section className="options-ladder-overview" aria-label="Lägesöversikt">\n' +
+      '        <span className="options-ladder-kicker">Lägesöversikt</span>\n' +
+      '        <strong className={`options-ladder-state tone-${model.state.tone}`}>{model.state.label}</strong>\n' +
+      '        <div className="options-ladder-net-grid">\n' +
+      '          <div>\n' +
+      '            <span>Net GEX</span>\n' +
+      "            <strong className={Number(model.netGex) < 0 ? 'tone-danger' : Number(model.netGex) > 0 ? 'tone-positive' : 'tone-neutral'}>\n" +
+      '              {formatCompact(model.netGex)}\n' +
+      '            </strong>\n' +
+      '          </div>\n' +
+      '          <div>\n' +
+      '            <span>Net DEX</span>\n' +
+      "            <strong className={Number(model.netDex) < 0 ? 'tone-danger' : Number(model.netDex) > 0 ? 'tone-positive' : 'tone-neutral'}>\n" +
+      '              {formatCompact(model.netDex)}\n' +
+      '            </strong>\n' +
+      '          </div>\n' +
       '        </div>\n' +
+      '      </section>\n' +
       '\n' +
-      "        {status === 'ready' && payload ? (\n" +
-      '          <OptionsLadder\n' +
-      '            latestPrice={payload.latestPrice}\n' +
-      '            snapshots={payload.gexDexSnapshots}\n' +
-      '          />\n' +
-      '        ) : null}\n' +
-      '      </div>\n' +
+      '      {model.rows.length ? (\n' +
+      '        <table className="options-ladder-table">\n' +
+      '          <thead>\n' +
+      '            <tr>\n' +
+      '              <th>Nivå</th>\n' +
+      '              <th>Typ</th>\n' +
+      '              <th>Avstånd</th>\n' +
+      '            </tr>\n' +
+      '          </thead>\n' +
+      '          <tbody>\n' +
+      '            {model.rows.map((row) => (\n' +
+      "              <tr key={row.key} style={{ '--options-level-color': row.color }}>\n" +
+      '                <td>{formatNumber(row.price)}</td>\n' +
+      '                <td>\n' +
+      '                  <LevelHistoryTooltip history={historyByKey[row.key] ?? []} row={row} />\n' +
+      '                </td>\n' +
+      '                <td>\n' +
+      "                  <strong>{formatSigned(row.distancePct, 1, '%')}</strong>\n" +
+      '                  <span>{formatSigned(row.distanceValue, 2)}</span>\n' +
+      '                </td>\n' +
+      '              </tr>\n' +
+      '            ))}\n' +
+      '          </tbody>\n' +
+      '        </table>\n' +
+      '      ) : (\n' +
+      '        <div className="options-ladder-empty">\n' +
+      '          <strong>Inga optionsnivåer</strong>\n' +
+      '          <span>Snapshotdata saknas för vald ticker.</span>\n' +
+      '        </div>\n' +
+      '      )}\n' +
       '\n' +
-      '      <footer className="chart-workspace-footer">\n' +
-      '        <span>{payload?.bars?.length ?? 0} handelsdagar · {period}</span>\n' +
-      '        {unavailableOverlays.length ? (\n' +
-      '          <span>{unavailableOverlays.length} MA-serier saknar data i vald period</span>\n' +
-      '        ) : <span>Alla MA-serier tillgängliga</span>}\n' +
-      '        {unavailableIndicators.length === INDICATOR_KEYS.length\n' +
-      '          ? <span>RYD OBV saknar data i vald period</span>\n' +
-      '          : <span>RYD OBV tillgänglig</span>}\n' +
-      '        <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">\n' +
-      '          Charting by TradingView Lightweight Charts™\n' +
-      '        </a>\n' +
+      '      <footer className="options-ladder-footer">\n' +
+      '        <span aria-hidden="true">ⓘ</span>\n' +
+      '        <span>Avstånd i % relativt aktuell kurs ({formatNumber(latestPrice)})</span>\n' +
       '      </footer>\n' +
-      '    </section>\n' +
+      '    </aside>\n' +
       '  );\n' +
       '}\n'
     
@@ -323,272 +231,180 @@ not ok 6 - workspace renders Options Positioning strike bars instead of the old 
   actual: |-
     'use client';
     
-    import dynamic from 'next/dynamic';
-    import { useEffect, useMemo, useState } from 'react';
     import {
-      CHART_SERIES,
-      DEFAULT_VISIBLE_CONTEXT_LAYERS,
-      DEFAULT_VISIBLE_INDICATORS,
-      DEFAULT_VISIBLE_OVERLAYS,
-      DEFAULT_VISIBLE_SIGNALS,
-      INDICATOR_KEYS,
-      MOVING_AVERAGE_KEYS,
-    } from '../../lib/chart/series-registry.js';
-    import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';
-    import ChartContextStrip from './chart-context-strip.js';
-    import ChartToolbar from './chart-toolbar.js';
-    import OptionsLadder from './options-ladder.js';
+      buildOptionsLadderHistory,
+      buildOptionsLadderModel,
+    } from '../../lib/chart/options-ladder.js';
     
-    const FinancialChart = dynamic(() => import('./financial-chart.js'), {
-      ssr: false,
-      loading: () => <ChartSkeleton copy="Chartmotorn laddas…" />,
-    });
-    
-    function ChartSkeleton({ copy = 'Prishistoriken laddas…' }) {
-      return (
-        <div className="chart-workspace-skeleton" role="status" aria-live="polite">
-          <div className="chart-skeleton-legend" />
-          <div className="chart-skeleton-grid" />
-          <span>{copy}</span>
-        </div>
-      );
+    function formatNumber(value, digits = 2) {
+      if (!Number.isFinite(Number(value))) return '—';
+      return Number(value).toLocaleString('sv-SE', {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      });
     }
     
-    function formatPrice(value, currency = 'USD') {
+    function formatCompact(value) {
       if (!Number.isFinite(Number(value))) return '—';
       return new Intl.NumberFormat('sv-SE', {
-        style: 'currency',
-        currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        notation: 'compact',
+        maximumFractionDigits: 1,
       }).format(Number(value));
     }
     
-    function formatSignedPercent(value) {
+    function formatSigned(value, digits, suffix = '') {
       if (!Number.isFinite(Number(value))) return '—';
-      const number = Number(value);
-      return `${number > 0 ? '+' : ''}${number.toFixed(2)}%`;
+      const normalized = Math.abs(Number(value)) < (0.5 * (10 ** -digits)) ? 0 : Number(value);
+      return `${new Intl.NumberFormat('sv-SE', {
+        signDisplay: 'always',
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }).format(normalized)}${suffix}`;
     }
     
-    function formatDate(value) {
+    function formatHistoryDate(value) {
       if (!value) return '—';
       return new Intl.DateTimeFormat('sv-SE', {
-        dateStyle: 'medium',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
         timeZone: 'UTC',
       }).format(new Date(`${value}T00:00:00Z`));
     }
     
-    export default function ChartWorkspace({ constituents, initialPeriod, initialTicker }) {
-      const [ticker, setTicker] = useState(initialTicker);
-      const [period, setPeriod] = useState(initialPeriod);
-      const [visibleOverlays, setVisibleOverlays] = useState([...DEFAULT_VISIBLE_OVERLAYS]);
-      const [visibleIndicators, setVisibleIndicators] = useState([...DEFAULT_VISIBLE_INDICATORS]);
-      const [visibleSignals, setVisibleSignals] = useState([...DEFAULT_VISIBLE_SIGNALS]);
-      const [visibleContextLayers, setVisibleContextLayers] = useState([...DEFAULT_VISIBLE_CONTEXT_LAYERS]);
-      const [payload, setPayload] = useState(null);
-      const [status, setStatus] = useState('loading');
-      const [errorMessage, setErrorMessage] = useState('');
-      const [retryToken, setRetryToken] = useState(0);
-      const [resetToken, setResetToken] = useState(0);
+    function LevelHistoryTooltip({ history, row }) {
+      const tooltipId = `options-ladder-history-${row.key}`;
     
-      useEffect(() => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('ticker', ticker);
-        url.searchParams.set('period', period);
-        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-      }, [period, ticker]);
-    
-      useEffect(() => {
-        const controller = new AbortController();
-        let active = true;
-    
-        async function loadChartData() {
-          setStatus('loading');
-          setErrorMessage('');
-          setPayload(null);
-    
-          try {
-            const response = await fetch(
-              `/api/chart-data?ticker=${encodeURIComponent(ticker)}&period=${encodeURIComponent(period)}`,
-              { signal: controller.signal }
-            );
-            const result = await response.json();
-    
-            if (!response.ok) {
-              throw new Error(result?.error || `HTTP ${response.status}`);
-            }
-            if (!active) return;
-    
-            setPayload(result);
-            setStatus(result?.bars?.length ? 'ready' : 'empty');
-          } catch (error) {
-            if (error?.name === 'AbortError' || !active) return;
-            console.error('Professional chart load failed:', error);
-            setErrorMessage(error?.message || 'Chartdatan kunde inte laddas.');
-            setStatus('error');
-          }
-        }
-    
-        void loadChartData();
-    
-        return () => {
-          active = false;
-          controller.abort();
-        };
-      }, [period, retryToken, ticker]);
-    
-      const unavailableOverlays = useMemo(() => {
-        const bars = payload?.bars ?? [];
-        return MOVING_AVERAGE_KEYS.filter(
-          (key) => !bars.some((bar) => Number.isFinite(Number(bar[key])))
-        );
-      }, [payload]);
-    
-      const unavailableIndicators = useMemo(() => {
-        const bars = payload?.bars ?? [];
-        return INDICATOR_KEYS.filter((key) => {
-          const dataKey = CHART_SERIES[key].dataKey;
-          return !bars.some((bar) => Number.isFinite(Number(bar[dataKey])));
-        });
-      }, [payload]);
-    
-      const unavailableSignals = useMemo(
-        () => signalControlsUnavailable(payload?.bars ?? []),
-        [payload]
-      );
-    
-      const dailyTone = Number(payload?.dailyChangePct) > 0
-        ? 'positive'
-        : Number(payload?.dailyChangePct) < 0
-          ? 'danger'
-          : 'neutral';
-    
-      function toggleList(setter, unavailable, key) {
-        if (unavailable.includes(key)) return;
-        setter((current) => (
-          current.includes(key)
-            ? current.filter((item) => item !== key)
-            : [...current, key]
-        ));
+      if (!history.length) {
+        return <span className="options-ladder-badge">{row.label}</span>;
       }
     
       return (
-        <section className="chart-workspace" aria-labelledby="chart-workspace-title">
-          <header className="chart-workspace-header">
-            <div>
-              <p className="section-kicker">Professionell chart · Daily</p>
-              <div className="chart-title-row">
-                <h1 id="chart-workspace-title">{payload?.ticker ?? ticker}</h1>
-                <span className="chart-company-name">{payload?.companyName ?? 'Laddar bolagsdata…'}</span>
+        <div className="options-ladder-history-cell">
+          <button
+            type="button"
+            className="options-ladder-history-trigger"
+            aria-describedby={tooltipId}
+            aria-label={`${row.label}: visa de senaste ${history.length} nivåerna`}
+          >
+            <span className="options-ladder-badge">{row.label}</span>
+          </button>
+    
+          <div
+            id={tooltipId}
+            className="options-ladder-history-tooltip"
+            role="tooltip"
+            style={{ '--options-level-color': row.color }}
+          >
+            <header className="options-ladder-history-header">
+              <span className="options-ladder-history-swatch" aria-hidden="true" />
+              <div>
+                <strong>{row.label}</strong>
+                <span>Senaste 10 nivåerna</span>
               </div>
-              <p className="chart-workspace-context">
-                {payload?.sector ?? 'Sektor saknas'} · Justerade priser · Senaste data {formatDate(payload?.latestDate)}
-              </p>
+            </header>
+    
+            <div className="options-ladder-history-columns" aria-hidden="true">
+              <span>Datum</span>
+              <span>Nivå</span>
+              <span>Δ</span>
             </div>
     
-            <div className="chart-price-summary" aria-label="Senaste prisutveckling">
-              <strong>{formatPrice(payload?.latestPrice, payload?.currency)}</strong>
-              <span className={`tone-${dailyTone}`}>
-                {formatSignedPercent(payload?.dailyChangePct)} senaste handelsdagen
-              </span>
-            </div>
+            <ol className="options-ladder-history-list">
+              {history.map((item, index) => (
+                <li
+                  key={`${row.key}-${item.sourceTimestamp ?? item.date}-${index}`}
+                  className={index === 0 ? 'is-latest' : undefined}
+                >
+                  <time dateTime={item.date}>{formatHistoryDate(item.date)}</time>
+                  <strong>{formatNumber(item.value)}</strong>
+                  <span>{formatSigned(item.delta, 2)}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      );
+    }
+    
+    export default function OptionsLadder({ latestPrice, snapshots = [] }) {
+      const snapshot = snapshots.at(-1) ?? null;
+      const model = buildOptionsLadderModel({ latestPrice, snapshot });
+      const historyByKey = buildOptionsLadderHistory({ snapshots, limit: 10 });
+      const sourceTitle = model.sourceTimestamp
+        ? `Senaste providersnapshot ${new Intl.DateTimeFormat('sv-SE', {
+          dateStyle: 'medium', timeStyle: 'short',
+        }).format(new Date(model.sourceTimestamp))}`
+        : 'Ingen providersnapshot för vald ticker.';
+    
+      return (
+        <aside className="options-ladder" aria-label="Options Ladder">
+          <header className="options-ladder-header">
+            <h2>Options Ladder</h2>
+            <span className="options-ladder-info" title={sourceTitle} aria-label={sourceTitle}>ⓘ</span>
           </header>
     
-          <ChartToolbar
-            constituents={constituents}
-            ticker={ticker}
-            period={period}
-            visibleContextLayers={visibleContextLayers}
-            visibleIndicators={visibleIndicators}
-            visibleOverlays={visibleOverlays}
-            visibleSignals={visibleSignals}
-            unavailableIndicators={unavailableIndicators}
-            unavailableOverlays={unavailableOverlays}
-            unavailableSignals={unavailableSignals}
-            onTickerChange={setTicker}
-            onPeriodChange={setPeriod}
-            onToggleContextLayer={(key) => toggleList(setVisibleContextLayers, [], key)}
-            onToggleIndicator={(key) => toggleList(setVisibleIndicators, unavailableIndicators, key)}
-            onToggleOverlay={(key) => toggleList(setVisibleOverlays, unavailableOverlays, key)}
-            onToggleSignal={(key) => toggleList(setVisibleSignals, unavailableSignals, key)}
-            onReset={() => setResetToken((value) => value + 1)}
-          />
-    
-          {status === 'ready' && payload ? (
-            <ChartContextStrip
-              breadthContext={payload.breadthContext}
-              gexDexSnapshots={payload.gexDexSnapshots}
-              nextEarnings={payload.nextEarnings}
-              relativeStrengthContext={payload.relativeStrengthContext}
-              volatilityContext={payload.volatilityContext}
-            />
-          ) : null}
-    
-          <div className="chart-workspace-main">
-            <div className="chart-workspace-frame">
-              {status === 'loading' ? <ChartSkeleton /> : null}
-    
-              {status === 'error' ? (
-                <div className="chart-workspace-message" role="alert">
-                  <strong>Charten kunde inte laddas</strong>
-                  <span>{errorMessage}</span>
-                  <button type="button" onClick={() => setRetryToken((value) => value + 1)}>
-                    Försök igen
-                  </button>
-                </div>
-              ) : null}
-    
-              {status === 'empty' ? (
-                <div className="chart-workspace-message" role="status">
-                  <strong>Ingen användbar prishistorik</strong>
-                  <span>Välj en annan ticker eller period.</span>
-                </div>
-              ) : null}
-    
-              {status === 'ready' && payload ? (
-                <FinancialChart
-                  bars={payload.bars}
-                  currency={payload.currency}
-                  earningsEvents={payload.earningsEvents}
-                  gexDexSnapshots={payload.gexDexSnapshots}
-                  period={payload.period}
-                  resetToken={resetToken}
-                  ticker={payload.ticker}
-                  visibleContextLayers={visibleContextLayers}
-                  visibleIndicators={visibleIndicators}
-                  visibleOverlays={visibleOverlays}
-                  visibleSignals={visibleSignals}
-                />
-              ) : null}
+          <section className="options-ladder-overview" aria-label="Lägesöversikt">
+            <span className="options-ladder-kicker">Lägesöversikt</span>
+            <strong className={`options-ladder-state tone-${model.state.tone}`}>{model.state.label}</strong>
+            <div className="options-ladder-net-grid">
+              <div>
+                <span>Net GEX</span>
+                <strong className={Number(model.netGex) < 0 ? 'tone-danger' : Number(model.netGex) > 0 ? 'tone-positive' : 'tone-neutral'}>
+                  {formatCompact(model.netGex)}
+                </strong>
+              </div>
+              <div>
+                <span>Net DEX</span>
+                <strong className={Number(model.netDex) < 0 ? 'tone-danger' : Number(model.netDex) > 0 ? 'tone-positive' : 'tone-neutral'}>
+                  {formatCompact(model.netDex)}
+                </strong>
+              </div>
             </div>
+          </section>
     
-            {status === 'ready' && payload ? (
-              <OptionsLadder
-                latestPrice={payload.latestPrice}
-                snapshots={payload.gexDexSnapshots}
-              />
-            ) : null}
-          </div>
+          {model.rows.length ? (
+            <table className="options-ladder-table">
+              <thead>
+                <tr>
+                  <th>Nivå</th>
+                  <th>Typ</th>
+                  <th>Avstånd</th>
+                </tr>
+              </thead>
+              <tbody>
+                {model.rows.map((row) => (
+                  <tr key={row.key} style={{ '--options-level-color': row.color }}>
+                    <td>{formatNumber(row.price)}</td>
+                    <td>
+                      <LevelHistoryTooltip history={historyByKey[row.key] ?? []} row={row} />
+                    </td>
+                    <td>
+                      <strong>{formatSigned(row.distancePct, 1, '%')}</strong>
+                      <span>{formatSigned(row.distanceValue, 2)}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="options-ladder-empty">
+              <strong>Inga optionsnivåer</strong>
+              <span>Snapshotdata saknas för vald ticker.</span>
+            </div>
+          )}
     
-          <footer className="chart-workspace-footer">
-            <span>{payload?.bars?.length ?? 0} handelsdagar · {period}</span>
-            {unavailableOverlays.length ? (
-              <span>{unavailableOverlays.length} MA-serier saknar data i vald period</span>
-            ) : <span>Alla MA-serier tillgängliga</span>}
-            {unavailableIndicators.length === INDICATOR_KEYS.length
-              ? <span>RYD OBV saknar data i vald period</span>
-              : <span>RYD OBV tillgänglig</span>}
-            <a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">
-              Charting by TradingView Lightweight Charts™
-            </a>
+          <footer className="options-ladder-footer">
+            <span aria-hidden="true">ⓘ</span>
+            <span>Avstånd i % relativt aktuell kurs ({formatNumber(latestPrice)})</span>
           </footer>
-        </section>
+        </aside>
       );
     }
     
   operator: 'match'
   stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:124:10)
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:123:10)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -600,4 +416,4 @@ not ok 6 - workspace renders Options Positioning strike bars instead of the old 
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 88.180115
+# duration_ms 95.913645
