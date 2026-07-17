@@ -29,6 +29,7 @@ test('chart ticker options pin SPY and QQQ before the shared top-volume universe
   ]);
   assert.equal(options[0].company_name, 'SPDR S&P 500 ETF Trust');
   assert.equal(options[1].company_name, 'Invesco QQQ Trust');
+  assert.deepEqual(options.map((item) => item.featured), [true, true, true, true, false, false]);
   assert.equal(new Set(options.map((item) => item.ticker)).size, options.length);
 });
 
@@ -51,4 +52,11 @@ test('chart page, chart data and daily fetch use the shared benchmark universe',
   assert.match(chartData, /getChartBenchmarkDefinition/);
   assert.match(chartData, /benchmark_daily_prices/);
   assert.match(fetchDaily, /BENCHMARK_TICKERS\s*=\s*\['SPY',\s*'QQQ'\]/);
+});
+
+test('ticker selector groups prioritized GEX DEX instruments above the remaining S&P 500 list', async () => {
+  const toolbar = await readFile(new URL('../app/chart/chart-toolbar.js', import.meta.url), 'utf8');
+  assert.match(toolbar, /Prioriterade GEX\/DEX/);
+  assert.match(toolbar, /Övriga S&P 500/);
+  assert.match(toolbar, /item\.featured/);
 });
