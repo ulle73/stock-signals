@@ -15,37 +15,37 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.285589
+  duration_ms: 1.462204
   type: 'test'
   ...
 # Subtest: strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
 ok 2 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
   ---
-  duration_ms: 3.000458
+  duration_ms: 3.377895
   type: 'test'
   ...
 # Subtest: all provider strikes are shown when each side stays within the thirty-row cap
 ok 3 - all provider strikes are shown when each side stays within the thirty-row cap
   ---
-  duration_ms: 0.307079
+  duration_ms: 0.342831
   type: 'test'
   ...
 # Subtest: options positioning model builds centered GEX and DEX bars with key-level annotations
 ok 4 - options positioning model builds centered GEX and DEX bars with key-level annotations
   ---
-  duration_ms: 0.928667
+  duration_ms: 0.970324
   type: 'test'
   ...
 # Subtest: key-level history remains available for hover and keyboard tooltips
 ok 5 - key-level history remains available for hover and keyboard tooltips
   ---
-  duration_ms: 8.354139
+  duration_ms: 8.286512
   type: 'test'
   ...
 # Subtest: chart renders isolated Options Positioning strike bars instead of the old ladder table
 not ok 6 - chart renders isolated Options Positioning strike bars instead of the old ladder table
   ---
-  duration_ms: 12.041192
+  duration_ms: 13.356401
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:115:1'
   failureType: 'testCodeFailure'
@@ -608,4 +608,4 @@ not ok 6 - chart renders isolated Options Positioning strike bars instead of the
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 88.474732
+# duration_ms 94.856347
