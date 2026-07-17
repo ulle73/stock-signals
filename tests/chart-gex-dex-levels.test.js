@@ -42,9 +42,10 @@ test('missing provider values break the line instead of inventing continuity', (
   ]);
 });
 
-test('main and more groups are detected independently', () => {
-  assert.equal(hasGexDexLevelGroup([{ callWall: 300 }], 'main'), true);
-  assert.equal(hasGexDexLevelGroup([{ callWall: 300 }], 'more'), false);
+test('Gamma Flip is the independent default group and all other levels are optional', () => {
+  assert.equal(hasGexDexLevelGroup([{ gammaFlip: 290 }], 'main'), true);
+  assert.equal(hasGexDexLevelGroup([{ callWall: 300 }], 'main'), false);
+  assert.equal(hasGexDexLevelGroup([{ callWall: 300 }], 'more'), true);
   assert.equal(hasGexDexLevelGroup([{ dexSupport: 280 }], 'more'), true);
   assert.equal(GEX_DEX_LEVEL_DEFINITIONS.gammaFlip.dashed, true);
 });

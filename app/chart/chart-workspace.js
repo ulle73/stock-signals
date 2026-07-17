@@ -14,6 +14,7 @@ import {
 import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';
 import ChartContextStrip from './chart-context-strip.js';
 import ChartToolbar from './chart-toolbar.js';
+import OptionsLadder from './options-ladder.js';
 
 const FinancialChart = dynamic(() => import('./financial-chart.js'), {
   ssr: false,
@@ -200,39 +201,48 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
         />
       ) : null}
 
-      <div className="chart-workspace-frame">
-        {status === 'loading' ? <ChartSkeleton /> : null}
+      <div className="chart-workspace-main">
+        <div className="chart-workspace-frame">
+          {status === 'loading' ? <ChartSkeleton /> : null}
 
-        {status === 'error' ? (
-          <div className="chart-workspace-message" role="alert">
-            <strong>Charten kunde inte laddas</strong>
-            <span>{errorMessage}</span>
-            <button type="button" onClick={() => setRetryToken((value) => value + 1)}>
-              Försök igen
-            </button>
-          </div>
-        ) : null}
+          {status === 'error' ? (
+            <div className="chart-workspace-message" role="alert">
+              <strong>Charten kunde inte laddas</strong>
+              <span>{errorMessage}</span>
+              <button type="button" onClick={() => setRetryToken((value) => value + 1)}>
+                Försök igen
+              </button>
+            </div>
+          ) : null}
 
-        {status === 'empty' ? (
-          <div className="chart-workspace-message" role="status">
-            <strong>Ingen användbar prishistorik</strong>
-            <span>Välj en annan ticker eller period.</span>
-          </div>
-        ) : null}
+          {status === 'empty' ? (
+            <div className="chart-workspace-message" role="status">
+              <strong>Ingen användbar prishistorik</strong>
+              <span>Välj en annan ticker eller period.</span>
+            </div>
+          ) : null}
+
+          {status === 'ready' && payload ? (
+            <FinancialChart
+              bars={payload.bars}
+              currency={payload.currency}
+              earningsEvents={payload.earningsEvents}
+              gexDexSnapshots={payload.gexDexSnapshots}
+              period={payload.period}
+              resetToken={resetToken}
+              ticker={payload.ticker}
+              visibleContextLayers={visibleContextLayers}
+              visibleIndicators={visibleIndicators}
+              visibleOverlays={visibleOverlays}
+              visibleSignals={visibleSignals}
+            />
+          ) : null}
+        </div>
 
         {status === 'ready' && payload ? (
-          <FinancialChart
-            bars={payload.bars}
-            currency={payload.currency}
-            earningsEvents={payload.earningsEvents}
-            gexDexSnapshots={payload.gexDexSnapshots}
-            period={payload.period}
-            resetToken={resetToken}
-            ticker={payload.ticker}
-            visibleContextLayers={visibleContextLayers}
-            visibleIndicators={visibleIndicators}
-            visibleOverlays={visibleOverlays}
-            visibleSignals={visibleSignals}
+          <OptionsLadder
+            latestPrice={payload.latestPrice}
+            snapshots={payload.gexDexSnapshots}
           />
         ) : null}
       </div>
