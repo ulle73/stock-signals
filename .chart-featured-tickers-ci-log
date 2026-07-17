@@ -1,0 +1,163 @@
+
+added 43 packages, and audited 44 packages in 9s
+
+8 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+===== focused test =====
+TAP version 13
+# Subtest: chart ticker options pin SPY and QQQ before the shared top-volume universe
+not ok 1 - chart ticker options pin SPY and QQQ before the shared top-volume universe
+  ---
+  duration_ms: 2.307257
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/chart-featured-tickers.test.js:13:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/chart-featured-tickers.test.js:15:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: chart benchmark definitions identify SPY and QQQ as benchmark price sources
+not ok 2 - chart benchmark definitions identify SPY and QQQ as benchmark price sources
+  ---
+  duration_ms: 0.71818
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/chart-featured-tickers.test.js:35:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/chart-featured-tickers.test.js:37:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: chart page, chart data and daily fetch use the shared benchmark universe
+not ok 3 - chart page, chart data and daily fetch use the shared benchmark universe
+  ---
+  duration_ms: 7.922363
+  type: 'test'
+  location: '/home/runner/work/stock-signals/stock-signals/tests/chart-featured-tickers.test.js:43:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /getChartTickerOptions/. Input:
+    
+    "import DashboardTopNav from '../dashboard-top-nav.js';\n" +
+      "import { getActiveConstituents } from '../../lib/repositories/constituents.js';\n" +
+      'import {\n' +
+      '  normalizeChartPeriod,\n' +
+      '  normalizeChartTicker,\n' +
+      "} from '../../lib/chart/chart-periods.js';\n" +
+      "import ChartWorkspace from './chart-workspace.js';\n" +
+      '\n' +
+      "export const dynamic = 'force-dynamic';\n" +
+      '\n' +
+      'function resolveTicker(value, constituents) {\n' +
+      '  const requested = normalizeChartTicker(value);\n' +
+      '  if (requested && constituents.some((item) => item.ticker === requested)) return requested;\n' +
+      "  return constituents.find((item) => item.ticker === 'AAPL')?.ticker\n" +
+      '    ?? constituents[0]?.ticker\n' +
+      "    ?? 'AAPL';\n" +
+      '}\n' +
+      '\n' +
+      'export default async function ChartPage({ searchParams }) {\n' +
+      '  const resolvedSearchParams = await searchParams;\n' +
+      '  const constituents = await getActiveConstituents();\n' +
+      '  const initialTicker = resolveTicker(resolvedSearchParams?.ticker, constituents);\n' +
+      '  const initialPeriod = normalizeChartPeriod(resolvedSearchParams?.period);\n' +
+      '\n' +
+      '  return (\n' +
+      '    <main className="page-shell restyle-page chart-page-shell">\n' +
+      '      <DashboardTopNav activeItem="Chart" updatedLabel="Daglig chartdata" />\n' +
+      '      <ChartWorkspace\n' +
+      '        constituents={constituents}\n' +
+      '        initialTicker={initialTicker}\n' +
+      '        initialPeriod={initialPeriod}\n' +
+      '      />\n' +
+      '    </main>\n' +
+      '  );\n' +
+      '}\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    import DashboardTopNav from '../dashboard-top-nav.js';
+    import { getActiveConstituents } from '../../lib/repositories/constituents.js';
+    import {
+      normalizeChartPeriod,
+      normalizeChartTicker,
+    } from '../../lib/chart/chart-periods.js';
+    import ChartWorkspace from './chart-workspace.js';
+    
+    export const dynamic = 'force-dynamic';
+    
+    function resolveTicker(value, constituents) {
+      const requested = normalizeChartTicker(value);
+      if (requested && constituents.some((item) => item.ticker === requested)) return requested;
+      return constituents.find((item) => item.ticker === 'AAPL')?.ticker
+        ?? constituents[0]?.ticker
+        ?? 'AAPL';
+    }
+    
+    export default async function ChartPage({ searchParams }) {
+      const resolvedSearchParams = await searchParams;
+      const constituents = await getActiveConstituents();
+      const initialTicker = resolveTicker(resolvedSearchParams?.ticker, constituents);
+      const initialPeriod = normalizeChartPeriod(resolvedSearchParams?.period);
+    
+      return (
+        <main className="page-shell restyle-page chart-page-shell">
+          <DashboardTopNav activeItem="Chart" updatedLabel="Daglig chartdata" />
+          <ChartWorkspace
+            constituents={constituents}
+            initialTicker={initialTicker}
+            initialPeriod={initialPeriod}
+          />
+        </main>
+      );
+    }
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/chart-featured-tickers.test.js:50:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 68.383579
