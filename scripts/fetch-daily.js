@@ -24,7 +24,7 @@ import {
   runWithYahooFetchCircuit,
 } from '../lib/utils/yahoo-fetch-circuit.js';
 
-const BENCHMARK_TICKERS = ['SPY'];
+const BENCHMARK_TICKERS = ['SPY', 'QQQ'];
 const DEFAULT_CONCURRENCY = 5;
 const fetchRunGuard = createFetchRunGuard({
   finishRun: finishFetchRun,
