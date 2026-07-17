@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 6s
+added 43 packages, and audited 44 packages in 9s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,25 +15,25 @@ TAP version 13
 # Subtest: GEX levels begin at the first real snapshot and extend only forward
 ok 1 - GEX levels begin at the first real snapshot and extend only forward
   ---
-  duration_ms: 7.223077
+  duration_ms: 8.957912
   type: 'test'
   ...
 # Subtest: a fresh snapshot after the latest price bar anchors at the latest real candle
 ok 2 - a fresh snapshot after the latest price bar anchors at the latest real candle
   ---
-  duration_ms: 0.288829
+  duration_ms: 0.397213
   type: 'test'
   ...
 # Subtest: missing provider values break the line instead of inventing continuity
 ok 3 - missing provider values break the line instead of inventing continuity
   ---
-  duration_ms: 0.801738
+  duration_ms: 1.039596
   type: 'test'
   ...
 # Subtest: main and more groups are detected independently
 ok 4 - main and more groups are detected independently
   ---
-  duration_ms: 0.32238
+  duration_ms: 0.364642
   type: 'test'
   ...
 1..4
@@ -44,4 +44,4 @@ ok 4 - main and more groups are detected independently
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 56.604277
+# duration_ms 76.214299
