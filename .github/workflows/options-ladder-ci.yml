@@ -31,7 +31,11 @@ jobs:
           {
             npm ci
             echo '===== focused tests ====='
-            node --test tests/options-ladder.test.js
+            node --test tests/options-ladder.test.js tests/chart-context-layer-controls.test.js tests/chart-series-registry.test.js
+            echo '===== complete Node test suite ====='
+            node --test tests/*.test.js
+            echo '===== Next.js production build ====='
+            npm run build
           } 2>&1 | tee .options-ladder-ci-log
       - name: Publish result
         if: always()
