@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 9s
+added 43 packages, and audited 44 packages in 8s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,588 +15,178 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.462204
+  duration_ms: 1.263065
   type: 'test'
   ...
 # Subtest: strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
 ok 2 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
   ---
-  duration_ms: 3.377895
+  duration_ms: 2.983855
   type: 'test'
   ...
 # Subtest: all provider strikes are shown when each side stays within the thirty-row cap
 ok 3 - all provider strikes are shown when each side stays within the thirty-row cap
   ---
-  duration_ms: 0.342831
+  duration_ms: 0.300549
   type: 'test'
   ...
 # Subtest: options positioning model builds centered GEX and DEX bars with key-level annotations
 ok 4 - options positioning model builds centered GEX and DEX bars with key-level annotations
   ---
-  duration_ms: 0.970324
+  duration_ms: 0.921516
   type: 'test'
   ...
 # Subtest: key-level history remains available for hover and keyboard tooltips
 ok 5 - key-level history remains available for hover and keyboard tooltips
   ---
-  duration_ms: 8.286512
+  duration_ms: 8.204881
   type: 'test'
   ...
 # Subtest: chart renders isolated Options Positioning strike bars instead of the old ladder table
 not ok 6 - chart renders isolated Options Positioning strike bars instead of the old ladder table
   ---
-  duration_ms: 13.356401
+  duration_ms: 10.89007
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:115:1'
   failureType: 'testCodeFailure'
   error: |-
-    The input did not match the regular expression /GEX per strike/. Input:
+    The input did not match the regular expression /from gex_dex_strike_snapshots/. Input:
     
-    "'use client';\n" +
+    "import { query } from '../db.js';\n" +
       '\n' +
-      "import { useEffect, useMemo, useState } from 'react';\n" +
-      'import {\n' +
-      '  buildOptionsPositioningLevelHistory,\n' +
-      '  buildOptionsPositioningModel,\n' +
-      "} from '../../lib/chart/options-positioning.js';\n" +
-      '\n' +
-      'function formatNumber(value, digits = 2) {\n' +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      "  return Number(value).toLocaleString('sv-SE', {\n" +
-      '    minimumFractionDigits: digits,\n' +
-      '    maximumFractionDigits: digits,\n' +
-      '  });\n' +
+      'function finiteNumber(value) {\n' +
+      "  if (value === null || value === undefined || value === '') return null;\n" +
+      '  const number = Number(value);\n' +
+      '  return Number.isFinite(number) ? number : null;\n' +
       '}\n' +
       '\n' +
-      'function formatCompact(value) {\n' +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      "  return new Intl.NumberFormat('sv-SE', {\n" +
-      "    notation: 'compact',\n" +
-      '    maximumFractionDigits: 1,\n' +
-      '  }).format(Number(value));\n' +
-      '}\n' +
-      '\n' +
-      'function formatSigned(value, digits = 2) {\n' +
-      "  if (!Number.isFinite(Number(value))) return '—';\n" +
-      "  return new Intl.NumberFormat('sv-SE', {\n" +
-      "    signDisplay: 'always',\n" +
-      '    minimumFractionDigits: digits,\n' +
-      '    maximumFractionDigits: digits,\n' +
-      '  }).format(Number(value));\n' +
-      '}\n' +
-      '\n' +
-      'function formatHistoryDate(value) {\n' +
-      "  if (!value) return '—';\n" +
-      "  return new Intl.DateTimeFormat('sv-SE', {\n" +
-      "    day: 'numeric',\n" +
-      "    month: 'short',\n" +
-      "    year: 'numeric',\n" +
-      "    timeZone: 'UTC',\n" +
-      '  }).format(new Date(`${value}T00:00:00Z`));\n' +
-      '}\n' +
-      '\n' +
-      'function formatTimestamp(value) {\n' +
-      "  if (!value) return '—';\n" +
-      "  return new Intl.DateTimeFormat('sv-SE', {\n" +
-      "    dateStyle: 'medium',\n" +
-      "    timeStyle: 'short',\n" +
-      "    timeZone: 'America/New_York',\n" +
-      '  }).format(new Date(value));\n' +
-      '}\n' +
-      '\n' +
-      'function KeyLevelBadge({ annotation, history = [], scope }) {\n' +
-      "  const tooltipId = `options-positioning-${scope}-${annotation.key}-${String(annotation.value).replace('.', '-')}`;\n" +
-      '  const badge = (\n' +
-      '    <span\n' +
-      '      className="options-positioning-level-badge"\n' +
-      "      style={{ '--level-color': annotation.color }}\n" +
-      '      title={`${annotation.label}: ${formatNumber(annotation.value)}`}\n' +
-      '    >\n' +
-      '      {annotation.label}\n' +
-      '      {!annotation.exact ? <small>{formatNumber(annotation.value)}</small> : null}\n' +
-      '    </span>\n' +
+      'export async function getLatestGexDexStrikeSnapshot(ticker) {\n' +
+      '  const result = await query(\n' +
+      '    `with latest as (\n' +
+      '       select\n' +
+      '         id,\n' +
+      '         source_timestamp,\n' +
+      '         spot_price\n' +
+      '       from gex_dex_source_snapshots\n' +
+      '       where ticker = $1\n' +
+      '         and source_timestamp <= now()\n' +
+      '       order by source_timestamp desc\n' +
+      '       limit 1\n' +
+      '     )\n' +
+      '     select\n' +
+      '       latest.source_timestamp::text as source_timestamp,\n' +
+      '       latest.spot_price::text as spot_price,\n' +
+      '       strike.strike::text as strike,\n' +
+      '       strike.call_gex::text as call_gex,\n' +
+      '       strike.put_gex::text as put_gex,\n' +
+      '       strike.net_gex::text as net_gex,\n' +
+      '       strike.call_dex::text as call_dex,\n' +
+      '       strike.put_dex::text as put_dex,\n' +
+      '       strike.net_dex::text as net_dex,\n' +
+      '       strike.expiry_count::text as expiry_count\n' +
+      '     from latest\n' +
+      '     left join gex_dex_strike_snapshots strike\n' +
+      '       on strike.snapshot_id = latest.id\n' +
+      '     order by strike.strike asc`,\n' +
+      '    [ticker]\n' +
       '  );\n' +
       '\n' +
-      '  if (!history.length) return badge;\n' +
+      '  const first = result.rows[0] ?? null;\n' +
+      '  if (!first) {\n' +
+      '    return { sourceTimestamp: null, spotPrice: null, strikes: [] };\n' +
+      '  }\n' +
       '\n' +
-      '  return (\n' +
-      '    <span className="options-positioning-tooltip-wrap">\n' +
-      '      <button\n' +
-      '        type="button"\n' +
-      '        className="options-positioning-tooltip-trigger"\n' +
-      '        aria-describedby={tooltipId}\n' +
-      '        aria-label={`${annotation.label}: visa de senaste ${history.length} nivåerna`}\n' +
-      '      >\n' +
-      '        {badge}\n' +
-      '      </button>\n' +
-      '      <span id={tooltipId} className="options-positioning-history-tooltip" role="tooltip">\n' +
-      '        <strong>{annotation.label} · senaste 10</strong>\n' +
-      '        <span className="options-positioning-history-head" aria-hidden="true">\n' +
-      '          <span>Datum</span><span>Nivå</span><span>Δ</span>\n' +
-      '        </span>\n' +
-      '        <span className="options-positioning-history-list">\n' +
-      '          {history.map((item, index) => (\n' +
-      "            <span key={`${annotation.key}-${item.sourceTimestamp ?? item.date}-${index}`} className={index === 0 ? 'is-latest' : undefined}>\n" +
-      '              <time dateTime={item.date}>{formatHistoryDate(item.date)}</time>\n' +
-      '              <b>{formatNumber(item.value)}</b>\n' +
-      '              <em>{formatSigned(item.delta)}</em>\n' +
-      '            </span>\n' +
-      '          ))}\n' +
-      '        </span>\n' +
-      '      </span>\n' +
-      '    </span>\n' +
-      '  );\n' +
-      '}\n' +
-      '\n' +
-      'function ExposureChart({\n' +
-      '  annotations,\n' +
-      '  historyByKey,\n' +
-      '  metricKey,\n' +
-      '  pctKey,\n' +
-      '  rows,\n' +
-      '  scope,\n' +
-      '  spotStrike,\n' +
-      '  title,\n' +
-      '  toneKey,\n' +
-      '}) {\n' +
-      '  return (\n' +
-      '    <section className="options-positioning-chart" aria-label={`${title} per strike`}>\n' +
-      '      <header>\n' +
-      '        <strong>{title} per strike</strong>\n' +
-      "        <span>{title === 'GEX' ? 'Net GEX' : 'Net DEX'}</span>\n" +
-      '      </header>\n' +
-      '      <div className="options-positioning-axis" aria-hidden="true">\n' +
-      '        <span>−max</span><span>0</span><span>+max</span>\n' +
-      '      </div>\n' +
-      '      <div className="options-positioning-rows">\n' +
-      '        {rows.map((row) => {\n' +
-      '          const levelAnnotations = annotations.get(row.strike) ?? [];\n' +
-      '          const isSpot = row.strike === spotStrike;\n' +
-      '          const value = row[metricKey];\n' +
-      '          const tone = row[toneKey];\n' +
-      '          const width = Math.max(0, Math.min(50, Number(row[pctKey] ?? 0) / 2));\n' +
-      '          return (\n' +
-      '            <div\n' +
-      "              className={`options-positioning-row${isSpot ? ' is-spot' : ''}`}\n" +
-      '              key={`${scope}-${row.strike}`}\n' +
-      '              aria-label={`${title} strike ${formatNumber(row.strike)}: ${formatCompact(value)}`}\n' +
-      '            >\n' +
-      '              <div className="options-positioning-strike-cell">\n' +
-      '                <strong>{formatNumber(row.strike)}</strong>\n' +
-      '                <span className="options-positioning-row-labels">\n' +
-      '                  {isSpot ? <span className="options-positioning-spot-badge">Spot</span> : null}\n' +
-      '                  {levelAnnotations.map((annotation) => (\n' +
-      '                    <KeyLevelBadge\n' +
-      '                      annotation={annotation}\n' +
-      '                      history={historyByKey[annotation.key] ?? []}\n' +
-      '                      key={`${scope}-${row.strike}-${annotation.key}`}\n' +
-      '                      scope={scope}\n' +
-      '                    />\n' +
-      '                  ))}\n' +
-      '                </span>\n' +
-      '              </div>\n' +
-      '              <div className="options-positioning-bar-track" aria-hidden="true">\n' +
-      '                <span className="options-positioning-bar-zero" />\n' +
-      '                <i\n' +
-      "                  className={`options-positioning-bar tone-${tone} ${Number(value) < 0 ? 'is-negative' : 'is-positive'}`}\n" +
-      '                  style={{ width: `${width}%` }}\n' +
-      '                />\n' +
-      '              </div>\n' +
-      '              <strong className={`options-positioning-value tone-${tone}`}>{formatCompact(value)}</strong>\n' +
-      '            </div>\n' +
-      '          );\n' +
-      '        })}\n' +
-      '      </div>\n' +
-      '    </section>\n' +
-      '  );\n' +
-      '}\n' +
-      '\n' +
-      'export default function OptionsLadder({ latestPrice, snapshots = [] }) {\n' +
-      "  const [ticker, setTicker] = useState('');\n" +
-      '  const [strikePayload, setStrikePayload] = useState({ strikes: [] });\n' +
-      "  const [strikeStatus, setStrikeStatus] = useState('loading');\n" +
-      '\n' +
-      '  useEffect(() => {\n' +
-      "    const nextTicker = new URLSearchParams(window.location.search).get('ticker')?.trim().toUpperCase() ?? '';\n" +
-      '    setTicker(nextTicker);\n' +
-      '  }, [snapshots]);\n' +
-      '\n' +
-      '  useEffect(() => {\n' +
-      '    if (!ticker) return undefined;\n' +
-      '    const controller = new AbortController();\n' +
-      '    let active = true;\n' +
-      "    setStrikeStatus('loading');\n" +
-      '\n' +
-      '    fetch(`/api/gex-dex-strikes?ticker=${encodeURIComponent(ticker)}`, { signal: controller.signal })\n' +
-      '      .then(async (response) => {\n' +
-      '        const result = await response.json();\n' +
-      '        if (!response.ok) throw new Error(result?.error || `HTTP ${response.status}`);\n' +
-      '        if (!active) return;\n' +
-      '        setStrikePayload(result);\n' +
-      "        setStrikeStatus('ready');\n" +
-      '      })\n' +
-      '      .catch((error) => {\n' +
-      "        if (!active || error?.name === 'AbortError') return;\n" +
-      "        console.warn('Options positioning strikes unavailable:', error?.message ?? error);\n" +
-      '        setStrikePayload({ strikes: [] });\n' +
-      "        setStrikeStatus('error');\n" +
-      '      });\n' +
-      '\n' +
-      '    return () => {\n' +
-      '      active = false;\n' +
-      '      controller.abort();\n' +
-      '    };\n' +
-      '  }, [ticker]);\n' +
-      '\n' +
-      '  const model = useMemo(() => buildOptionsPositioningModel({\n' +
-      '    latestPrice: strikePayload.spotPrice ?? latestPrice,\n' +
-      '    snapshots,\n' +
-      '    strikes: strikePayload.strikes ?? [],\n' +
-      '    maxPerSide: 30,\n' +
-      '  }), [latestPrice, snapshots, strikePayload]);\n' +
-      '  const historyByKey = useMemo(\n' +
-      '    () => buildOptionsPositioningLevelHistory({ snapshots, limit: 10 }),\n' +
-      '    [snapshots]\n' +
-      '  );\n' +
-      '\n' +
-      '  return (\n' +
-      '    <aside className="options-positioning" aria-label="Optionspositionering">\n' +
-      '      <header className="options-positioning-header">\n' +
-      '        <div>\n' +
-      '          <h2>Optionspositionering</h2>\n' +
-      "          <span>{ticker || 'Vald ticker'}</span>\n" +
-      '        </div>\n' +
-      '        <strong className={`tone-${model.state.tone}`}>{model.state.label}</strong>\n' +
-      '      </header>\n' +
-      '\n' +
-      '      <section className="options-positioning-summary" aria-label="Optionsöversikt">\n' +
-      '        <div><span>Spot</span><strong>{formatNumber(model.spotPrice)}</strong></div>\n' +
-      "        <div><span>Net GEX</span><strong className={Number(model.netGex) < 0 ? 'tone-danger' : 'tone-positive'}>{formatCompact(model.netGex)}</strong></div>\n" +
-      "        <div><span>Net DEX</span><strong className={Number(model.netDex) < 0 ? 'tone-danger' : 'tone-positive'}>{formatCompact(model.netDex)}</strong></div>\n" +
-      '      </section>\n' +
-      '\n' +
-      '      <div className="options-positioning-scroll">\n' +
-      "        {strikeStatus === 'loading' ? (\n" +
-      '          <div className="options-positioning-message">Strike-datan laddas…</div>\n' +
-      '        ) : null}\n' +
-      "        {strikeStatus === 'error' ? (\n" +
-      '          <div className="options-positioning-message">Strike-datan är tillfälligt otillgänglig.</div>\n' +
-      '        ) : null}\n' +
-      "        {strikeStatus === 'ready' && model.rows.length ? (\n" +
-      '          <>\n' +
-      '            <ExposureChart\n' +
-      '              annotations={model.gexAnnotations}\n' +
-      '              historyByKey={historyByKey}\n' +
-      '              metricKey="netGex"\n' +
-      '              pctKey="gexPct"\n' +
-      '              rows={model.rows}\n' +
-      '              scope="gex"\n' +
-      '              spotStrike={model.spotStrike}\n' +
-      '              title="GEX"\n' +
-      '              toneKey="gexTone"\n' +
-      '            />\n' +
-      '            <ExposureChart\n' +
-      '              annotations={model.dexAnnotations}\n' +
-      '              historyByKey={historyByKey}\n' +
-      '              metricKey="netDex"\n' +
-      '              pctKey="dexPct"\n' +
-      '              rows={model.rows}\n' +
-      '              scope="dex"\n' +
-      '              spotStrike={model.spotStrike}\n' +
-      '              title="DEX"\n' +
-      '              toneKey="dexTone"\n' +
-      '            />\n' +
-      '          </>\n' +
-      '        ) : null}\n' +
-      "        {strikeStatus === 'ready' && !model.rows.length ? (\n" +
-      '          <div className="options-positioning-message">Inga strike-nivåer finns i senaste snapshoten.</div>\n' +
-      '        ) : null}\n' +
-      '      </div>\n' +
-      '\n' +
-      '      <footer className="options-positioning-footer">\n' +
-      '        <span>Uppdaterad {formatTimestamp(model.sourceTimestamp)} New York</span>\n' +
-      "        <span>{model.dataQuality ? `GammaLens · ${model.dataQuality}` : 'GammaLens'}</span>\n" +
-      '      </footer>\n' +
-      '    </aside>\n' +
-      '  );\n' +
+      '  return {\n' +
+      '    sourceTimestamp: first.source_timestamp ?? null,\n' +
+      '    spotPrice: finiteNumber(first.spot_price),\n' +
+      '    strikes: result.rows.flatMap((row) => {\n' +
+      '      const strike = finiteNumber(row.strike);\n' +
+      '      if (strike === null) return [];\n' +
+      '      return [{\n' +
+      '        strike,\n' +
+      '        call_gex: finiteNumber(row.call_gex),\n' +
+      '        put_gex: finiteNumber(row.put_gex),\n' +
+      '        net_gex: finiteNumber(row.net_gex),\n' +
+      '        call_dex: finiteNumber(row.call_dex),\n' +
+      '        put_dex: finiteNumber(row.put_dex),\n' +
+      '        net_dex: finiteNumber(row.net_dex),\n' +
+      '        expiry_count: finiteNumber(row.expiry_count),\n' +
+      '      }];\n' +
+      '    }),\n' +
+      '  };\n' +
       '}\n'
     
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected:
   actual: |-
-    'use client';
+    import { query } from '../db.js';
     
-    import { useEffect, useMemo, useState } from 'react';
-    import {
-      buildOptionsPositioningLevelHistory,
-      buildOptionsPositioningModel,
-    } from '../../lib/chart/options-positioning.js';
-    
-    function formatNumber(value, digits = 2) {
-      if (!Number.isFinite(Number(value))) return '—';
-      return Number(value).toLocaleString('sv-SE', {
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits,
-      });
+    function finiteNumber(value) {
+      if (value === null || value === undefined || value === '') return null;
+      const number = Number(value);
+      return Number.isFinite(number) ? number : null;
     }
     
-    function formatCompact(value) {
-      if (!Number.isFinite(Number(value))) return '—';
-      return new Intl.NumberFormat('sv-SE', {
-        notation: 'compact',
-        maximumFractionDigits: 1,
-      }).format(Number(value));
-    }
-    
-    function formatSigned(value, digits = 2) {
-      if (!Number.isFinite(Number(value))) return '—';
-      return new Intl.NumberFormat('sv-SE', {
-        signDisplay: 'always',
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits,
-      }).format(Number(value));
-    }
-    
-    function formatHistoryDate(value) {
-      if (!value) return '—';
-      return new Intl.DateTimeFormat('sv-SE', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        timeZone: 'UTC',
-      }).format(new Date(`${value}T00:00:00Z`));
-    }
-    
-    function formatTimestamp(value) {
-      if (!value) return '—';
-      return new Intl.DateTimeFormat('sv-SE', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-        timeZone: 'America/New_York',
-      }).format(new Date(value));
-    }
-    
-    function KeyLevelBadge({ annotation, history = [], scope }) {
-      const tooltipId = `options-positioning-${scope}-${annotation.key}-${String(annotation.value).replace('.', '-')}`;
-      const badge = (
-        <span
-          className="options-positioning-level-badge"
-          style={{ '--level-color': annotation.color }}
-          title={`${annotation.label}: ${formatNumber(annotation.value)}`}
-        >
-          {annotation.label}
-          {!annotation.exact ? <small>{formatNumber(annotation.value)}</small> : null}
-        </span>
+    export async function getLatestGexDexStrikeSnapshot(ticker) {
+      const result = await query(
+        `with latest as (
+           select
+             id,
+             source_timestamp,
+             spot_price
+           from gex_dex_source_snapshots
+           where ticker = $1
+             and source_timestamp <= now()
+           order by source_timestamp desc
+           limit 1
+         )
+         select
+           latest.source_timestamp::text as source_timestamp,
+           latest.spot_price::text as spot_price,
+           strike.strike::text as strike,
+           strike.call_gex::text as call_gex,
+           strike.put_gex::text as put_gex,
+           strike.net_gex::text as net_gex,
+           strike.call_dex::text as call_dex,
+           strike.put_dex::text as put_dex,
+           strike.net_dex::text as net_dex,
+           strike.expiry_count::text as expiry_count
+         from latest
+         left join gex_dex_strike_snapshots strike
+           on strike.snapshot_id = latest.id
+         order by strike.strike asc`,
+        [ticker]
       );
     
-      if (!history.length) return badge;
+      const first = result.rows[0] ?? null;
+      if (!first) {
+        return { sourceTimestamp: null, spotPrice: null, strikes: [] };
+      }
     
-      return (
-        <span className="options-positioning-tooltip-wrap">
-          <button
-            type="button"
-            className="options-positioning-tooltip-trigger"
-            aria-describedby={tooltipId}
-            aria-label={`${annotation.label}: visa de senaste ${history.length} nivåerna`}
-          >
-            {badge}
-          </button>
-          <span id={tooltipId} className="options-positioning-history-tooltip" role="tooltip">
-            <strong>{annotation.label} · senaste 10</strong>
-            <span className="options-positioning-history-head" aria-hidden="true">
-              <span>Datum</span><span>Nivå</span><span>Δ</span>
-            </span>
-            <span className="options-positioning-history-list">
-              {history.map((item, index) => (
-                <span key={`${annotation.key}-${item.sourceTimestamp ?? item.date}-${index}`} className={index === 0 ? 'is-latest' : undefined}>
-                  <time dateTime={item.date}>{formatHistoryDate(item.date)}</time>
-                  <b>{formatNumber(item.value)}</b>
-                  <em>{formatSigned(item.delta)}</em>
-                </span>
-              ))}
-            </span>
-          </span>
-        </span>
-      );
-    }
-    
-    function ExposureChart({
-      annotations,
-      historyByKey,
-      metricKey,
-      pctKey,
-      rows,
-      scope,
-      spotStrike,
-      title,
-      toneKey,
-    }) {
-      return (
-        <section className="options-positioning-chart" aria-label={`${title} per strike`}>
-          <header>
-            <strong>{title} per strike</strong>
-            <span>{title === 'GEX' ? 'Net GEX' : 'Net DEX'}</span>
-          </header>
-          <div className="options-positioning-axis" aria-hidden="true">
-            <span>−max</span><span>0</span><span>+max</span>
-          </div>
-          <div className="options-positioning-rows">
-            {rows.map((row) => {
-              const levelAnnotations = annotations.get(row.strike) ?? [];
-              const isSpot = row.strike === spotStrike;
-              const value = row[metricKey];
-              const tone = row[toneKey];
-              const width = Math.max(0, Math.min(50, Number(row[pctKey] ?? 0) / 2));
-              return (
-                <div
-                  className={`options-positioning-row${isSpot ? ' is-spot' : ''}`}
-                  key={`${scope}-${row.strike}`}
-                  aria-label={`${title} strike ${formatNumber(row.strike)}: ${formatCompact(value)}`}
-                >
-                  <div className="options-positioning-strike-cell">
-                    <strong>{formatNumber(row.strike)}</strong>
-                    <span className="options-positioning-row-labels">
-                      {isSpot ? <span className="options-positioning-spot-badge">Spot</span> : null}
-                      {levelAnnotations.map((annotation) => (
-                        <KeyLevelBadge
-                          annotation={annotation}
-                          history={historyByKey[annotation.key] ?? []}
-                          key={`${scope}-${row.strike}-${annotation.key}`}
-                          scope={scope}
-                        />
-                      ))}
-                    </span>
-                  </div>
-                  <div className="options-positioning-bar-track" aria-hidden="true">
-                    <span className="options-positioning-bar-zero" />
-                    <i
-                      className={`options-positioning-bar tone-${tone} ${Number(value) < 0 ? 'is-negative' : 'is-positive'}`}
-                      style={{ width: `${width}%` }}
-                    />
-                  </div>
-                  <strong className={`options-positioning-value tone-${tone}`}>{formatCompact(value)}</strong>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      );
-    }
-    
-    export default function OptionsLadder({ latestPrice, snapshots = [] }) {
-      const [ticker, setTicker] = useState('');
-      const [strikePayload, setStrikePayload] = useState({ strikes: [] });
-      const [strikeStatus, setStrikeStatus] = useState('loading');
-    
-      useEffect(() => {
-        const nextTicker = new URLSearchParams(window.location.search).get('ticker')?.trim().toUpperCase() ?? '';
-        setTicker(nextTicker);
-      }, [snapshots]);
-    
-      useEffect(() => {
-        if (!ticker) return undefined;
-        const controller = new AbortController();
-        let active = true;
-        setStrikeStatus('loading');
-    
-        fetch(`/api/gex-dex-strikes?ticker=${encodeURIComponent(ticker)}`, { signal: controller.signal })
-          .then(async (response) => {
-            const result = await response.json();
-            if (!response.ok) throw new Error(result?.error || `HTTP ${response.status}`);
-            if (!active) return;
-            setStrikePayload(result);
-            setStrikeStatus('ready');
-          })
-          .catch((error) => {
-            if (!active || error?.name === 'AbortError') return;
-            console.warn('Options positioning strikes unavailable:', error?.message ?? error);
-            setStrikePayload({ strikes: [] });
-            setStrikeStatus('error');
-          });
-    
-        return () => {
-          active = false;
-          controller.abort();
-        };
-      }, [ticker]);
-    
-      const model = useMemo(() => buildOptionsPositioningModel({
-        latestPrice: strikePayload.spotPrice ?? latestPrice,
-        snapshots,
-        strikes: strikePayload.strikes ?? [],
-        maxPerSide: 30,
-      }), [latestPrice, snapshots, strikePayload]);
-      const historyByKey = useMemo(
-        () => buildOptionsPositioningLevelHistory({ snapshots, limit: 10 }),
-        [snapshots]
-      );
-    
-      return (
-        <aside className="options-positioning" aria-label="Optionspositionering">
-          <header className="options-positioning-header">
-            <div>
-              <h2>Optionspositionering</h2>
-              <span>{ticker || 'Vald ticker'}</span>
-            </div>
-            <strong className={`tone-${model.state.tone}`}>{model.state.label}</strong>
-          </header>
-    
-          <section className="options-positioning-summary" aria-label="Optionsöversikt">
-            <div><span>Spot</span><strong>{formatNumber(model.spotPrice)}</strong></div>
-            <div><span>Net GEX</span><strong className={Number(model.netGex) < 0 ? 'tone-danger' : 'tone-positive'}>{formatCompact(model.netGex)}</strong></div>
-            <div><span>Net DEX</span><strong className={Number(model.netDex) < 0 ? 'tone-danger' : 'tone-positive'}>{formatCompact(model.netDex)}</strong></div>
-          </section>
-    
-          <div className="options-positioning-scroll">
-            {strikeStatus === 'loading' ? (
-              <div className="options-positioning-message">Strike-datan laddas…</div>
-            ) : null}
-            {strikeStatus === 'error' ? (
-              <div className="options-positioning-message">Strike-datan är tillfälligt otillgänglig.</div>
-            ) : null}
-            {strikeStatus === 'ready' && model.rows.length ? (
-              <>
-                <ExposureChart
-                  annotations={model.gexAnnotations}
-                  historyByKey={historyByKey}
-                  metricKey="netGex"
-                  pctKey="gexPct"
-                  rows={model.rows}
-                  scope="gex"
-                  spotStrike={model.spotStrike}
-                  title="GEX"
-                  toneKey="gexTone"
-                />
-                <ExposureChart
-                  annotations={model.dexAnnotations}
-                  historyByKey={historyByKey}
-                  metricKey="netDex"
-                  pctKey="dexPct"
-                  rows={model.rows}
-                  scope="dex"
-                  spotStrike={model.spotStrike}
-                  title="DEX"
-                  toneKey="dexTone"
-                />
-              </>
-            ) : null}
-            {strikeStatus === 'ready' && !model.rows.length ? (
-              <div className="options-positioning-message">Inga strike-nivåer finns i senaste snapshoten.</div>
-            ) : null}
-          </div>
-    
-          <footer className="options-positioning-footer">
-            <span>Uppdaterad {formatTimestamp(model.sourceTimestamp)} New York</span>
-            <span>{model.dataQuality ? `GammaLens · ${model.dataQuality}` : 'GammaLens'}</span>
-          </footer>
-        </aside>
-      );
+      return {
+        sourceTimestamp: first.source_timestamp ?? null,
+        spotPrice: finiteNumber(first.spot_price),
+        strikes: result.rows.flatMap((row) => {
+          const strike = finiteNumber(row.strike);
+          if (strike === null) return [];
+          return [{
+            strike,
+            call_gex: finiteNumber(row.call_gex),
+            put_gex: finiteNumber(row.put_gex),
+            net_gex: finiteNumber(row.net_gex),
+            call_dex: finiteNumber(row.call_dex),
+            put_dex: finiteNumber(row.put_dex),
+            net_dex: finiteNumber(row.net_dex),
+            expiry_count: finiteNumber(row.expiry_count),
+          }];
+        }),
+      };
     }
     
   operator: 'match'
   stack: |-
-    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:124:10)
+    TestContext.<anonymous> (file:///home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:134:10)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -608,4 +198,4 @@ not ok 6 - chart renders isolated Options Positioning strike bars instead of the
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 94.856347
+# duration_ms 83.598932
