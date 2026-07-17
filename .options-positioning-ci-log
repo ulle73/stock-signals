@@ -1,5 +1,5 @@
 
-added 43 packages, and audited 44 packages in 7s
+added 43 packages, and audited 44 packages in 10s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -15,37 +15,37 @@ TAP version 13
 # Subtest: only Gamma Flip belongs to the default GEX/DEX chart group
 ok 1 - only Gamma Flip belongs to the default GEX/DEX chart group
   ---
-  duration_ms: 1.267703
+  duration_ms: 1.183065
   type: 'test'
   ...
 # Subtest: strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
 ok 2 - strike selection keeps at most thirty rows on each side of spot and preserves distant key levels
   ---
-  duration_ms: 2.93058
+  duration_ms: 2.837538
   type: 'test'
   ...
 # Subtest: all provider strikes are shown when each side stays within the thirty-row cap
 ok 3 - all provider strikes are shown when each side stays within the thirty-row cap
   ---
-  duration_ms: 0.29271
+  duration_ms: 0.278509
   type: 'test'
   ...
 # Subtest: options positioning model builds centered GEX and DEX bars with key-level annotations
 ok 4 - options positioning model builds centered GEX and DEX bars with key-level annotations
   ---
-  duration_ms: 0.909215
+  duration_ms: 0.749381
   type: 'test'
   ...
 # Subtest: key-level history remains available for hover and keyboard tooltips
 ok 5 - key-level history remains available for hover and keyboard tooltips
   ---
-  duration_ms: 8.300481
+  duration_ms: 7.286266
   type: 'test'
   ...
 # Subtest: chart renders isolated Options Positioning strike bars instead of the old ladder table
 not ok 6 - chart renders isolated Options Positioning strike bars instead of the old ladder table
   ---
-  duration_ms: 13.152475
+  duration_ms: 10.882747
   type: 'test'
   location: '/home/runner/work/stock-signals/stock-signals/tests/options-ladder.test.js:115:1'
   failureType: 'testCodeFailure'
@@ -416,4 +416,4 @@ not ok 6 - chart renders isolated Options Positioning strike bars instead of the
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 95.913645
+# duration_ms 81.267618
