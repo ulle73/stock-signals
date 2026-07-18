@@ -23,7 +23,7 @@ test('only Gamma Flip belongs to the default GEX/DEX chart group', () => {
   assert.deepEqual(extraKeys, ['callWall', 'putWall', 'dexResistance', 'dexSupport', 'volTrigger']);
 });
 
-test('strike selection keeps at most thirty rows on each side of spot and preserves distant key levels', async () => {
+test('strike selection keeps at most thirty rows on each side and returns a descending price ladder', async () => {
   const module = await loadPositioningModule();
   assert.equal(typeof module.selectOptionsPositioningStrikes, 'function');
 
@@ -45,17 +45,17 @@ test('strike selection keeps at most thirty rows on each side of spot and preser
   assert.equal(selected.some((row) => row.strike === 140), true);
   assert.equal(selected.some((row) => row.strike === 99), true);
   assert.equal(selected.some((row) => row.strike === 101), true);
-  assert.deepEqual(selected.map((row) => row.strike), [...selected.map((row) => row.strike)].sort((a, b) => a - b));
+  assert.deepEqual(selected.map((row) => row.strike), [...selected.map((row) => row.strike)].sort((a, b) => b - a));
 });
 
-test('all provider strikes are shown when each side stays within the thirty-row cap', async () => {
+test('all provider strikes are shown from highest to lowest when each side stays within the cap', async () => {
   const module = await loadPositioningModule();
   const strikes = [90, 95, 100, 105, 110].map((strike) => ({ strike, net_gex: strike, net_dex: -strike }));
   const selected = module.selectOptionsPositioningStrikes({ strikes, spotPrice: 100, maxPerSide: 30 });
-  assert.deepEqual(selected.map((row) => row.strike), [90, 95, 100, 105, 110]);
+  assert.deepEqual(selected.map((row) => row.strike), [110, 105, 100, 95, 90]);
 });
 
-test('options positioning model builds centered GEX and DEX bars with key-level annotations', async () => {
+test('options positioning model aligns GEX and DEX on the same descending strike rows', async () => {
   const module = await loadPositioningModule();
   assert.equal(typeof module.buildOptionsPositioningModel, 'function');
 
@@ -86,7 +86,7 @@ test('options positioning model builds centered GEX and DEX bars with key-level 
   });
 
   assert.equal(model.state.label, 'Positiv gamma');
-  assert.equal(model.rows.length, 6);
+  assert.deepEqual(model.rows.map((row) => row.strike), [340, 338, 335, 330, 325, 312.5]);
   assert.equal(model.rows.find((row) => row.strike === 335).gexPct, 100);
   assert.equal(model.rows.find((row) => row.strike === 340).dexPct, 100);
   assert.deepEqual(model.gexAnnotations.get(335).map((item) => item.key), ['callWall']);
@@ -112,7 +112,7 @@ test('key-level history remains available for hover and keyboard tooltips', asyn
   assert.equal(history.callWall.at(-1).value, 202);
 });
 
-test('chart renders isolated Options Positioning strike bars instead of the old ladder table', async () => {
+test('chart renders one combined strike ladder with GEX left and DEX right', async () => {
   const [component, css, route, repository] = await Promise.all([
     readFile(new URL('../app/chart/options-ladder.js', import.meta.url), 'utf8'),
     readFile(new URL('../app/chart/options-ladder.css', import.meta.url), 'utf8'),
@@ -121,13 +121,15 @@ test('chart renders isolated Options Positioning strike bars instead of the old 
   ]);
 
   assert.match(component, /Optionspositionering/i);
-  assert.match(component, /title="GEX"/);
-  assert.match(component, /title="DEX"/);
+  assert.match(component, /options-positioning-combined/);
+  assert.match(component, /data-metric="gex"/);
+  assert.match(component, /data-metric="dex"/);
   assert.match(component, /\/api\/gex-dex-strikes/);
-  assert.doesNotMatch(component, /options-ladder-table/);
+  assert.doesNotMatch(component, /function ExposureChart/);
   assert.match(component, /role="tooltip"/);
-  assert.match(css, /\.options-positioning-bar-zero/);
-  assert.match(css, /\.is-negative/);
+  assert.match(css, /\.options-positioning-combined/);
+  assert.match(css, /grid-template-columns:[^;]*strike/i);
+  assert.match(css, /\.options-positioning-metric/);
   assert.match(css, /overflow-y:\s*auto/);
   assert.match(css, /@media \(max-width: 1180px\)/);
   assert.match(route, /getLatestGexDexStrikeSnapshot/);
