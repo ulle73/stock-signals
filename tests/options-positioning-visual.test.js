@@ -13,3 +13,11 @@ test('options positioning uses a dense professional table treatment', async () =
   assert.match(css, /\.options-positioning-bar-zero\s*\{[^}]*box-shadow:/s);
   assert.match(css, /\.options-positioning-value\s*\{[^}]*font-weight:\s*800/s);
 });
+
+test('options positioning values use colored text without colored backgrounds', async () => {
+  const css = await readFile(new URL('../app/chart/options-positioning-polish.css', import.meta.url), 'utf8');
+
+  assert.match(css, /\.options-positioning-value\[class\*=["']tone-["']\]\s*\{[^}]*background:\s*transparent/s);
+  assert.match(css, /\.options-positioning-value\.tone-positive\s*\{[^}]*color:\s*var\(--accent\)/s);
+  assert.match(css, /\.options-positioning-value\.tone-danger\s*\{[^}]*color:\s*var\(--danger\)/s);
+});
