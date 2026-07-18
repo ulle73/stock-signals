@@ -94,38 +94,67 @@ function KeyLevelBadge({ annotation, history = [], scope }) {
   );
 }
 
-function ExposureChart({
-  annotations,
-  historyByKey,
-  metricKey,
-  pctKey,
-  rows,
-  scope,
-  spotStrike,
-  title,
-  toneKey,
-}) {
+function MetricBar({ value, pct, tone }) {
+  const width = Math.max(0, Math.min(50, Number(pct ?? 0) / 2));
   return (
-    <section className="options-positioning-chart" aria-label={`${title} per strike`}>
-      <header>
-        <strong>{title} per strike</strong>
-        <span>{title === 'GEX' ? 'Net GEX' : 'Net DEX'}</span>
-      </header>
-      <div className="options-positioning-axis" aria-hidden="true">
-        <span>−max</span><span>0</span><span>+max</span>
+    <>
+      <div className="options-positioning-bar-track" aria-hidden="true">
+        <span className="options-positioning-bar-zero" />
+        <i
+          className={`options-positioning-bar tone-${tone} ${Number(value) < 0 ? 'is-negative' : 'is-positive'}`}
+          style={{ width: `${width}%` }}
+        />
       </div>
+      <strong className={`options-positioning-value tone-${tone}`}>{formatCompact(value)}</strong>
+    </>
+  );
+}
+
+function mergeAnnotations(...groups) {
+  const unique = new Map();
+  for (const annotation of groups.flat()) {
+    if (!unique.has(annotation.key)) unique.set(annotation.key, annotation);
+  }
+  return [...unique.values()];
+}
+
+function CombinedExposureLadder({ historyByKey, model }) {
+  return (
+    <section className="options-positioning-combined" aria-label="GEX och DEX per strike">
+      <header className="options-positioning-combined-head">
+        <div>
+          <strong>Strike</strong>
+          <span>Nyckelnivåer</span>
+        </div>
+        <div data-metric="gex">
+          <strong>GEX per strike</strong>
+          <span>Net GEX</span>
+        </div>
+        <div data-metric="dex">
+          <strong>DEX per strike</strong>
+          <span>Net DEX</span>
+        </div>
+      </header>
+
+      <div className="options-positioning-combined-axis" aria-hidden="true">
+        <span>Högst → lägst</span>
+        <span className="options-positioning-metric-axis"><i>−max</i><i>0</i><i>+max</i></span>
+        <span className="options-positioning-metric-axis"><i>−max</i><i>0</i><i>+max</i></span>
+      </div>
+
       <div className="options-positioning-rows">
-        {rows.map((row) => {
-          const levelAnnotations = annotations.get(row.strike) ?? [];
-          const isSpot = row.strike === spotStrike;
-          const value = row[metricKey];
-          const tone = row[toneKey];
-          const width = Math.max(0, Math.min(50, Number(row[pctKey] ?? 0) / 2));
+        {model.rows.map((row) => {
+          const isSpot = row.strike === model.spotStrike;
+          const levelAnnotations = mergeAnnotations(
+            model.gexAnnotations.get(row.strike) ?? [],
+            model.dexAnnotations.get(row.strike) ?? []
+          );
+
           return (
             <div
               className={`options-positioning-row${isSpot ? ' is-spot' : ''}`}
-              key={`${scope}-${row.strike}`}
-              aria-label={`${title} strike ${formatNumber(row.strike)}: ${formatCompact(value)}`}
+              key={row.strike}
+              aria-label={`Strike ${formatNumber(row.strike)}, GEX ${formatCompact(row.netGex)}, DEX ${formatCompact(row.netDex)}`}
             >
               <div className="options-positioning-strike-cell">
                 <strong>{formatNumber(row.strike)}</strong>
@@ -135,20 +164,20 @@ function ExposureChart({
                     <KeyLevelBadge
                       annotation={annotation}
                       history={historyByKey[annotation.key] ?? []}
-                      key={`${scope}-${row.strike}-${annotation.key}`}
-                      scope={scope}
+                      key={`${row.strike}-${annotation.key}`}
+                      scope="combined"
                     />
                   ))}
                 </span>
               </div>
-              <div className="options-positioning-bar-track" aria-hidden="true">
-                <span className="options-positioning-bar-zero" />
-                <i
-                  className={`options-positioning-bar tone-${tone} ${Number(value) < 0 ? 'is-negative' : 'is-positive'}`}
-                  style={{ width: `${width}%` }}
-                />
+
+              <div className="options-positioning-metric" data-metric="gex">
+                <MetricBar value={row.netGex} pct={row.gexPct} tone={row.gexTone} />
               </div>
-              <strong className={`options-positioning-value tone-${tone}`}>{formatCompact(value)}</strong>
+
+              <div className="options-positioning-metric" data-metric="dex">
+                <MetricBar value={row.netDex} pct={row.dexPct} tone={row.dexTone} />
+              </div>
             </div>
           );
         })}
@@ -229,30 +258,7 @@ export default function OptionsLadder({ latestPrice, snapshots = [] }) {
           <div className="options-positioning-message">Strike-datan är tillfälligt otillgänglig.</div>
         ) : null}
         {strikeStatus === 'ready' && model.rows.length ? (
-          <>
-            <ExposureChart
-              annotations={model.gexAnnotations}
-              historyByKey={historyByKey}
-              metricKey="netGex"
-              pctKey="gexPct"
-              rows={model.rows}
-              scope="gex"
-              spotStrike={model.spotStrike}
-              title="GEX"
-              toneKey="gexTone"
-            />
-            <ExposureChart
-              annotations={model.dexAnnotations}
-              historyByKey={historyByKey}
-              metricKey="netDex"
-              pctKey="dexPct"
-              rows={model.rows}
-              scope="dex"
-              spotStrike={model.spotStrike}
-              title="DEX"
-              toneKey="dexTone"
-            />
-          </>
+          <CombinedExposureLadder historyByKey={historyByKey} model={model} />
         ) : null}
         {strikeStatus === 'ready' && !model.rows.length ? (
           <div className="options-positioning-message">Inga strike-nivåer finns i senaste snapshoten.</div>
