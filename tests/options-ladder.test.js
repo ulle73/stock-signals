@@ -124,7 +124,7 @@ test('chart renders one combined strike ladder with GEX left and DEX right', asy
   assert.match(component, /options-positioning-combined/);
   assert.match(component, /data-metric="gex"/);
   assert.match(component, /data-metric="dex"/);
-  assert.match(component, //api/gex-dex-strikes/);
+  assert.match(component, /\/api\/gex-dex-strikes/);
   assert.doesNotMatch(component, /function ExposureChart/);
   assert.match(component, /role="tooltip"/);
   assert.match(css, /\.options-positioning-combined/);
