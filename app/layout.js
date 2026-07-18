@@ -5,6 +5,7 @@ import './chart/chart.css';
 import './chart/ryd-obv.css';
 import './chart/context-layers.css';
 import './chart/options-ladder.css';
+import './chart/options-positioning-polish.css';
 
 export const metadata = {
   title: 'Stock Signals',
