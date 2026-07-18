@@ -164,6 +164,33 @@
   letter-spacing: -0.02em;
 }
 
+.options-positioning-value[class*="tone-"] {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.options-positioning-value.tone-positive {
+  color: var(--accent);
+}
+
+.options-positioning-value.tone-danger {
+  color: var(--danger);
+}
+
+.options-positioning-value.tone-warning {
+  color: var(--warning);
+}
+
+.options-positioning-value.tone-caution {
+  color: var(--caution);
+}
+
+.options-positioning-value.tone-neutral {
+  color: var(--neutral);
+}
+
 [data-theme="light"] .options-positioning-combined-head,
 [data-theme="light"] .options-positioning-combined-axis {
   background: #ffffff;
