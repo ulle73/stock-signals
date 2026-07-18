@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 test('options positioning uses a dense professional table treatment', async () => {
-  const css = await readFile(new URL('../app/chart/options-ladder.css', import.meta.url), 'utf8');
+  const css = await readFile(new URL('../app/chart/options-positioning-polish.css', import.meta.url), 'utf8');
 
   assert.match(css, /--options-row-height:\s*34px/);
   assert.match(css, /\.options-positioning-row\s*\{[^}]*border-bottom:/s);
