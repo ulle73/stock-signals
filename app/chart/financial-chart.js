@@ -33,6 +33,7 @@ import { buildCvolAnchorData, buildCvolMarkers } from '../../lib/chart/cvol-mark
 import { buildYieldAnchorData, buildYieldMarkers } from '../../lib/chart/yield-2y-10y-markers.js';
 import { buildEarningsAnchorData, buildEarningsMarkers } from '../../lib/chart/earnings-markers.js';
 import { buildGexDexLevelData, GEX_DEX_LEVEL_DEFINITIONS } from '../../lib/chart/gex-dex-levels.js';
+import { GexDexInlineBarsPrimitive } from '../../lib/chart/gex-dex-inline-bars.js';
 import CrosshairLegend from './crosshair-legend.js';
 
 function themeName() {
@@ -174,12 +175,13 @@ function crosshairPoint(param, series, barsByTime) {
 }
 
 export default function FinancialChart({
-  bars, currency = 'USD', earningsEvents = [], gexDexSnapshots = [], period, resetToken, ticker,
+  bars, currency = 'USD', earningsEvents = [], gexDexSnapshots = [], gexDexStrikes = [], period, resetToken, ticker,
   visibleContextLayers, visibleIndicators, visibleOverlays, visibleSignals,
 }) {
   const containerRef = useRef(null);
   const chartRef = useRef(null);
   const overlaySeriesRef = useRef({});
+  const inlineExposurePrimitiveRef = useRef(null);
   const animationFrameRef = useRef(null);
   const latestPoint = useMemo(() => bars.at(-1) ?? null, [bars]);
   const barsByTime = useMemo(() => new Map(bars.map((bar) => [bar.time, bar])), [bars]);
@@ -210,6 +212,12 @@ export default function FinancialChart({
     const volumeSeries = chart.addSeries(HistogramSeries, getVolumeSeriesOptions(), 1);
     const series = { price: priceSeries, volume: volumeSeries };
     priceSeries.setData(candleData(bars));
+    const inlineExposurePrimitive = new GexDexInlineBarsPrimitive({
+      rows: gexDexStrikes,
+      maxWidthRatio: 0.30,
+    });
+    priceSeries.attachPrimitive(inlineExposurePrimitive);
+    inlineExposurePrimitiveRef.current = inlineExposurePrimitive;
     volumeSeries.setData(volumeData(bars));
     volumeSeries.priceScale().applyOptions({ scaleMargins: { top: 0.12, bottom: 0 }, borderVisible: false });
 
@@ -336,6 +344,8 @@ export default function FinancialChart({
       chart.unsubscribeCrosshairMove(handleCrosshairMove);
       if (animationFrameRef.current !== null) cancelAnimationFrame(animationFrameRef.current);
       rydWatermark?.detach();
+      priceSeries.detachPrimitive(inlineExposurePrimitive);
+      inlineExposurePrimitiveRef.current = null;
       chart.remove();
       chartRef.current = null;
       overlaySeriesRef.current = {};
@@ -344,6 +354,10 @@ export default function FinancialChart({
     bars, earningsEvents, gexDexSnapshots, latestPoint, period, resetToken, ticker,
     visibleContextLayers, visibleIndicators, visibleOverlays, visibleSignals,
   ]);
+
+  useEffect(() => {
+    inlineExposurePrimitiveRef.current?.setRows(gexDexStrikes);
+  }, [gexDexStrikes]);
 
   useEffect(() => {
     const series = overlaySeriesRef.current;
