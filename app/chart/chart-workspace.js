@@ -67,6 +67,8 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
   const [errorMessage, setErrorMessage] = useState('');
   const [retryToken, setRetryToken] = useState(0);
   const [resetToken, setResetToken] = useState(0);
+  const [strikePayload, setStrikePayload] = useState({ strikes: [] });
+  const [strikeStatus, setStrikeStatus] = useState('loading');
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -113,6 +115,33 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
       controller.abort();
     };
   }, [period, retryToken, ticker]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    setStrikeStatus('loading');
+    setStrikePayload({ strikes: [] });
+
+    fetch(`/api/gex-dex-strikes?ticker=${encodeURIComponent(ticker)}`, { signal: controller.signal })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result?.error || `HTTP ${response.status}`);
+        if (!active) return;
+        setStrikePayload(result);
+        setStrikeStatus('ready');
+      })
+      .catch((error) => {
+        if (!active || error?.name === 'AbortError') return;
+        console.warn('Inline GEX/DEX strikes unavailable:', error?.message ?? error);
+        setStrikePayload({ strikes: [] });
+        setStrikeStatus('error');
+      });
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [ticker]);
 
   const unavailableOverlays = useMemo(() => {
     const bars = payload?.bars ?? [];
@@ -228,6 +257,7 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
               currency={payload.currency}
               earningsEvents={payload.earningsEvents}
               gexDexSnapshots={payload.gexDexSnapshots}
+              gexDexStrikes={strikePayload.strikes ?? []}
               period={payload.period}
               resetToken={resetToken}
               ticker={payload.ticker}
@@ -243,6 +273,9 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
           <OptionsLadder
             latestPrice={payload.latestPrice}
             snapshots={payload.gexDexSnapshots}
+            strikePayload={strikePayload}
+            strikeStatus={strikeStatus}
+            ticker={payload.ticker}
           />
         ) : null}
       </div>
