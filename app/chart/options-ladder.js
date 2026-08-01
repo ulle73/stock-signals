@@ -186,43 +186,57 @@ function CombinedExposureLadder({ historyByKey, model }) {
   );
 }
 
-export default function OptionsLadder({ latestPrice, snapshots = [] }) {
-  const [ticker, setTicker] = useState('');
-  const [strikePayload, setStrikePayload] = useState({ strikes: [] });
-  const [strikeStatus, setStrikeStatus] = useState('loading');
+export default function OptionsLadder({
+  latestPrice,
+  snapshots = [],
+  strikePayload: providedStrikePayload = null,
+  strikeStatus: providedStrikeStatus = null,
+  ticker: providedTicker = '',
+}) {
+  const [fallbackTicker, setFallbackTicker] = useState('');
+  const [localStrikePayload, setLocalStrikePayload] = useState({ strikes: [] });
+  const [localStrikeStatus, setLocalStrikeStatus] = useState('loading');
+  const ticker = String(providedTicker || fallbackTicker).trim().toUpperCase();
 
   useEffect(() => {
+    if (providedTicker) {
+      setFallbackTicker(String(providedTicker).trim().toUpperCase());
+      return;
+    }
     const nextTicker = new URLSearchParams(window.location.search).get('ticker')?.trim().toUpperCase() ?? '';
-    setTicker(nextTicker);
-  }, [snapshots]);
+    setFallbackTicker(nextTicker);
+  }, [providedTicker, snapshots]);
 
   useEffect(() => {
+    if (providedStrikePayload) return undefined;
     if (!ticker) return undefined;
     const controller = new AbortController();
     let active = true;
-    setStrikeStatus('loading');
+    setLocalStrikeStatus('loading');
 
     fetch(`/api/gex-dex-strikes?ticker=${encodeURIComponent(ticker)}`, { signal: controller.signal })
       .then(async (response) => {
         const result = await response.json();
         if (!response.ok) throw new Error(result?.error || `HTTP ${response.status}`);
         if (!active) return;
-        setStrikePayload(result);
-        setStrikeStatus('ready');
+        setLocalStrikePayload(result);
+        setLocalStrikeStatus('ready');
       })
       .catch((error) => {
         if (!active || error?.name === 'AbortError') return;
         console.warn('Options positioning strikes unavailable:', error?.message ?? error);
-        setStrikePayload({ strikes: [] });
-        setStrikeStatus('error');
+        setLocalStrikePayload({ strikes: [] });
+        setLocalStrikeStatus('error');
       });
 
     return () => {
       active = false;
       controller.abort();
     };
-  }, [ticker]);
+  }, [providedStrikePayload, ticker]);
 
+  const strikePayload = providedStrikePayload ?? localStrikePayload;
+  const strikeStatus = providedStrikeStatus ?? localStrikeStatus;
   const model = useMemo(() => buildOptionsPositioningModel({
     latestPrice: strikePayload.spotPrice ?? latestPrice,
     snapshots,
