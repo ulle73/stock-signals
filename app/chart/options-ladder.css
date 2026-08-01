@@ -1,6 +1,6 @@
 .chart-workspace-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
   gap: 12px;
   min-width: 0;
@@ -8,10 +8,11 @@
 
 .chart-workspace-main > .chart-workspace-frame {
   min-width: 0;
+  width: 100%;
 }
 
 .options-positioning {
-  width: clamp(560px, 38vw, 700px);
+  width: 100%;
   max-height: clamp(620px, 78vh, 980px);
   display: flex;
   flex-direction: column;
@@ -475,10 +476,6 @@
 }
 
 @media (max-width: 1500px) {
-  .options-positioning {
-    width: clamp(500px, 36vw, 580px);
-  }
-
   .options-positioning-combined {
     --options-strike-column: minmax(145px, 0.82fr);
   }
@@ -501,12 +498,7 @@
 }
 
 @media (max-width: 1180px) {
-  .chart-workspace-main {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .options-positioning {
-    width: 100%;
     max-height: 760px;
   }
 

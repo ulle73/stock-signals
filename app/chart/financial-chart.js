@@ -330,7 +330,11 @@ export default function FinancialChart({
         animationFrameRef.current = null;
       });
     };
-    const handleCrosshairMove = (param) => scheduleLegend(crosshairPoint(param, series, barsByTime));
+    const handleCrosshairMove = (param) => {
+      const hoveredObjectId = param.hoveredInfo?.objectId ?? param.hoveredObjectId;
+      inlineExposurePrimitive.setHoveredObjectId(hoveredObjectId);
+      scheduleLegend(crosshairPoint(param, series, barsByTime));
+    };
     chart.subscribeCrosshairMove(handleCrosshairMove);
     chart.timeScale().fitContent();
 

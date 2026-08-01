@@ -86,3 +86,45 @@ test('primitive exposes a stable pane view and never changes autoscale', async (
   assert.equal(firstViews[0].zOrder(), 'bottom');
   assert.equal(primitive.autoscaleInfo(), null);
 });
+
+function drawPrimitive(primitive, { width = 900, height = 400 } = {}) {
+  const text = [];
+  const context = {
+    save() {},
+    restore() {},
+    fillRect() {},
+    fillText(value) { text.push(value); },
+    measureText(value) { return { width: String(value).length * 6 }; },
+  };
+
+  primitive.paneViews()[0].renderer().draw({
+    useMediaCoordinateSpace(callback) {
+      callback({ context, mediaSize: { width, height } });
+    },
+  });
+
+  return text;
+}
+
+test('inline bar values are hidden until the corresponding bar is hovered', async () => {
+  const module = await loadModule();
+  const primitive = new module.GexDexInlineBarsPrimitive({
+    rows: [{ strike: 340, netGex: 100, netDex: -40 }],
+  });
+  primitive.attached({
+    series: { priceToCoordinate: () => 80 },
+    requestUpdate() {},
+  });
+
+  assert.deepEqual(drawPrimitive(primitive), []);
+
+  const hit = primitive.hitTest(100, 80);
+  assert.equal(hit?.externalId, 'gex-dex-inline:gex:340');
+  assert.equal(hit?.zOrder, 'top');
+  assert.equal(primitive.setHoveredObjectId(hit.externalId), true);
+
+  assert.deepEqual(drawPrimitive(primitive), ['GEX 340 · 100']);
+
+  primitive.setHoveredObjectId(null);
+  assert.deepEqual(drawPrimitive(primitive), []);
+});

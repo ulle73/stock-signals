@@ -209,6 +209,7 @@
 
 .chart-workspace-frame {
   position: relative;
+  width: 100%;
   min-height: clamp(520px, 72vh, 860px);
   overflow: hidden;
   border: 1px solid var(--line);

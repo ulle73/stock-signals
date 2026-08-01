@@ -1,5 +1,5 @@
 .options-positioning {
-  width: clamp(620px, 42vw, 760px);
+  width: 100%;
   border-radius: 14px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 32%),
@@ -197,10 +197,6 @@
 }
 
 @media (max-width: 1500px) {
-  .options-positioning {
-    width: clamp(560px, 39vw, 650px);
-  }
-
   .options-positioning-combined {
     --options-strike-column: minmax(150px, 0.78fr);
   }
