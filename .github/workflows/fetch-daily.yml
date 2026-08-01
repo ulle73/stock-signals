@@ -8,10 +8,8 @@ on:
         required: false
         default: 'false'
   schedule:
-    - cron: '53 21 * * 1-5'
+    # One end-of-day run: 18:23 EST / 19:23 EDT, after US markets close.
     - cron: '23 23 * * 1-5'
-    - cron: '23 3 * * 2-6'
-    - cron: '43 12 * * 2-6'
 
 concurrency:
   group: fetch-daily

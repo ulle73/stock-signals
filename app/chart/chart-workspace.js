@@ -11,6 +11,7 @@ import {
   INDICATOR_KEYS,
   MOVING_AVERAGE_KEYS,
 } from '../../lib/chart/series-registry.js';
+import { createDailyRequestCache } from '../../lib/chart/daily-request-cache.js';
 import { signalControlsUnavailable } from '../../lib/chart/signal-controls.js';
 import ChartContextStrip from './chart-context-strip.js';
 import ChartToolbar from './chart-toolbar.js';
@@ -20,6 +21,8 @@ const FinancialChart = dynamic(() => import('./financial-chart.js'), {
   ssr: false,
   loading: () => <ChartSkeleton copy="Chartmotorn laddas…" />,
 });
+
+const chartPayloadCache = createDailyRequestCache();
 
 function ChartSkeleton({ copy = 'Prishistoriken laddas…' }) {
   return (
@@ -76,6 +79,15 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
   }, [period, ticker]);
 
   useEffect(() => {
+    const cacheKey = `${ticker}:${period}`;
+    const cachedPayload = chartPayloadCache.get(cacheKey);
+    if (cachedPayload) {
+      setErrorMessage('');
+      setPayload(cachedPayload);
+      setStatus(cachedPayload?.bars?.length ? 'ready' : 'empty');
+      return undefined;
+    }
+
     const controller = new AbortController();
     let active = true;
 
@@ -96,6 +108,7 @@ export default function ChartWorkspace({ constituents, initialPeriod, initialTic
         }
         if (!active) return;
 
+        chartPayloadCache.set(cacheKey, result);
         setPayload(result);
         setStatus(result?.bars?.length ? 'ready' : 'empty');
       } catch (error) {

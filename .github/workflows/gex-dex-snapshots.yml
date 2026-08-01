@@ -3,8 +3,8 @@ name: Fetch GammaLens GEX DEX Snapshots
 on:
   workflow_dispatch:
   schedule:
-    # Covers the US cash session in both DST regimes; provider freshness is persisted per snapshot.
-    - cron: '17 13-21 * * 1-5'
+    # One post-close snapshot per US trading day, after the daily price refresh window.
+    - cron: '17 1 * * 2-6'
 
 concurrency:
   group: gex-dex-snapshots

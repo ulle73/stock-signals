@@ -8,7 +8,7 @@ TradingView verification: not applicable
 
 ## Purpose
 
-This is an external, intraday context layer for the GammaLens GEX endpoint. It stores provider-calculated GEX/DEX strike distributions and turns them into non-directional states for the dashboard:
+This is an external, end-of-day context layer for the GammaLens GEX endpoint. It stores one provider-calculated GEX/DEX strike distribution per US trading day and turns it into non-directional states for the dashboard:
 
 - `range`: positive gamma and spot inside the call/put walls
 - `flip_risk`: spot is within 0.5 provider ATR of gamma flip
@@ -67,7 +67,7 @@ npm run fetch:gex-dex
 npm run calculate:gex-dex-signals
 ```
 
-The dedicated `gex-dex-snapshots.yml` workflow runs these steps independently of `fetch:daily`.
+The dedicated `gex-dex-snapshots.yml` workflow runs these steps independently of `fetch:daily`, once after each US trading day. Run it manually with `workflow_dispatch` when an extra snapshot is needed.
 
 ## Limits and validation
 
