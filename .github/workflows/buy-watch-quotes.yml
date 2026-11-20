@@ -1,0 +1,37 @@
+name: STOCKS Buy Watch Quotes (15m)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Four checks/hour on weekdays. Times are UTC; the Node.js script
+    # applies America/New_York trading-hours and freshness gates.
+    # GitHub cron may be delayed or skipped during high platform load.
+    - cron: '3,18,33,48 * * 1-5'
+
+concurrency:
+  group: stocks-buy-watch-quotes
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-buy-watch-quotes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      DATABASE_TARGET: default
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NODE_ENV: production
+    steps:
+      - name: Check out the existing stock-signals repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Fetch five Yahoo quotes and write fresh observations to Neon
+        run: node scripts/fetch-buy-watch-quotes.js
