@@ -2,10 +2,6 @@ name: STOCKS Buy Watch Quotes (15m)
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/buy-watch-quotes.yml'
   schedule:
     # Four checks/hour on weekdays. Times are UTC; the Node.js script
     # applies America/New_York trading-hours and freshness gates.
