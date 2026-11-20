@@ -6,7 +6,9 @@ on:
     # Four checks/hour on weekdays. Times are UTC; the Node.js script
     # applies America/New_York trading-hours and freshness gates.
     # GitHub cron may be delayed or skipped during high platform load.
-    - cron: '3,18,33,48 * * 1-5'
+    # 13:00–21:59 UTC spans both US daylight and standard time.
+    # The script's America/New_York guard ensures NO Yahoo fetch outside 09:30–16:00 ET.
+    - cron: '3,18,33,48 13-21 * * 1-5'
 
 concurrency:
   group: stocks-buy-watch-quotes
