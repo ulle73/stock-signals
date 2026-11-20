@@ -33,39 +33,13 @@ function marketTime(date) {
 function isScheduledMarketWindow(now = new Date()) {
   const t = marketTime(now);
   return t.weekday !== 'Sat' && t.weekday !== 'Sun'
-    && t.minuteOfDay >= 570 && t.minuteOfDay <= 985; // 09:30–16:25 ET
+    && t.minuteOfDay >= 570 && t.minuteOfDay < 960; // 09:30–15:59 ET
 }
 function isAfterReferenceClose(now = new Date()) {
   const date = marketDate(now);
   return date > BASE_DATE || (date === BASE_DATE && marketTime(now).minuteOfDay >= 975);
 }
 function round(value) { return Math.round(value * 1000000) / 1000000; }
-
-async function ensureTables() {
-  await query(`CREATE TABLE IF NOT EXISTS public.buy_watch_quotes (
-    symbol TEXT PRIMARY KEY,
-    last_price NUMERIC NOT NULL CHECK (last_price > 0),
-    recent_low NUMERIC NOT NULL CHECK (recent_low > 0),
-    market_timestamp TIMESTAMPTZ NOT NULL,
-    session_date DATE NOT NULL,
-    fetched_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    source TEXT NOT NULL DEFAULT 'yahoo_5m_github_actions'
-  )`);
-  await query(`CREATE TABLE IF NOT EXISTS public.buy_watch_baselines (
-    symbol TEXT PRIMARY KEY,
-    base_price NUMERIC NOT NULL CHECK (base_price > 0),
-    session_date DATE NOT NULL,
-    captured_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    source TEXT NOT NULL DEFAULT 'yahoo_daily_close'
-  )`);
-  // Grant SELECT on the two NEW monitoring tables only. No write rights for n8n.
-  await query(`DO $grant$ BEGIN
-    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'stocks_breadth_reader') THEN
-      GRANT USAGE ON SCHEMA public TO stocks_breadth_reader;
-      GRANT SELECT ON public.buy_watch_quotes, public.buy_watch_baselines TO stocks_breadth_reader;
-    END IF;
-  END $grant$`);
-}
 
 async function seedNasdaqReference(now) {
   if (!isAfterReferenceClose(now)) return;
@@ -129,7 +103,6 @@ async function main() {
     console.log('Outside US regular market monitoring window; no calls made.');
     return;
   }
-  await ensureTables();
   let good = 0;
   for (const ticker of TICKERS) {
     try {
