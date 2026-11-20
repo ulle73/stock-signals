@@ -1,0 +1,23 @@
+{
+  "indicator": "bofa_fms_tech_net_overweight",
+  "unit": "net_percentage_points_of_managers",
+  "update_policy": "MANUAL_VERIFIED_ONLY",
+  "definition": "Net percentage of respondents reporting an overweight allocation to technology. Not capital flows; a monthly change is the difference between successive net overweight observations.",
+  "source_policy": "Each observation must have a contemporaneous source, survey month and public release date. No missing-month interpolation or chart-image digitization in production.",
+  "observations": [
+    {
+      "month": "2026-10",
+      "released_on": "2026-10-13",
+      "net_overweight_pct": 37,
+      "source_url": "https://au.investing.com/news/stock-market-news/bofa-poll-shows-tech-overweight-hits-highest-since-august-2020-4686950",
+      "source_type": "press_reporting"
+    },
+    {
+      "month": "2026-11",
+      "released_on": "2026-11-17",
+      "net_overweight_pct": 12,
+      "source_url": "https://www.reuters.com/business/global-markets-bofa-survey-2026-11-17/",
+      "source_type": "press_reporting"
+    }
+  ]
+}
