@@ -37,11 +37,12 @@ Existing reference files: docs/indicators/MATRIX_MOMENTUM_PHILOSOPHY.md, AVAILAB
 3. GitHub repository > Settings > Secrets and variables > Actions > New repository secret. Name: DISCORD_MARKET_RADAR_WEBHOOK_URL. Put the full URL there. Existing DATABASE_URL is reused. Never commit webhook credentials in the public repository.
 4. Merge the reviewed PR after tests pass. The existing core fetch pipeline and any broker execution jobs are untouched.
 5. GitHub Actions > Market Radar Discord (research only) > Run workflow > preview. This reads Neon only and applies no migration.
-6. Review preview; then Run workflow > publish. Standard migrations create the three Radar tables and post the first status.
+6. Review preview; then Run workflow > publish. The isolated radar:migrate command creates only the three Radar tables and post the first status.
 7. Pin that status message in Discord. Schedule runs at 02:15 UTC Tuesday–Saturday, after the existing 23:23 UTC US-market fetch.
 
 Local Node 22 commands:
 - npm run radar:preview
+- npm run radar:migrate
 - npm run radar:publish
 - node --test tests/market-radar.test.js
 
