@@ -1,0 +1,56 @@
+name: Market Radar Discord (research only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: "preview = read-only, publish = update Discord"
+        default: preview
+        options:
+          - preview
+          - publish
+  # USA market EOD job runs at 23:23 UTC Mon-Fri. This runs afterward Tue-Sat.
+  schedule:
+    - cron: '15 2 * * 2-6'
+
+concurrency:
+  group: market-radar-discord
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_TARGET: default
+      DISCORD_MARKET_RADAR_WEBHOOK_URL: ${{ secrets.DISCORD_MARKET_RADAR_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run Radar unit tests
+        run: node --test tests/market-radar.test.js
+      - name: Read-only preview
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'preview' }}
+        run: npm run radar:preview
+      - name: Validate webhook configuration
+        if: ${{ github.event_name == 'schedule' || inputs.mode == 'publish' }}
+        run: |
+          if [ -z "$DISCORD_MARKET_RADAR_WEBHOOK_URL" ]; then
+            echo "::error::Missing DISCORD_MARKET_RADAR_WEBHOOK_URL repository secret."
+            exit 1
+          fi
+      - name: Migrate isolated Radar tables
+        if: ${{ github.event_name == 'schedule' || inputs.mode == 'publish' }}
+        run: npm run db:migrate
+      - name: Update Discord status and post meaningful changes
+        if: ${{ github.event_name == 'schedule' || inputs.mode == 'publish' }}
+        run: npm run radar:publish
