@@ -41,7 +41,7 @@ test('Market Radar uses last complete SMA10 month and reports macro as provision
   assert.equal(radar.quality.macroProvisional, true);
   assert.equal(radar.watch, 'none');
   const plaintext = formatRadarPlaintext(radar);
-  assert.match(plaintext, /Ingen.*automatiska köp\/sälj/);
+  assert.match(plaintext, /Inga automatiska köp\/sälj/);
   const embed = buildDiscordRadarEmbed(radar);
   assert.equal(embed.embeds[0].fields.length, 5);
   assert.match(embed.embeds[0].footer.text, /PMI exkluderat/);
