@@ -1,0 +1,28 @@
+name: Market Radar tests
+
+on:
+  pull_request:
+    paths:
+      - 'lib/market-radar/**'
+      - 'lib/repositories/market-radar.js'
+      - 'scripts/market-radar.js'
+      - 'tests/market-radar.test.js'
+      - '.github/workflows/market-radar*.yml'
+      - 'db/migrations/20261123_market_radar_research.sql'
+      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node --test tests/market-radar.test.js
