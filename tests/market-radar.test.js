@@ -118,3 +118,17 @@ test('Weekly recap reports a change over time and states its research limitation
   assert.match(embed.embeds[0].description, /Veck|MA50-bredd/);
   assert.match(embed.embeds[0].description, /\+10,0 pp/);
 });
+
+test('non-contiguous monthly macro observations are not passed off as three-month momentum', () => {
+  const inputs = marketInputs();
+  const [year, month] = inputs.date.slice(0, 7).split('-').map(Number);
+  const periods = Array.from({ length: 5 }, (_, i) => {
+    return new Date(Date.UTC(year, month - 1 - 5 + i, 1)).toISOString().slice(0, 10);
+  });
+  inputs.series.UNRATE = periods.map((date, i) => ({ date, value: String(4 + i * .1) }));
+  inputs.series.UMCSENT = periods.filter((_, i) => i !== 2)
+    .map((date, i) => ({ date, value: String(70 - i * 2) }));
+  assert.equal(buildMarketRadar(inputs).macro.state, 'unknown');
+  inputs.series.UMCSENT = periods.map((date, i) => ({ date, value: String(70 - i * 2) }));
+  assert.equal(buildMarketRadar(inputs).macro.state, 'weakening');
+});
